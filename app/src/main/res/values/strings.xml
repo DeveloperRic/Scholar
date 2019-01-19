@@ -1,0 +1,104 @@
+<resources>
+    <string name="app_name">Scholar</string>
+    <string name="title_home">Home</string>
+    <string name="title_calendar">Calendar</string>
+    <string name="title_evaluation">Evaluation</string>
+    <string name="title_activity_drawer">DrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="navDrawer_account">My Account</string>
+    <string name="navDrawer_schedule">Schedule</string>
+    <string name="navDrawer_subjects">Subjects</string>
+    <string name="navDrawer_clubs">Clubs</string>
+    <string name="navDrawer_settings">Settings</string>
+
+    <string name="snackbar_failedSave">Couldn\'t save your changes</string>
+    <string name="snackbar_retry">Try again</string>
+
+    <string name="modelOptions_duplicate">Duplicate</string>
+    <string name="modelOptions_delete">Delete</string>
+
+    <string name="title_activity_subjects">Subjects</string>
+
+    <string name="editModel_teacher">%s</string>
+    <string name="editModel_noTeacher">No teacher selected</string>
+    <string name="editModel_addToList">Add</string>
+    <string name="editModel_change">Edit</string>
+    <string name="editModel_recurring">Repeat</string>
+
+    <string name="subject_list_expand">Expand</string>
+    <string name="editSubject_name_hint">Subject name</string>
+    <string name="editSubject_code_hint">Subject code e.g.\) COMP</string>
+    <string name="editSubject_courses">Courses</string>
+
+    <string name="editCourse_name_hint">Course name</string>
+    <string name="editCourse_code_hint">Course code e.g.\) 1406</string>
+    <string name="editCourse_classes">Classes</string>
+    <string name="editCourse_editEvaluation">Edit evaluation</string>
+
+    <string name="editClass_name">Class: %s</string>
+    <string name="editClass_name_hint">Class name</string>
+    <string name="editClass_editSchedule">Edit Schedule</string>
+
+    <string name="editEvaluation_tests">Tests</string>
+    <string name="editEvaluation_deliverables">Assignments</string>
+    <string name="editEvaluation_dueInDays">%d days</string>
+
+    <string name="editTest_new">New test</string>
+    <string name="editTest_name_hint">Test name</string>
+    <string name="editTest_desc_hint">Test description</string>
+
+    <string name="editDeliv_new">New assignment</string>
+    <string name="editDeliv_name_hint">Assignment name</string>
+    <string name="editDeliv_desc_hint">Assignment description</string>
+
+    <string name="editSchedule_start">Start date</string>
+    <string name="editSchedule_repeatBasis">Repeats</string>
+    <string name="editSchedule_repeatNo">Doesn\'t repeat</string>
+    <string name="editSchedule_repeatBasisOption">Every</string>
+    <string name="editSchedule_delay_hint">Delay</string>
+    <string name="editSchedule_repeatSpinnerItemFormat">Every %d%s %s of the %s</string>
+    <plurals name="editSchedule_basisDay">
+        <item quantity="one">day</item>
+        <item quantity="many">days</item>
+    </plurals>
+    <plurals name="editSchedule_basisWeek">
+        <item quantity="one">week</item>
+        <item quantity="many">weeks</item>
+    </plurals>
+    <plurals name="editSchedule_basisMonth">
+        <item quantity="one">month</item>
+        <item quantity="many">months</item>
+    </plurals>
+    <plurals name="editSchedule_basisYear">
+        <item quantity="one">year</item>
+        <item quantity="many">years</item>
+    </plurals>
+    <string name="editSchedule_end">Ends</string>
+    <string name="editSchedule_end_after">After</string>
+    <string name="editSchedule_end_occur">times</string>
+    <string-array name="firstSecondThirdEtcArr">
+        <item>st</item>
+        <item>nd</item>
+        <item>rd</item>
+        <item>th</item>
+    </string-array>
+
+    <string name="selectPerson_name_hint">First name, Last name</string>
+    <string name="title_activity_login">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="loginWelcomeMessage">Welcome to Scholar!\nPlease sign-up or login below</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">Your password must be at least 5 characters</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+</resources>

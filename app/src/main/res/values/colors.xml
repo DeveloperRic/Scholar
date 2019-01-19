@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryLight">#b2dfdb</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorAccent">#009688</color>
+    <!-- old accent #8bc34a -->
+
+    <color name="colorText">#FFFFFF</color>
+    <color name="colorTextPrimary">#212121</color>
+    <color name="colorTextSecondary">#757575</color>
+    <color name="colorTextMuted">#bdbdbd</color>
+
+    <color name="colorDivider">#BDBDBD</color>
+    <color name="colorBgSecondary">#eeeeee</color>
+
+    <color name="colorPriorityHigh">#ffebee</color>
+    <color name="colorPriorityMedium">#e3f2fd</color>
+    <color name="colorBgTransluscent">#8c78909c</color>
+</resources>

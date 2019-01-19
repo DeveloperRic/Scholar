@@ -1,0 +1,31 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="xyz.victorolaitan.scholar.DrawerActivity">
+
+    <item
+        android:id="@+id/drawer_action_account"
+        android:icon="@drawable/ic_account_circle_black_24dp"
+        android:title="@string/navDrawer_account" />
+
+    <item
+        android:id="@+id/drawer_action_schedule"
+        android:icon="@drawable/ic_date_range_black_24dp"
+        android:title="@string/navDrawer_schedule" />
+
+    <item
+        android:id="@+id/drawer_action_subjects"
+        android:icon="@drawable/ic_class_black_24dp"
+        android:title="@string/navDrawer_subjects" />
+
+    <item
+        android:id="@+id/drawer_action_clubs"
+        android:icon="@drawable/ic_people_black_24dp"
+        android:title="@string/navDrawer_clubs" />
+
+    <item
+        android:id="@+id/drawer_action_settings"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/navDrawer_settings" />
+
+</menu>

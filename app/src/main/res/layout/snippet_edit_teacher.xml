@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+
+    <ImageView
+        app:srcCompat="@drawable/ic_person_outline_black_24dp"
+        tools:ignore="ContentDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="5dp"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/editTeacher_txtTeacher"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:text="@string/editModel_teacher"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/editTeacher_changeTeacher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:drawableStart="@drawable/ic_edit_black_24dp"
+        android:drawablePadding="5dp"
+        android:text="@string/editModel_change"
+        android:textColor="@color/colorTextPrimary"
+        android:textSize="18sp" />
+
+</LinearLayout>

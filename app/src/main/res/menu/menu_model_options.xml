@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="xyz.victorolaitan.scholar.DrawerActivity">
+
+    <item
+        android:id="@+id/options_action_duplicate"
+        android:title="@string/modelOptions_duplicate" />
+
+    <item
+        android:id="@+id/options_action_delete"
+        android:title="@string/modelOptions_delete" />
+
+</menu>
