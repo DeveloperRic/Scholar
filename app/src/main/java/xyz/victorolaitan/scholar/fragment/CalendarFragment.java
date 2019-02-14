@@ -46,7 +46,7 @@ public class CalendarFragment extends Fragment<CalendarCtrl> {
         calendarRecycler.setItemAnimator(new DefaultItemAnimator());
 
         RecyclerAdapter adapter = new RecyclerAdapter(getContext(), controller.observableCards,
-                R.layout.content_card_home, R.id.home_cardview, R.anim.trans_fade_in);
+                R.layout.content_card_home_event, R.id.home_cardview, R.anim.trans_fade_in);
         calendarRecycler.setAdapter(adapter);
         controller.setCardsAdapter(adapter);
 

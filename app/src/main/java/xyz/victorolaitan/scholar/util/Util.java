@@ -19,13 +19,17 @@ public class Util {
     public static void initHomeCardList(List<HomeCard> cardList, List<ScheduleHolder> modelList) {
         cardList.clear();
         for (ScheduleHolder o : modelList) {
+            HomeCard.CardType type;
+            SubjectHue hue = null;
             if (o instanceof Test) {
-                cardList.add(new HomeCard(HomeCard.CardType.TEST, o));
+                type = HomeCard.CardType.TEST;
             } else if (o instanceof Deliverable) {
-                cardList.add(new HomeCard(HomeCard.CardType.DELIVERABLE, o));
+                type = HomeCard.CardType.DELIVERABLE;
             } else {
-                cardList.add(new HomeCard(HomeCard.CardType.NORMAL, o));
+                type = HomeCard.CardType.NORMAL;
             }
+            if (o instanceof HueHolder) hue = ((HueHolder) o).getHue();
+            cardList.add(new HomeCard(type, o, hue));
         }
     }
 
@@ -61,7 +65,6 @@ public class Util {
                     calendar.set(Calendar.YEAR, year);
                     calendar.set(Calendar.MONTH, month);
                     calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                    schedule.pauseStartEndBoundsChecking();
                     Date newDate = calendar.getTime();
                     if (field == SCHEDULE_START) {
                         if (newDate.after(schedule.getEnd()))
@@ -78,7 +81,6 @@ public class Util {
                         else if (field == SCHEDULE_END)
                             schedule.setStart(newDate);
                     }
-                    schedule.resumeStartEndBoundsChecking();
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),

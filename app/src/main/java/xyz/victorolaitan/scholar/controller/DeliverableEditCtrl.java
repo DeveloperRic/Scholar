@@ -1,7 +1,9 @@
 package xyz.victorolaitan.scholar.controller;
 
+import android.os.Build;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -13,6 +15,7 @@ import xyz.victorolaitan.scholar.fragment.FragmentId;
 import xyz.victorolaitan.scholar.model.subject.Deliverable;
 import xyz.victorolaitan.scholar.session.DatabaseLink;
 import xyz.victorolaitan.scholar.session.Session;
+import xyz.victorolaitan.scholar.util.Schedule;
 import xyz.victorolaitan.scholar.util.ScheduleChangeListener;
 import xyz.victorolaitan.scholar.util.TextChangeListener;
 import xyz.victorolaitan.scholar.util.Util;
@@ -28,6 +31,7 @@ public class DeliverableEditCtrl implements ModelCtrl {
     private TextView txtDate;
     private EditText txtEditName;
     private EditText txtEditDesc;
+    private SeekBar seekPercent;
 
     public DeliverableEditCtrl(Session parent, FragmentActivity activity) {
         this.parent = parent;
@@ -58,7 +62,35 @@ public class DeliverableEditCtrl implements ModelCtrl {
         view.findViewById(R.id.editSchedule_changeDate).setOnClickListener(dateEditClickListener);
         txtDate.setOnClickListener(dateEditClickListener);
         view.findViewById(R.id.editSchedule_makeRecurring).setOnClickListener(v ->
-                activity.pushFragment(FragmentId.SCHEDULE_EDIT_FRAGMENT, deliverable.getSchedule()));
+                activity.pushFragment(
+                        FragmentId.SCHEDULE_EDIT_FRAGMENT,
+                        new ScheduleEditCtrl.ScheduleView() {
+                            @Override
+                            public Schedule getSchedule() {
+                                return deliverable.getSchedule();
+                            }
+
+                            @Override
+                            public boolean postModel(DatabaseLink database) {
+                                return DeliverableEditCtrl.this.postModel(database);
+                            }
+                        }));
+
+        seekPercent = view.findViewById(R.id.editTest_seekPercent);
+        seekPercent.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) deliverable.setOverallContribution(progress / 100);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
 
         deliverable.getSchedule().addChangeListener((ScheduleChangeListener) () -> this);
     }
@@ -87,6 +119,11 @@ public class DeliverableEditCtrl implements ModelCtrl {
         txtDate.setText(Util.formatDate(deliverable.getSchedule()));
         txtEditName.setText(deliverable.getName());
         txtEditDesc.setText(deliverable.getDescription());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            seekPercent.setProgress((int) (deliverable.getOverallContribution() * 100), true);
+        } else {
+            seekPercent.setProgress((int) (deliverable.getOverallContribution() * 100));
+        }
     }
 
     public Deliverable getDeliverable() {

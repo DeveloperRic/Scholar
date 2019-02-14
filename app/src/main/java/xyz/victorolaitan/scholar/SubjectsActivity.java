@@ -37,7 +37,6 @@ import xyz.victorolaitan.scholar.model.subject.Evaluation;
 import xyz.victorolaitan.scholar.model.subject.Subject;
 import xyz.victorolaitan.scholar.model.subject.Test;
 import xyz.victorolaitan.scholar.util.Indexable;
-import xyz.victorolaitan.scholar.util.Schedule;
 
 import static xyz.victorolaitan.scholar.fragment.FragmentId.CLASS_EDIT_FRAGMENT;
 import static xyz.victorolaitan.scholar.fragment.FragmentId.COURSE_EDIT_FRAGMENT;
@@ -124,9 +123,9 @@ public class SubjectsActivity extends FragmentActivity {
             fragment.setController(ctrl);
         } else if (fragmentId == SCHEDULE_EDIT_FRAGMENT) {
             ScheduleEditCtrl ctrl = new ScheduleEditCtrl();
-            ctrl.setSchedule((Schedule) args[0]);
             fragment = new ScheduleEditFragment();
             fragment.setController(ctrl);
+            ((ScheduleEditFragment) fragment).setSchedule((ScheduleEditCtrl.ScheduleView) args[0]);
         } else if (fragmentId == PERSON_SELECT_FRAGMENT) {
             PersonSelectCtrl ctrl = new PersonSelectCtrl(getSession(), this);
             ctrl.setContext((PersonSelectCtrl.PersonType) args[0], (Indexable) args[1]);

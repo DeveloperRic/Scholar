@@ -71,7 +71,7 @@ public class CourseEditCtrl implements ModelCtrl {
         view.findViewById(R.id.editCourse_btnEvaluation).setOnClickListener(v ->
                 activity.pushFragment(EVALUATION_EDIT_FRAGMENT, course.getEvaluation()));
         view.findViewById(R.id.editCourse_addClass).setOnClickListener(v ->
-                activity.pushFragment(CLASS_EDIT_FRAGMENT, course.newClass("", new Schedule())));
+                activity.pushFragment(CLASS_EDIT_FRAGMENT, course.newClass("CLASS", new Schedule())));
     }
 
     @Override

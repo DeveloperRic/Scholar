@@ -11,23 +11,27 @@ public final class Session {
 
     private static Session baseSession;
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean newSession(Context context) {
         baseSession = new Session();
         baseSession.database = new LocalStore(context);
         baseSession.security = new LocalSecurity(context) {
             @Override
-            protected boolean onAuthenticate(UUID id) {
-                Settings.localStudentId = id;
-                Settings.save();
-                baseSession.student = baseSession.database.getStudent(Settings.localStudentId);
+            DatabaseLink getDatabaseLink() {
+                return baseSession.getDatabase();
+            }
+
+            @Override
+            protected boolean onAuthenticate(UUID id, UUID loginKey) {
+                Settings.STUDENT_LOGIN_KEY.set(loginKey);
+                baseSession.student = baseSession.database.getStudent(id);
                 return baseSession.student != null;
             }
         };
-        Settings.save();
         Settings.init(context);
 
-        return Settings.localStudentId != null
-                && baseSession.security.onAuthenticate(Settings.localStudentId);
+        return Settings.STUDENT_LOGIN_KEY.get() != null
+                && baseSession.security.validateKey(Settings.STUDENT_LOGIN_KEY.get());
     }
 
     public static Session getSession() {

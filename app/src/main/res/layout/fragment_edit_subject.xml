@@ -98,9 +98,80 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginEnd="10dp">
+
+            <ImageView
+                android:id="@+id/editSubject_huePink"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/colorSubjPink"
+                android:padding="10dp"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/editSubject_huePurple"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/colorSubjPurple"
+                android:padding="10dp"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/editSubject_hueBlue"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/colorSubjBlue"
+                android:padding="10dp"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/editSubject_hueTeal"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:padding="10dp"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/editSubject_hueOrange"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/colorSubjOrange"
+                android:padding="10dp"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/editSubject_hueBrown"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/colorSubjBrown"
+                android:padding="10dp"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/editSubject_hueGrey"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@color/colorSubjGrey"
+                android:padding="10dp"
+                tools:ignore="ContentDescription" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="16dp"
             android:orientation="horizontal">
 
             <TextView
@@ -110,8 +181,10 @@
                 android:orientation="horizontal"
                 android:text="@string/editSubject_courses"
                 android:textAlignment="textStart"
-                android:textColor="@color/colorTextPrimary"
-                android:textSize="18sp" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/editSubject_addCourse"

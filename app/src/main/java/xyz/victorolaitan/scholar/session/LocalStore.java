@@ -20,16 +20,16 @@ import xyz.victorolaitan.scholar.model.Todo;
 import xyz.victorolaitan.scholar.model.subject.Course;
 import xyz.victorolaitan.scholar.model.subject.Evaluation;
 import xyz.victorolaitan.scholar.model.subject.Subject;
+import xyz.victorolaitan.scholar.util.Indexable;
 import xyz.victorolaitan.scholar.util.Schedule;
-import xyz.victorolaitan.scholar.util.ScholarModel;
 
 final class LocalStore implements DatabaseLink {
-    private static final String PEOPLE_FILE = "people.txt";
-    private static final String CLUBS_FILE = "clubs.txt";
-    private static final String EVENTS_FILE = "events.txt";
-    private static final String TODOS_FILE = "todos.txt";
-    private static final String COURSES_FILE = "courses.txt";
-    private static final String EVALUATIONS_FILE = "evaluations.txt";
+    private static final String PEOPLE_FILE = "people.json";
+    private static final String CLUBS_FILE = "clubs.json";
+    private static final String EVENTS_FILE = "events.json";
+    private static final String TODOS_FILE = "todos.json";
+    private static final String COURSES_FILE = "courses.json";
+    private static final String EVALUATIONS_FILE = "evaluations.json";
 
     private Context context;
 
@@ -108,12 +108,12 @@ final class LocalStore implements DatabaseLink {
     }
 
     private JSONElement searchLocal(String fileName, UUID id) {
-        return Objects.requireNonNull(retrieveLocal(fileName)).search(id.toString());
+        return Objects.requireNonNull(Objects.requireNonNull(retrieveLocal(fileName)).search(id.toString()));
     }
 
-    private boolean saveLocal(String filename, ScholarModel model) {
-        EasyJSON json = retrieveLocal(filename);
-        Objects.requireNonNull(json).putElement(model.toJSON());
+    private boolean saveLocal(String filename, Indexable model) {
+        EasyJSON json = Objects.requireNonNull(retrieveLocal(filename));
+        json.putStructure(model.getId().toString(), model.toJSON());
         try {
             json.save();
         } catch (EasyJSONException e) {
@@ -125,15 +125,14 @@ final class LocalStore implements DatabaseLink {
 
     private EasyJSON retrieveLocal(String fileName) {
         File file = getLocalFile(fileName);
-        if (file.exists()) {
-            try {
-                return EasyJSON.open(file);
-            } catch (EasyJSONException e) {
-                e.printStackTrace();
-            }
-        } else {
+        if (!file.exists()) {
             populateStores();
-            retrieveLocal(fileName);
+            return retrieveLocal(fileName);
+        }
+        try {
+            return EasyJSON.open(file);
+        } catch (EasyJSONException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -191,11 +190,11 @@ final class LocalStore implements DatabaseLink {
         populateNewStore(CLUBS_FILE, club);
     }
 
-    private void populateNewStore(String fileName, ScholarModel... models) {
-        EasyJSON store = EasyJSON.create(getLocalFile(PEOPLE_FILE));
+    private void populateNewStore(String fileName, Indexable... models) {
+        EasyJSON store = EasyJSON.create(getLocalFile(fileName));
         store.getRootNode().setType(SafeJSONElementType.ARRAY);
-        for (ScholarModel model : models) {
-            store.putElement(model.toJSON());
+        for (Indexable model : models) {
+            store.putStructure(model.getId().toString(), model.toJSON());
         }
         try {
             store.save();

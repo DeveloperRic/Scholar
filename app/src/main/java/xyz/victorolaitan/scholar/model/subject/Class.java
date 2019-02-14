@@ -7,11 +7,13 @@ import java.util.UUID;
 import xyz.victorolaitan.easyjson.EasyJSON;
 import xyz.victorolaitan.easyjson.JSONElement;
 import xyz.victorolaitan.scholar.model.Teacher;
+import xyz.victorolaitan.scholar.util.HueHolder;
 import xyz.victorolaitan.scholar.util.Indexable;
 import xyz.victorolaitan.scholar.util.ScheduleHolder;
 import xyz.victorolaitan.scholar.util.Schedule;
+import xyz.victorolaitan.scholar.util.SubjectHue;
 
-public class Class implements Indexable, ScheduleHolder {
+public class Class implements Indexable, ScheduleHolder, HueHolder {
 
     UUID id = UUID.randomUUID();
 
@@ -32,6 +34,7 @@ public class Class implements Indexable, ScheduleHolder {
         this.teacher = teacher;
     }
 
+    @NonNull
     @Override
     public UUID getId() {
         return id;
@@ -113,5 +116,10 @@ public class Class implements Indexable, ScheduleHolder {
     @Override
     public java.lang.Comparable getCompareObject() {
         return schedule;
+    }
+
+    @Override
+    public SubjectHue getHue() {
+        return course.getHue();
     }
 }

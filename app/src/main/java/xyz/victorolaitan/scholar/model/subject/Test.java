@@ -15,6 +15,7 @@ public class Test implements EvalComponent {
     private String title;
     private String description;
     private Schedule date;
+    private float overallContribution = 0;
 
     Test(Evaluation evaluation) {
         this.evaluation = evaluation;
@@ -27,6 +28,7 @@ public class Test implements EvalComponent {
         this.date = date;
     }
 
+    @Override
     public Evaluation getEvaluation() {
         return evaluation;
     }
@@ -79,6 +81,7 @@ public class Test implements EvalComponent {
         json.putPrimitive("title", title);
         json.putPrimitive("description", description);
         json.putStructure("date", date.toJSON());
+        json.putPrimitive("overallContribution", overallContribution);
         return json.getRootNode();
     }
 
@@ -88,6 +91,7 @@ public class Test implements EvalComponent {
         title = json.valueOf("title");
         description = json.valueOf("description");
         date = new Schedule().fromJSON(json.search("date"));
+        overallContribution = json.valueOf(0, "overallContribution");
         return this;
     }
 
@@ -99,5 +103,15 @@ public class Test implements EvalComponent {
     @Override
     public java.lang.Comparable getCompareObject() {
         return date;
+    }
+
+    @Override
+    public float getOverallContribution() {
+        return overallContribution;
+    }
+
+    @Override
+    public void setOverallContribution(float percent) {
+        overallContribution = percent;
     }
 }

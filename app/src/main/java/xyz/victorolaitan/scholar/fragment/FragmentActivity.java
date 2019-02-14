@@ -53,11 +53,11 @@ public abstract class FragmentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (Session.getSession() == null) {
-            if (!Session.newSession(this)) {
-                startActivity(new Intent(this, LoginActivity.class));
-            }
-        }
+//        if (Session.getSession() == null) {
+//            if (!Session.newSession(this)) {
+//                startActivity(new Intent(this, LoginActivity.class));
+//            }
+//        }
     }
 
     @Override

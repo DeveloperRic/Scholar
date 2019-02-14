@@ -1,5 +1,7 @@
 package xyz.victorolaitan.scholar.model;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +37,7 @@ public class Todo implements Observable, Indexable {
         studentDelegateIds = new ArrayList<>();
     }
 
+    @NonNull
     @Override
     public UUID getId() {
         return id;

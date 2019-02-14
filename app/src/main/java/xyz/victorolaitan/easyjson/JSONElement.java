@@ -87,6 +87,7 @@ public class JSONElement implements Iterable<JSONElement> {
         return element;
     }
 
+    @NonNull
     public JSONElement putPrimitive(String key, Object value) {
         JSONElement search = search(key);
         if (search == null) {
@@ -194,13 +195,28 @@ public class JSONElement implements Iterable<JSONElement> {
         return (T) search(location).getValue();
     }
 
-    public <T> T valueOf(T defaultValue, String location) {
-        T value = valueOf(location);
-        if (value != null) {
-            return value;
-        } else {
-            return defaultValue;
+    public String stringValueOf(String defaultString, String... location) {
+        String value;
+        try {
+            value = valueOf(location);
+            if (value != null) {
+                return value;
+            }
+        } catch (Exception ignored) {
         }
+        return defaultString;
+    }
+
+    public <T> T valueOf(T defaultValue, String... location) {
+        T value;
+        try {
+            value = valueOf(location);
+            if (value != null) {
+                return value;
+            }
+        } catch (Exception ignored) {
+        }
+        return defaultValue;
     }
 
     public void combine(EasyJSON easyJSONStructure) {

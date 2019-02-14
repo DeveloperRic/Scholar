@@ -1,6 +1,7 @@
 package xyz.victorolaitan.scholar.controller;
 
 import android.app.DatePickerDialog;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,18 +10,22 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import xyz.victorolaitan.scholar.R;
+import xyz.victorolaitan.scholar.session.DatabaseLink;
 import xyz.victorolaitan.scholar.util.Schedule;
 import xyz.victorolaitan.scholar.util.Util;
 
-public class ScheduleEditCtrl implements FragmentCtrl {
+public class ScheduleEditCtrl implements ModelCtrl {
+    private ScheduleView scheduleView;
     private Schedule schedule;
     private boolean updating, initIterative, initRelative;
 
+    private View parentView;
     private RadioButton radioNoRepeat;
     private RadioButton radioIterative;
     private RadioButton radioRelative;
@@ -32,9 +37,10 @@ public class ScheduleEditCtrl implements FragmentCtrl {
     private EditText editEndDelay;
     private Spinner spinnerIterative;
     private Spinner spinnerRelative;
+    private int[] repeatDays = new int[0];
 
     private void checkRepeatNotNull() {
-        if (schedule.getRepeatSchedule() == null) {
+        if (!schedule.hasRepeatSchedule()) {
             schedule.initRepeatSchedule();
         }
     }
@@ -42,6 +48,8 @@ public class ScheduleEditCtrl implements FragmentCtrl {
     @Override
     public void init(View view) {
         updating = true;
+        parentView = view;
+
         spinnerIterative = view.findViewById(R.id.editSchedule_iterativeSpinner);
         spinnerRelative = view.findViewById(R.id.editSchedule_relativeSpinner);
 
@@ -49,8 +57,9 @@ public class ScheduleEditCtrl implements FragmentCtrl {
         radioNoRepeat.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 if (!updating) {
-                    schedule.setEndType(Schedule.EndType.ON_DATE);
-                    schedule.setEnd(schedule.getStart());
+                    schedule.cancelRepeatSchedule();
+                    parentView.findViewById(R.id.editSchedule_txtRepeatDays).setVisibility(View.GONE);
+                    parentView.findViewById(R.id.editSchedule_repeatDays).setVisibility(View.GONE);
                 }
                 radioIterative.setChecked(false);
                 radioRelative.setChecked(false);
@@ -61,7 +70,10 @@ public class ScheduleEditCtrl implements FragmentCtrl {
             if (isChecked) {
                 if (!updating) {
                     checkRepeatNotNull();
-                    schedule.getRepeatSchedule().setType(Schedule.RepeatType.ITERATIVE);
+                    schedule.setRepeatToIterative();
+                    schedule.setRepeatIterativeDelay(schedule.getRepeatIterativeDelay());
+                    parentView.findViewById(R.id.editSchedule_txtRepeatDays).setVisibility(View.GONE);
+                    parentView.findViewById(R.id.editSchedule_repeatDays).setVisibility(View.GONE);
                 }
                 radioNoRepeat.setChecked(false);
                 radioRelative.setChecked(false);
@@ -72,11 +84,21 @@ public class ScheduleEditCtrl implements FragmentCtrl {
             if (isChecked) {
                 if (!updating) {
                     checkRepeatNotNull();
-                    if (schedule.getRepeatSchedule().getRepeatBasis() == Schedule.RepeatBasis.DAILY) {
-                        schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+                    if (schedule.getRepeatBasis() == Schedule.RepeatBasis.DAILY) {
+                        schedule.setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
                     }
-                    schedule.getRepeatSchedule().setWeeks(1);
-                    schedule.getRepeatSchedule().setType(Schedule.RepeatType.RELATIVE);
+                    if (schedule.getRepeatType() != Schedule.RepeatType.RELATIVE) {
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(schedule.getStart());
+                        repeatDays = new int[]{calendar.get(Calendar.DAY_OF_WEEK)};
+                        schedule.setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+                        schedule.setRepeatToRelative(calendar.get(Calendar.DAY_OF_WEEK));
+                    }
+                    boolean isWeekly = schedule.getRepeatBasis() == Schedule.RepeatBasis.WEEKLY;
+                    parentView.findViewById(R.id.editSchedule_txtRepeatDays).setVisibility(isWeekly ? View.VISIBLE : View.GONE);
+                    parentView.findViewById(R.id.editSchedule_repeatDays).setVisibility(isWeekly ? View.VISIBLE : View.GONE);
+                    updateRelativeSpinner();
+                    paintDayTextViews(setDayTextViewListeners(getDayTextViews()));
                 }
                 radioNoRepeat.setChecked(false);
                 radioIterative.setChecked(false);
@@ -86,7 +108,7 @@ public class ScheduleEditCtrl implements FragmentCtrl {
         radioEndOnDate.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 if (!updating)
-                    schedule.setEndType(Schedule.EndType.ON_DATE);
+                    schedule.setEnd(schedule.getEnd());
                 radioEndAfterTimes.setChecked(false);
             }
         });
@@ -94,7 +116,7 @@ public class ScheduleEditCtrl implements FragmentCtrl {
         radioEndAfterTimes.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 if (!updating)
-                    schedule.setEndType(Schedule.EndType.AFTER_TIMES);
+                    schedule.endAfterXTimes(Integer.parseInt(editEndDelay.getText().toString()));
                 radioEndOnDate.setChecked(false);
             }
         });
@@ -102,41 +124,41 @@ public class ScheduleEditCtrl implements FragmentCtrl {
         txtStart = view.findViewById(R.id.editSchedule_txtStart);
         txtStart.setOnClickListener(v -> changeStart(view));
         txtEndDate = view.findViewById(R.id.editSchedule_txtEndDate);
-        txtEndDate.setOnClickListener(v ->changeEnd(view));
+        txtEndDate.setOnClickListener(v -> changeEnd(view));
         view.findViewById(R.id.editSchedule_changeStart).setOnClickListener(v -> changeStart(view));
         view.findViewById(R.id.editSchedule_changeEndDate).setOnClickListener(v -> changeEnd(view));
 
         editRepeatDelay = view.findViewById(R.id.editSchedule_editRepeatDelay);
-        if (schedule.getRepeatSchedule() != null) {
-            editRepeatDelay.setText(String.valueOf(schedule.getRepeatSchedule().getDelay()));
+        if (schedule.hasRepeatSchedule() && schedule.getRepeatType() == Schedule.RepeatType.ITERATIVE) {
+            editRepeatDelay.setText(String.valueOf(schedule.getRepeatIterativeDelay()));
         } else {
             editRepeatDelay.setText("1");
         }
         editRepeatDelay.addTextChangedListener((TextListener) s -> {
             if (s.length() > 0) {
                 checkRepeatNotNull();
-                schedule.getRepeatSchedule().setDelay(Integer.parseInt(editRepeatDelay.getText().toString()));
+                schedule.setRepeatToIterative();
+                schedule.setRepeatIterativeDelay(Integer.parseInt(editRepeatDelay.getText().toString()));
             }
         });
 
         editEndDelay = view.findViewById(R.id.editSchedule_editEndDelay);
-        if (schedule.getEndType() == Schedule.EndType.ON_DATE) {
-            editEndDelay.setText("1");
-        } else {
-            editEndDelay.setText(String.valueOf(schedule.getRepeatSchedule().getMaxOccurrences()));
-        }
         editEndDelay.addTextChangedListener((TextListener) s -> {
-            if (s.length() > 0) {
-                schedule.getRepeatSchedule()
-                        .endAfterXTimes(Integer.parseInt(editEndDelay.getText().toString()));
+            if (s.length() > 0 && !updating) {
+                checkRepeatNotNull();
+                schedule.endAfterXTimes(Integer.parseInt(editEndDelay.getText().toString()));
                 radioEndAfterTimes.toggle();
             }
         });
 
-        if (schedule.getEndType() == Schedule.EndType.ON_DATE)
-            radioEndOnDate.toggle();
-        else
-            radioEndAfterTimes.toggle();
+        if (schedule.getEndType() == Schedule.EndType.ON_DATE) {
+            radioEndOnDate.setChecked(true);
+            radioEndAfterTimes.setChecked(false);
+        } else {
+            radioEndOnDate.setChecked(false);
+            radioEndAfterTimes.setChecked(true);
+            editEndDelay.setText(String.valueOf(schedule.getEndAfterTimes()));
+        }
 
         schedule.addChangeListener(scheduleListener);
     }
@@ -160,24 +182,39 @@ public class ScheduleEditCtrl implements FragmentCtrl {
         updating = true;
         txtStart.setText(Util.formatDate(schedule.getStart()));
         txtEndDate.setText(Util.formatDate(schedule.getEnd()));
-        if (schedule.getRepeatSchedule() == null) {
+        if (!schedule.hasRepeatSchedule()) {
             if (!radioNoRepeat.isChecked()) {
                 radioNoRepeat.setChecked(true);
             }
-        } else if (schedule.getRepeatSchedule().getType() == Schedule.RepeatType.ITERATIVE) {
+        } else if (schedule.getRepeatType() == Schedule.RepeatType.ITERATIVE) {
             if (!radioIterative.isChecked()) {
                 radioIterative.setChecked(true);
-                updateIterativeSpinner();
             }
         } else if (!radioRelative.isChecked()) {
             radioRelative.setChecked(true);
-            updateRelativeSpinner();
+        }
+        radioEndAfterTimes.setEnabled(schedule.hasRepeatSchedule());
+        updateIterativeSpinner();
+        updateRelativeSpinner();
+        boolean isWeekly = schedule.hasRepeatSchedule()
+                && schedule.getRepeatBasis() == Schedule.RepeatBasis.WEEKLY;
+        parentView.findViewById(R.id.editSchedule_txtRepeatDays).setVisibility(isWeekly ? View.VISIBLE : View.GONE);
+        parentView.findViewById(R.id.editSchedule_repeatDays).setVisibility(isWeekly ? View.VISIBLE : View.GONE);
+        if (isWeekly) paintDayTextViews(setDayTextViewListeners(getDayTextViews()));
+
+        if (schedule.getEndType() == Schedule.EndType.ON_DATE) {
+            radioEndOnDate.setChecked(true);
+            radioEndAfterTimes.setChecked(false);
+            editEndDelay.setText(String.valueOf(schedule.getMaxOccurrences()));
+        } else {
+            radioEndOnDate.setChecked(false);
+            radioEndAfterTimes.setChecked(true);
+            editEndDelay.setText(String.valueOf(schedule.getEndAfterTimes()));
         }
         updating = false;
     }
 
     private void updateIterativeSpinner() {
-        checkRepeatNotNull();
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
                 spinnerIterative.getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -195,11 +232,14 @@ public class ScheduleEditCtrl implements FragmentCtrl {
             }
             spinnerAdapter.add(spinnerIterative.getResources()
                     .getQuantityString(res,
-                            schedule.getRepeatSchedule() == null ? 1 : schedule.getRepeatSchedule().getDelay()));
+                            schedule.hasRepeatSchedule() && schedule.getRepeatType() == Schedule.RepeatType.ITERATIVE
+                                    ? schedule.getRepeatIterativeDelay() : 1));
         }
         spinnerAdapter.notifyDataSetChanged();
 
-        spinnerIterative.setSelection(schedule.getRepeatSchedule().getRepeatBasis().getIndex());
+        if (schedule.hasRepeatSchedule()) {
+            spinnerIterative.setSelection(schedule.getRepeatBasis().getIndex());
+        }
 
         initIterative = false;
         spinnerIterative.setOnItemSelectedListener((SpinnerListener) (parent, view, position, id) -> {
@@ -208,15 +248,15 @@ public class ScheduleEditCtrl implements FragmentCtrl {
                 return;
             }
             checkRepeatNotNull();
-            schedule.getRepeatSchedule().setType(Schedule.RepeatType.ITERATIVE);
+            schedule.setRepeatToIterative();
             if (position == 0)
-                schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.DAILY);
+                schedule.setRepeatBasis(Schedule.RepeatBasis.DAILY);
             else if (position == 1)
-                schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+                schedule.setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
             else if (position == 2)
-                schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                schedule.setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
             else
-                schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                schedule.setRepeatBasis(Schedule.RepeatBasis.YEARLY);
         });
     }
 
@@ -230,11 +270,42 @@ public class ScheduleEditCtrl implements FragmentCtrl {
         calendar.setTime(schedule.getStart());
         String[] firstSecondEtc = spinnerRelative.getResources().getStringArray(R.array.firstSecondThirdEtcArr);
 
-        int dayOMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        if (!schedule.hasRepeatSchedule() || schedule.getRepeatType() != Schedule.RepeatType.RELATIVE) {
+
+            spinnerAdapter.add(spinnerRelative.getResources().getString(R.string.editSchedule_repeatSpinnerSelectDays));
+
+        } else if (schedule.getRepeatBasis() != Schedule.RepeatBasis.WEEKLY || !schedule.hasRepeatRelativeSelections()) {
+
+            spinnerAdapter.add(spinnerRelative.getResources().getString(R.string.editSchedule_repeatSpinnerDayOWeekFormat,
+                    calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())));
+
+        } else if (schedule.getRepeatRelativeSelections().length == 1) {
+            calendar.set(Calendar.DAY_OF_WEEK, schedule.getRepeatRelativeSelections()[0]);
+
+            spinnerAdapter.add(spinnerRelative.getResources().getString(R.string.editSchedule_repeatSpinnerDayOWeekFormat,
+                    calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault())));
+
+            calendar.setTime(schedule.getStart());
+        } else {
+            StringBuilder sb = new StringBuilder();
+            int[] selections = schedule.getRepeatRelativeSelections();
+
+            for (int i = 0; i < selections.length; i++) {
+                calendar.set(Calendar.DAY_OF_WEEK, selections[i]);
+                sb.append(calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+                if (i + 1 < selections.length) sb.append(", ");
+            }
+
+            spinnerAdapter.add(spinnerRelative.getResources().getString(R.string.editSchedule_repeatSpinnerDayOWeekFormat,
+                    sb.toString()));
+            calendar.setTime(schedule.getStart());
+        }
+
+        int dayOWeekOMonth = calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH);
         spinnerAdapter.add(spinnerRelative.getResources().getString(R.string.editSchedule_repeatSpinnerItemFormat,
-                dayOMonth,
-                firstSecondEtc[dayOMonth <= 3 ? dayOMonth - 1 : 3],
-                spinnerRelative.getResources().getQuantityString(R.plurals.editSchedule_basisDay, 1),
+                dayOWeekOMonth,
+                firstSecondEtc[dayOWeekOMonth <= 3 ? dayOWeekOMonth - 1 : 3],
+                calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()),
                 spinnerRelative.getResources().getQuantityString(R.plurals.editSchedule_basisMonth, 1)));
 
         int weekOMonth = calendar.get(Calendar.WEEK_OF_MONTH);
@@ -244,15 +315,18 @@ public class ScheduleEditCtrl implements FragmentCtrl {
                 spinnerRelative.getResources().getQuantityString(R.plurals.editSchedule_basisWeek, 1),
                 spinnerRelative.getResources().getQuantityString(R.plurals.editSchedule_basisMonth, 1)));
 
-        spinnerAdapter.add(calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault()));
         spinnerAdapter.notifyDataSetChanged();
 
-        if (schedule.getRepeatSchedule().hasDays()) {
-            spinnerRelative.setSelection(0);
-        } else if (schedule.getRepeatSchedule().hasWeeks()) {
-            spinnerRelative.setSelection(1);
-        } else if (schedule.getRepeatSchedule().hasMonths()) {
-            spinnerRelative.setSelection(2);
+        if (schedule.hasRepeatSchedule()) {
+            if (schedule.getRepeatType() == Schedule.RepeatType.RELATIVE) {
+                if (schedule.getRepeatBasis() == Schedule.RepeatBasis.WEEKLY) {
+                    spinnerRelative.setSelection(0);
+                } else if (schedule.getRepeatBasis() == Schedule.RepeatBasis.MONTHLY) {
+                    spinnerRelative.setSelection(1);
+                } else if (schedule.getRepeatBasis() == Schedule.RepeatBasis.YEARLY) {
+                    spinnerRelative.setSelection(2);
+                }
+            }
         }
 
         initRelative = false;
@@ -262,18 +336,22 @@ public class ScheduleEditCtrl implements FragmentCtrl {
                 return;
             }
             checkRepeatNotNull();
-            schedule.getRepeatSchedule().clearRelatives();
             if (position == 0) {
-                schedule.getRepeatSchedule().setDays(dayOMonth);
-                schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+                if (schedule.getRepeatRelativeSelections().length <= 1) {
+                    schedule.clearRepeatRelativeSelections();
+                    int dayOWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+                    if (dayOWeek <= 0) dayOWeek = 7;
+                    schedule.setRepeatToRelative(dayOWeek);
+                }
+                schedule.setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
             } else if (position == 1) {
-                schedule.getRepeatSchedule().setWeeks(weekOMonth);
-                schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
-            } else {
-                schedule.getRepeatSchedule().setMonths(calendar.get(Calendar.MONTH) + 1);
-                schedule.getRepeatSchedule().setRepeatBasis(Schedule.RepeatBasis.YEARLY);
+                schedule.clearRepeatRelativeSelections();
+                schedule.setRepeatToRelative(dayOWeekOMonth);
+                schedule.setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
+//            } else {
+//                schedule.setRepeatToRelative(calendar.get(DAY));
+//                schedule.setRepeatBasis(Schedule.RepeatBasis.MONTHLY);
             }
-            schedule.getRepeatSchedule().setType(Schedule.RepeatType.RELATIVE);
         });
     }
 
@@ -281,8 +359,28 @@ public class ScheduleEditCtrl implements FragmentCtrl {
         return schedule;
     }
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+    public void setSchedule(ScheduleView scheduleView) {
+        this.scheduleView = scheduleView;
+        this.schedule = scheduleView.getSchedule();
+    }
+
+    @Override
+    public void duplicateModel() {
+    }
+
+    @Override
+    public void deleteModel() {
+    }
+
+    @Override
+    public boolean postModel(DatabaseLink database) {
+        return scheduleView.postModel(database);
+    }
+
+    public interface ScheduleView {
+        Schedule getSchedule();
+
+        boolean postModel(DatabaseLink database);
     }
 
     private interface TextListener extends android.text.TextWatcher {
@@ -301,21 +399,113 @@ public class ScheduleEditCtrl implements FragmentCtrl {
         }
     }
 
+    private boolean repeatDaysContains(int i) {
+        for (int day : repeatDays) {
+            if (day == i) return true;
+        }
+        return false;
+    }
+
+    private TextView[] getDayTextViews() {
+        return new TextView[]{
+                parentView.findViewById(R.id.editSchedule_repeatMon),
+                parentView.findViewById(R.id.editSchedule_repeatTue),
+                parentView.findViewById(R.id.editSchedule_repeatWed),
+                parentView.findViewById(R.id.editSchedule_repeatThu),
+                parentView.findViewById(R.id.editSchedule_repeatFri),
+                parentView.findViewById(R.id.editSchedule_repeatSat),
+                parentView.findViewById(R.id.editSchedule_repeatSun)
+        };
+    }
+
+    private void paintDayTextViews(TextView[] textViews) {
+        int[] colouredIndexes = new int[schedule.getRepeatRelativeSelections().length];
+        for (int i = 0; i < schedule.getRepeatRelativeSelections().length; i++) {
+            int day = schedule.getRepeatRelativeSelections()[i];
+            colouredIndexes[i] = (day - 2) < 0 ? 6 : day - 2;
+        }
+        outer:
+        for (int i = 0; i < 7; i++) {
+            for (int colouredIndex : colouredIndexes) {
+                if (i == colouredIndex) {
+                    textViews[i].setBackgroundColor(parentView.getResources().getColor(R.color.colorPrimary));
+                    textViews[i].setTextColor(parentView.getResources().getColor(R.color.colorText));
+                    continue outer;
+                }
+            }
+            textViews[i].setBackgroundColor(0);
+            textViews[i].setTextColor(parentView.getResources().getColor(R.color.colorTextPrimary));
+        }
+    }
+
+    private TextView[] setDayTextViewListeners(TextView[] textViews) {
+        for (int i = 0; i < textViews.length; i++) {
+            int index = i;
+            textViews[i].setOnClickListener(v -> {
+                int calendarDay = (index + 2) > 7 ? 1 : index + 2;
+                int[] newDays;
+                if (repeatDaysContains(calendarDay)) {
+                    newDays = new int[repeatDays.length - 1];
+                    int skippedIndexes = 0;
+                    for (int j = 0; j < repeatDays.length; j++) {
+                        if (repeatDays[j] != calendarDay) {
+                            newDays[j - skippedIndexes] = repeatDays[j];
+                        } else {
+                            skippedIndexes++;
+                        }
+                    }
+                    textViews[index].setBackgroundColor(0);
+                    textViews[index].setTextColor(parentView.getResources().getColor(R.color.colorTextPrimary));
+                } else {
+                    newDays = new int[repeatDays.length + 1];
+                    System.arraycopy(repeatDays, 0, newDays, 0, repeatDays.length);
+                    newDays[newDays.length - 1] = calendarDay;
+                    textViews[index].setBackgroundColor(parentView.getResources().getColor(R.color.colorPrimary));
+                    textViews[index].setTextColor(parentView.getResources().getColor(R.color.colorText));
+                }
+                if (newDays.length > 0) {
+                    Arrays.sort(newDays);
+                    schedule.setRepeatToRelative(newDays);
+                } else {
+                    schedule.setRepeatToRelative(repeatDays);
+                }
+                schedule.setRepeatBasis(Schedule.RepeatBasis.WEEKLY);
+            });
+        }
+        return textViews;
+    }
+
     private Schedule.ChangeListener scheduleListener = new Schedule.ChangeListener() {
         @Override
         public void onStartChange(Date newStart) {
-            txtStart.setText(Util.formatDate(schedule.getStart()));
+            if (newStart.after(schedule.getEnd())) {
+                txtStart.setTextColor(Color.RED);
+            } else {
+                txtStart.setTextColor(txtStart.getResources().getColor(R.color.colorTextSecondary));
+            }
+            txtStart.setText(Util.formatDate(newStart));
         }
 
         @Override
         public void onEndChange(Date newEnd) {
-            txtEndDate.setText(Util.formatDate(schedule.getEnd()));
+            if (newEnd.before(schedule.getStart())) {
+                txtEndDate.setTextColor(Color.RED);
+            } else {
+                txtEndDate.setTextColor(txtEndDate.getResources().getColor(R.color.colorTextSecondary));
+            }
+            txtEndDate.setText(Util.formatDate(newEnd));
         }
 
         @Override
-        public void onEndTypeChange(Schedule.EndType newEndType) {
-            if (newEndType == Schedule.EndType.AFTER_TIMES)
-                onRepeatEnabled();
+        public void onEndTypeChange(Schedule.EndType endType, int endAfterTimes) {
+            if (endType == Schedule.EndType.ON_DATE) {
+                if (!radioEndOnDate.isChecked()) radioEndOnDate.setChecked(true);
+                radioEndAfterTimes.setChecked(false);
+            } else {
+                radioEndOnDate.setChecked(false);
+                if (!radioEndAfterTimes.isChecked()) radioEndAfterTimes.setChecked(true);
+                editEndDelay.setText(String.valueOf(endAfterTimes));
+            }
         }
 
         @Override
@@ -324,7 +514,7 @@ public class ScheduleEditCtrl implements FragmentCtrl {
                 onRepeatEnabled();
                 boolean old = updating;
                 updating = true;
-                if (schedule.getRepeatSchedule().getType() == Schedule.RepeatType.ITERATIVE) {
+                if (schedule.getRepeatType() == Schedule.RepeatType.ITERATIVE) {
                     radioIterative.setChecked(true);
                 } else {
                     radioRelative.setChecked(true);
@@ -338,6 +528,7 @@ public class ScheduleEditCtrl implements FragmentCtrl {
                     radioEndAfterTimes.setChecked(false);
                 }
             }
+            radioEndAfterTimes.setEnabled(enabled);
         }
 
         @Override
@@ -345,21 +536,36 @@ public class ScheduleEditCtrl implements FragmentCtrl {
             if (newType == Schedule.RepeatType.ITERATIVE) {
                 if (!radioIterative.isChecked())
                     radioIterative.setChecked(true);
-            } else if (!radioRelative.isChecked()) {
-                radioRelative.setChecked(true);
-            }
-            if (schedule.getEndType() == Schedule.EndType.AFTER_TIMES) {
-                schedule.getRepeatSchedule()
-                        .endAfterXTimes(Integer.parseInt(editEndDelay.getText().toString()));
+            } else {
+                if (!radioRelative.isChecked()) {
+                    radioRelative.setChecked(true);
+                }
+                updateRelativeSpinner();
             }
         }
 
         @Override
         public void onRepeatBasisChange(Schedule.RepeatBasis newBasis) {
+            boolean isWeekly =
+                    schedule.getRepeatType() == Schedule.RepeatType.RELATIVE
+                            && newBasis == Schedule.RepeatBasis.WEEKLY;
+            parentView.findViewById(R.id.editSchedule_txtRepeatDays).setVisibility(isWeekly ? View.VISIBLE : View.GONE);
+            parentView.findViewById(R.id.editSchedule_repeatDays).setVisibility(isWeekly ? View.VISIBLE : View.GONE);
+            if (isWeekly) {
+                paintDayTextViews(getDayTextViews());
+            }
         }
 
         @Override
-        public void onRepeatDelayChange(int newDelay) {
+        public void onRepeatIterativeDelayChange(int newDelay) {
+        }
+
+        @Override
+        public void onRepeatRelativeSelectionChange(int[] selections) {
+            if (schedule.getRepeatBasis() == Schedule.RepeatBasis.WEEKLY) {
+                repeatDays = selections;
+                paintDayTextViews(getDayTextViews());
+            }
         }
 
         private void onRepeatEnabled() {

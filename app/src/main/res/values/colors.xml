@@ -17,4 +17,11 @@
     <color name="colorPriorityHigh">#ffebee</color>
     <color name="colorPriorityMedium">#e3f2fd</color>
     <color name="colorBgTransluscent">#8c78909c</color>
+
+    <color name="colorSubjPink">#e91e63</color>
+    <color name="colorSubjPurple">#673ab7</color>
+    <color name="colorSubjBlue">#2196f3</color>
+    <color name="colorSubjOrange">#ff9800</color>
+    <color name="colorSubjBrown">#795548</color>
+    <color name="colorSubjGrey">#607d8b</color>
 </resources>

@@ -1,24 +1,39 @@
 package xyz.victorolaitan.scholar.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.UUID;
 
 import xyz.victorolaitan.easyjson.JSONElement;
+import xyz.victorolaitan.scholar.session.DatabaseLink;
+import xyz.victorolaitan.scholar.util.ModelCollection;
 
 public class Student extends Person {
     private Calendar calendar;
-    private List<Club> clubs;
+    private ModelCollection<Club> clubs;
 
     public Student() {
         calendar = new Calendar();
-        clubs = new ArrayList<>();
+        initClubs();
     }
 
     public Student(String firstName, String lastName, String emailAddress, Date dob) {
         super(firstName, lastName, emailAddress, dob);
         calendar = new Calendar();
-        clubs = new ArrayList<>();
+        initClubs();
+    }
+
+    private void initClubs() {
+        clubs = new ModelCollection<Club>() {
+            @Override
+            protected Club getMethod(DatabaseLink link, UUID id) {
+                return link.getClub(id, Student.this);
+            }
+
+            @Override
+            protected boolean postMethod(DatabaseLink link, Club model) {
+                return link.postClub(model);
+            }
+        };
     }
 
     public Calendar getCalendar() {
@@ -26,10 +41,12 @@ public class Student extends Person {
     }
 
     public Club newClub(String name, String description) {
-        return new Club(this, name, description);
+        Club c = new Club(this, name, description);
+        clubs.add(c);
+        return c;
     }
 
-    public List<Club> getClubs() {
+    public ModelCollection<Club> getClubs() {
         return clubs;
     }
 
@@ -54,7 +71,7 @@ public class Student extends Person {
         calendar.fromJSON(json.search("calendar"));
         clubs.clear();
         for (JSONElement e : json.search("clubs").getChildren()) {
-            clubs.add(new Club(this).fromJSON(e));
+            clubs.add(UUID.fromString(e.getValue()));
         }
         return this;
     }

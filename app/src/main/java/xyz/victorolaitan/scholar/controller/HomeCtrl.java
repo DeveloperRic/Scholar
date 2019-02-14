@@ -1,41 +1,35 @@
 package xyz.victorolaitan.scholar.controller;
 
+import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import xyz.victorolaitan.scholar.R;
 import xyz.victorolaitan.scholar.session.Session;
-import xyz.victorolaitan.scholar.util.ScheduleHolder;
 import xyz.victorolaitan.scholar.util.Nameable;
+import xyz.victorolaitan.scholar.util.Schedule;
+import xyz.victorolaitan.scholar.util.ScheduleHolder;
 import xyz.victorolaitan.scholar.util.Util;
 
 public class HomeCtrl implements FragmentCtrl {
-
     private Session parent;
+    private Context context;
 
-    private TextView txtDayOfWeek;
-    private TextView txtDate;
-    private TextView txtMonth;
-    private TextView txtSummary;
-    public List<HomeCard> observableCards;
-
+    public List<RecyclerCard> observableCards;
     private RecyclerAdapter cardsAdapter;
 
-    public HomeCtrl(Session parent) {
+    public HomeCtrl(Session parent, Context context) {
         this.parent = parent;
+        this.context = context;
     }
 
     public void init(View view) {
-        txtDayOfWeek = view.findViewById(R.id.home_txtDayOfWeek);
-        txtDate = view.findViewById(R.id.home_txtDate);
-        txtMonth = view.findViewById(R.id.home_txtMonth);
-        txtSummary = view.findViewById(R.id.home_txtSummary);
         observableCards = new ArrayList<>();
     }
 
@@ -49,53 +43,118 @@ public class HomeCtrl implements FragmentCtrl {
         java.util.Calendar calendar = java.util.Calendar.getInstance();
         calendar.setTime(new Date());
 
-        txtDayOfWeek.setText(calendar.getDisplayName(java.util.Calendar.DAY_OF_WEEK,
-                java.util.Calendar.SHORT, Locale.getDefault()));
-        txtDate.setText(String.valueOf(calendar.get(java.util.Calendar.DAY_OF_MONTH)));
-        txtMonth.setText(calendar.getDisplayName(java.util.Calendar.MONTH,
-                java.util.Calendar.SHORT, Locale.getDefault()));
-
         List<ScheduleHolder> modelList = new ArrayList<>();
-        HashMap<String, Integer> today = new HashMap<>();
-        for (Nameable n : parent.getCalendar().filterRecursively(new Date())) {
+        for (Nameable n : parent.getCalendar().filterRecursively(calendar.getTime())) {
             if (!(n instanceof ScheduleHolder))
                 continue;
 
             modelList.add((ScheduleHolder) n);
-
-            if (today.containsKey(n.getShortName())) {
-                today.put(n.getShortName(), today.get(n.getShortName()) + 1);
-            } else {
-                today.put(n.getShortName(), 1);
+        }
+        for (int i = 1; i <= 2; i++) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            //noinspection unchecked
+            for (Nameable n : parent.getCalendar().filterRecursively(calendar.getTime())) {
+                if (n instanceof ScheduleHolder) {
+                    modelList.add((ScheduleHolder) n);
+                }
             }
         }
-        Util.initHomeCardList(observableCards, modelList);
-        Util.sortList(observableCards);
+
+        List<HomeCard> homeCardList = new ArrayList<>();
+        Util.initHomeCardList(homeCardList, modelList);
+        Util.sortList(homeCardList);
+        observableCards.addAll(homeCardList);
+
+        Date now = new Date();
+        boolean doneToday = false, doneTomorrow = false;
+        for (int i = 0; i < observableCards.size(); i++) {
+            Schedule date = ((HomeCard) observableCards.get(i)).getObject();
+            if (date.occursOn(now)) {
+                if (!doneToday) {
+                    observableCards.add(i, new HomeGroupTitleCard(
+                            context.getResources().getString(R.string.home_occursToday)));
+                    doneToday = true;
+                }
+            } else if (date.occursInXDays(1)) {
+                if (!doneTomorrow) {
+                    observableCards.add(i, new HomeGroupTitleCard(
+                            context.getResources().getString(R.string.home_occursTomorrow)));
+                    doneTomorrow = true;
+                }
+            } else if (date.occursInXDays(2)) {
+                observableCards.add(i, new HomeGroupTitleCard(
+                        context.getResources().getString(R.string.home_occursInThreeDays)));
+                break;
+            }
+        }
+
+        observableCards.add(0, new HomeHeaderCard());
         cardsAdapter.notifyDataSetChanged();
-
-        StringBuilder sb = new StringBuilder();
-        int i = 0;
-        for (String s : today.keySet()) {
-            i++;
-            int count = today.get(s);
-            sb.append(count).append(" ");
-            if (count == 1) {
-                sb.append(s);
-            } else if (s.endsWith("s")) {
-                sb.append(s).append("es");
-            } else if (s.endsWith("y")) {
-                sb.append(s.substring(0, s.length() - 2)).append("ies");
-            } else {
-                sb.append(s).append("s");
-            }
-            if (i < today.size())
-                sb.append("\n");
-        }
-        txtSummary.setText(sb.toString());
     }
 
     public void setCardsAdapter(RecyclerAdapter cardsAdapter) {
+        cardsAdapter.setCardViewSelector(new RecyclerAdapter.CardViewSelector() {
+            @Override
+            public int getItemViewType(RecyclerCard card) {
+                if (card instanceof HomeHeaderCard) return 0;
+                else if (card instanceof HomeCard) return 1;
+                else return 2;
+            }
+
+            @Override
+            public int getViewLayoutId(int itemViewType) {
+                switch (itemViewType) {
+                    case 0:
+                        return R.layout.content_card_home_header;
+                    case 1:
+                        return R.layout.content_card_home_event;
+                    case 2:
+                        return R.layout.content_card_home_title;
+                    default:
+                        return -1;
+                }
+            }
+
+            @Override
+            public int getCardViewId(int itemViewType) {
+                return R.id.home_cardview;
+            }
+        });
         this.cardsAdapter = cardsAdapter;
+    }
+
+    private class HomeHeaderCard implements RecyclerCard {
+        private TextView txtGreeting;
+
+        @Override
+        public void attachLayoutViews(View layout, CardView cv) {
+            txtGreeting = layout.findViewById(R.id.home_txtGreeting);
+        }
+
+        @Override
+        public void updateInfo() {
+            txtGreeting.setText(txtGreeting.getResources()
+                    .getString(R.string.home_greeting, parent.getStudent().getShortName()));
+        }
+    }
+
+    private class HomeGroupTitleCard implements RecyclerCard {
+        private String title;
+        private TextView txtTitle;
+
+        private HomeGroupTitleCard(String title) {
+            this.title = title;
+        }
+
+        @Override
+        public void attachLayoutViews(View layout, CardView cv) {
+            txtTitle = layout.findViewById(R.id.home_card_txtGroup);
+        }
+
+        @Override
+        public void updateInfo() {
+            txtTitle.setText(title);
+        }
     }
 
 }

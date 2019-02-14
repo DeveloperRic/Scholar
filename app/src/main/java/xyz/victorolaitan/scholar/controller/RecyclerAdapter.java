@@ -13,8 +13,7 @@ import android.view.animation.AnimationUtils;
 import java.util.List;
 
 public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private int layoutId;
-    private int cardViewId;
+    private CardViewSelector cardViewSelector;
     private int animationId;
     private Context context;
     private List<T> cards;
@@ -23,26 +22,47 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
     public RecyclerAdapter(Context context, List<T> cards, int layoutId, int cardViewId, int animationId) {
         this.context = context;
         this.cards = cards;
-        this.layoutId = layoutId;
-        this.cardViewId = cardViewId;
+        this.cardViewSelector = new CardViewSelector() {
+            @Override
+            public int getItemViewType(RecyclerCard card) {
+                return 0;
+            }
+
+            @Override
+            public int getViewLayoutId(int itemViewType) {
+                return layoutId;
+            }
+
+            @Override
+            public int getCardViewId(int itemViewType) {
+                return cardViewId;
+            }
+        };
         this.animationId = animationId;
     }
 
+    public interface CardViewSelector {
+        int getItemViewType(RecyclerCard card);
+
+        int getViewLayoutId(int itemViewType);
+
+        int getCardViewId(int itemViewType);
+    }
 
     private class CardViewHolder extends RecyclerView.ViewHolder {
         RecyclerCard card;
         View itemView;
-        CardView cv;
 
         CardViewHolder(final View itemView) {
             super(itemView);
             this.itemView = itemView;
-            cv = itemView.findViewById(cardViewId);
         }
 
         void setCard(RecyclerCard card) {
             this.card = card;
-            this.card.attachLayoutViews(itemView, cv);
+            View cv = itemView.findViewById(
+                    cardViewSelector.getCardViewId(cardViewSelector.getItemViewType(card)));
+            this.card.attachLayoutViews(itemView, cv instanceof CardView ? (CardView) cv : null);
         }
 
         void updateInfo() {
@@ -57,21 +77,27 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
 
     @Override
     public int getItemViewType(int position) {
-        return 0;
+        return cardViewSelector.getItemViewType(cards.get(position));
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         return new CardViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(layoutId, viewGroup, false));
+                .inflate(cardViewSelector.getViewLayoutId(viewType), viewGroup, false));
     }
 
+    @SuppressWarnings("unchecked")
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         CardViewHolder cardViewHolder = (CardViewHolder) viewHolder;
         cardViewHolder.setCard(cards.get(position));
         cardViewHolder.updateInfo();
         setAnimation(viewHolder.itemView, position);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     private void setAnimation(View viewToAnimate, int position) {
@@ -84,8 +110,7 @@ public final class RecyclerAdapter<T extends RecyclerCard> extends RecyclerView.
         }
     }
 
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
+    public void setCardViewSelector(CardViewSelector cardViewSelector) {
+        this.cardViewSelector = cardViewSelector;
     }
 }

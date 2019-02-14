@@ -49,10 +49,14 @@ public class EvaluationEditCtrl implements FragmentCtrl {
 
         view.findViewById(R.id.editEval_addTest).setOnClickListener(v ->
                 activity.pushFragment(FragmentId.TEST_EDIT_FRAGMENT,
-                        evaluation.newTest("", "", new Schedule())));
+                        evaluation.newTest(
+                                "Test " + (evaluation.getTests().size() + 1),
+                                "Good luck!", new Schedule())));
         view.findViewById(R.id.editEval_addDeliv).setOnClickListener(v ->
                 activity.pushFragment(FragmentId.DELIVERABLE_EDIT_FRAGMENT,
-                        evaluation.newDeliverable("", "", new Schedule())));
+                        evaluation.newDeliverable(
+                                "Assignment " + (evaluation.getDeliverables().size() + 1),
+                                "a.k.a. a deliverable :)", new Schedule())));
     }
 
     @Override

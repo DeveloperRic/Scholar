@@ -5,15 +5,18 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import xyz.victorolaitan.easyjson.EasyJSON;
 import xyz.victorolaitan.easyjson.JSONElement;
+import xyz.victorolaitan.scholar.util.Indexable;
 import xyz.victorolaitan.scholar.util.Location;
 import xyz.victorolaitan.scholar.util.Observable;
 import xyz.victorolaitan.scholar.util.Schedule;
 
-public class Event implements Observable {
+public class Event implements Observable, Indexable {
 
+    private UUID id = UUID.randomUUID();
     private String title;
     private String description;
     private Schedule date;
@@ -91,6 +94,7 @@ public class Event implements Observable {
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
+        json.putPrimitive("id", id.toString());
         json.putPrimitive("title", title);
         json.putPrimitive("description", description);
         json.putStructure("date", date.toJSON());
@@ -106,6 +110,7 @@ public class Event implements Observable {
 
     @Override
     public Event fromJSON(JSONElement json) {
+        id = UUID.fromString(json.valueOf("id"));
         title = json.valueOf("title");
         description = json.valueOf("description");
         date = new Schedule().fromJSON(json.search("date"));
@@ -127,5 +132,11 @@ public class Event implements Observable {
     @Override
     public java.lang.Comparable getCompareObject() {
         return date;
+    }
+
+    @NonNull
+    @Override
+    public UUID getId() {
+        return id;
     }
 }

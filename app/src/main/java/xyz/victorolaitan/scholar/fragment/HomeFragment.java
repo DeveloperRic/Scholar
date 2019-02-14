@@ -21,7 +21,7 @@ public class HomeFragment extends Fragment<HomeCtrl> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (controller == null) {
-            controller = new HomeCtrl(Session.getSession());
+            controller = new HomeCtrl(Session.getSession(), getContext());
         }
     }
 
@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment<HomeCtrl> {
         homeRecycler.setItemAnimator(new DefaultItemAnimator());
 
         RecyclerAdapter adapter = new RecyclerAdapter(getContext(), controller.observableCards,
-                R.layout.content_card_home, R.id.home_cardview, R.anim.trans_fade_in);
+                R.layout.content_card_home_event, R.id.home_cardview, R.anim.trans_fade_in);
         homeRecycler.setAdapter(adapter);
         controller.setCardsAdapter(adapter);
 

@@ -4,9 +4,11 @@ import android.support.v7.widget.CardView;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +17,7 @@ import xyz.victorolaitan.scholar.fragment.FragmentActivity;
 import xyz.victorolaitan.scholar.model.Teacher;
 import xyz.victorolaitan.scholar.model.subject.Course;
 import xyz.victorolaitan.scholar.model.subject.Subject;
+import xyz.victorolaitan.scholar.util.SubjectHue;
 import xyz.victorolaitan.scholar.session.DatabaseLink;
 import xyz.victorolaitan.scholar.session.Session;
 import xyz.victorolaitan.scholar.util.TextChangeListener;
@@ -28,6 +31,7 @@ public class SubjectEditCtrl implements ModelCtrl {
 
     public List<CourseCard> observableCards;
 
+    private View parentView;
     private TextView txtName;
     private EditText txtEditName;
     private EditText txtEditCode;
@@ -40,6 +44,7 @@ public class SubjectEditCtrl implements ModelCtrl {
     }
 
     public void init(View view) {
+        this.parentView = view;
         txtName = view.findViewById(R.id.editSubject_txtName);
 
         txtEditName = view.findViewById(R.id.editSubject_editName);
@@ -54,8 +59,11 @@ public class SubjectEditCtrl implements ModelCtrl {
 
         TextView btnAddCourse = view.findViewById(R.id.editSubject_addCourse);
         btnAddCourse.setOnClickListener(v ->
-                activity.pushFragment(
-                        COURSE_EDIT_FRAGMENT, subject.newCourse("", "", new Teacher())));
+                activity.pushFragment(COURSE_EDIT_FRAGMENT, subject.newCourse(
+                        "Some Course", "COURSE",
+                        new Teacher("Teacher", "Name", "teacher@school.edu", new Date()))));
+
+        setHueViewListeners(getHueViews());
     }
 
     @Override
@@ -78,6 +86,7 @@ public class SubjectEditCtrl implements ModelCtrl {
         txtName.setText(subject.getName());
         txtEditName.setText(subject.getName());
         txtEditCode.setText(subject.getCode());
+        updateHueViews(getHueViews());
     }
 
     public void refreshCards() {
@@ -102,6 +111,38 @@ public class SubjectEditCtrl implements ModelCtrl {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
+    }
+
+    private Object[][] getHueViews() {
+        return new Object[][]{
+                {parentView.findViewById(R.id.editSubject_huePink), SubjectHue.PINK},
+                {parentView.findViewById(R.id.editSubject_huePurple), SubjectHue.PURPLE},
+                {parentView.findViewById(R.id.editSubject_hueBlue), SubjectHue.BLUE},
+                {parentView.findViewById(R.id.editSubject_hueTeal), SubjectHue.TEAL},
+                {parentView.findViewById(R.id.editSubject_hueOrange), SubjectHue.ORANGE},
+                {parentView.findViewById(R.id.editSubject_hueBrown), SubjectHue.BROWN},
+                {parentView.findViewById(R.id.editSubject_hueGrey), SubjectHue.GREY}
+        };
+    }
+
+    private void setHueViewListeners(Object[][] views) {
+        for (Object[] view : views) {
+            ((ImageView) view[0]).setOnClickListener(v -> {
+                subject.setHue((SubjectHue) view[1]);
+                updateHueViews(views);
+            });
+        }
+    }
+
+    private void updateHueViews(Object[][] views) {
+        for (Object[] data : views) {
+            ImageView view = (ImageView) data[0];
+            if (data[1] == subject.getHue()) {
+                view.setImageDrawable(view.getResources().getDrawable(R.drawable.ic_check_white_24dp));
+            } else {
+                view.setImageDrawable(null);
+            }
+        }
     }
 
     public final class CourseCard implements RecyclerCard {

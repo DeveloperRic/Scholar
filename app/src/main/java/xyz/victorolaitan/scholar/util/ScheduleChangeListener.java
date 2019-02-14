@@ -20,7 +20,7 @@ public interface ScheduleChangeListener extends Schedule.ChangeListener {
     }
 
     @Override
-    default void onEndTypeChange(Schedule.EndType newEndType) {
+    default void onEndTypeChange(Schedule.EndType endType, int endAfterTimes) {
         getCtrl().updateInfo();
     }
 
@@ -30,17 +30,22 @@ public interface ScheduleChangeListener extends Schedule.ChangeListener {
     }
 
     @Override
+    default void onRepeatTypeChange(Schedule.RepeatType newType) {
+        getCtrl().updateInfo();
+    }
+
+    @Override
     default void onRepeatBasisChange(Schedule.RepeatBasis newBasis) {
         getCtrl().updateInfo();
     }
 
     @Override
-    default void onRepeatDelayChange(int newDelay) {
+    default void onRepeatIterativeDelayChange(int newDelay) {
         getCtrl().updateInfo();
     }
 
     @Override
-    default void onRepeatTypeChange(Schedule.RepeatType newType) {
+    default void onRepeatRelativeSelectionChange(int[] selections) {
         getCtrl().updateInfo();
     }
 }

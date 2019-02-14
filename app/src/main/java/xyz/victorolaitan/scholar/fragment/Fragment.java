@@ -30,7 +30,7 @@ public abstract class Fragment<T extends FragmentCtrl> extends android.support.v
         savedObjects.put(fragmentId + ":" + key, obj);
     }
 
-    protected static void saveDummy(FragmentId fragmentId, String key, String obj) {
+    protected static void saveDummy(FragmentId fragmentId, String key, Object obj) {
         savedObjects.put(fragmentId + ":" + key, new DummyModel(obj));
     }
 
@@ -38,16 +38,28 @@ public abstract class Fragment<T extends FragmentCtrl> extends android.support.v
         return savedObjects.get(fragmentId + ":" + key);
     }
 
-    private static class DummyModel implements ScholarModel {
-        private String obj;
+    @SuppressWarnings("unchecked")
+    protected static <T> T getDummy(FragmentId fragmentId, String key) {
+        DummyModel dummyModel = (DummyModel) savedObjects.get(fragmentId + ":" + key);
+        return (T) (dummyModel != null ? dummyModel.getObj() : null);
+    }
 
-        private DummyModel(String obj) {
+    private static class DummyModel implements ScholarModel {
+        @NonNull
+        private Object obj;
+
+        private DummyModel(@NonNull Object obj) {
             this.obj = obj;
+        }
+
+        @NonNull
+        Object getObj() {
+            return obj;
         }
 
         @Override
         public String consoleFormat(String prefix) {
-            return obj;
+            return obj.toString();
         }
 
         @Override
@@ -89,13 +101,11 @@ public abstract class Fragment<T extends FragmentCtrl> extends android.support.v
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (controller == null) {
-            if (Session.getSession() == null) {
-                if (!Session.newSession(getContext())) {
-                    startActivity(new Intent(getContext(), LoginActivity.class));
-                }
-            }
-        }
+//        if (Session.getSession() == null) {
+//            if (!Session.newSession(getContext())) {
+//                startActivity(new Intent(getContext(), LoginActivity.class));
+//            }
+//        }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -162,10 +172,12 @@ public abstract class Fragment<T extends FragmentCtrl> extends android.support.v
     public void destroy() {
         if (!allowDestruction) {
             pendingDestruction = true;
-        } else if (controller != null) {
+        } else {
             clearSavedObjects(getFragmentId());
-            controller.onDestroy();
-            controller = null;
+            if (controller != null) {
+                controller.onDestroy();
+                controller = null;
+            }
         }
     }
 

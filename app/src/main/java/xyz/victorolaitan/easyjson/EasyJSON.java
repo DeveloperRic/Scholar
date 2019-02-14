@@ -216,6 +216,10 @@ public class EasyJSON {
         return rootNode.valueOf(location);
     }
 
+    public <T> T valueOf(T defaultValue, String... location) {
+        return rootNode.valueOf(defaultValue, location);
+    }
+
     public void combine(EasyJSON easyJSONStructure) {
         rootNode.combine(easyJSONStructure.getRootNode());
     }

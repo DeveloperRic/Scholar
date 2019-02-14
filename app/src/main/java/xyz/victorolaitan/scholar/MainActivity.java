@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -52,7 +53,31 @@ public class MainActivity extends FragmentActivity {
         BottomNavigationView navigation = findViewById(R.id.main_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        if (!getIntent().getBooleanExtra("loading:connected", true)) {
+            showNotConnected();
+        }
+
         pushFragment(FragmentId.HOME_FRAGMENT);
+    }
+
+    private void showNotConnected() {
+        Snackbar.make(
+                findViewById(R.id.activity_main),
+                R.string.snackbar_failedConnect,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.snackbar_retry, v -> {
+                    if (LoadingActivity.connect(this, true)) {
+                        Snackbar.make(
+                                findViewById(R.id.activity_main),
+                                R.string.snackbar_connected, Snackbar.LENGTH_LONG).show();
+                    } else {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException ignored) {
+                        }
+                        showNotConnected();
+                    }
+                }).show();
     }
 
     @Override
@@ -148,7 +173,7 @@ public class MainActivity extends FragmentActivity {
         Fragment fragment;
         if (fragmentId == FragmentId.HOME_FRAGMENT) {
             fragment = new HomeFragment();
-            fragment.setController(new HomeCtrl(getSession()));
+            fragment.setController(new HomeCtrl(getSession(), this));
         } else if (fragmentId == FragmentId.CALENDAR_FRAGMENT) {
             fragment = new CalendarFragment();
             fragment.setController(new CalendarCtrl(getSession()));

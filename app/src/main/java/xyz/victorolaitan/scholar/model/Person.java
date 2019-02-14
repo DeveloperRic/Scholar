@@ -1,5 +1,7 @@
 package xyz.victorolaitan.scholar.model;
 
+import android.support.annotation.NonNull;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,6 +31,7 @@ public class Person implements Observable, Indexable {
         this.dob = dob;
     }
 
+    @NonNull
     @Override
     public UUID getId() {
         return personId;

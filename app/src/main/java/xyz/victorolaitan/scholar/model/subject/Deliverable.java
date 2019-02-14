@@ -15,6 +15,8 @@ public class Deliverable implements EvalComponent {
     private String title;
     private String description;
     private Schedule deadline;
+    private float percentComplete = 0;
+    private float overallContribution = 0;
 
     Deliverable(Evaluation evaluation) {
         this.evaluation = evaluation;
@@ -27,6 +29,7 @@ public class Deliverable implements EvalComponent {
         this.deadline = deadline;
     }
 
+    @Override
     public Evaluation getEvaluation() {
         return evaluation;
     }
@@ -67,6 +70,14 @@ public class Deliverable implements EvalComponent {
         return deadline;
     }
 
+    public float getPercentComplete() {
+        return percentComplete;
+    }
+
+    public void setPercentComplete(float percentComplete) {
+        this.percentComplete = percentComplete;
+    }
+
     @Override
     public String consoleFormat(String prefix) {
         return prefix + title + " due " + deadline.consoleFormat("") + "\n";
@@ -79,6 +90,7 @@ public class Deliverable implements EvalComponent {
         json.putPrimitive("title", title);
         json.putPrimitive("description", description);
         json.putStructure("deadline", deadline.toJSON());
+        json.putPrimitive("percentComplete", percentComplete);
         return json.getRootNode();
     }
 
@@ -88,6 +100,8 @@ public class Deliverable implements EvalComponent {
         title = json.valueOf("title");
         description = json.valueOf("description");
         deadline = new Schedule().fromJSON(json.search("deadline"));
+        percentComplete = json.valueOf(0, "percentComplete");
+        overallContribution = json.valueOf(0, "overallContribution");
         return this;
     }
 
@@ -99,5 +113,15 @@ public class Deliverable implements EvalComponent {
     @Override
     public java.lang.Comparable getCompareObject() {
         return deadline;
+    }
+
+    @Override
+    public float getOverallContribution() {
+        return overallContribution;
+    }
+
+    @Override
+    public void setOverallContribution(float percent) {
+        overallContribution = percent;
     }
 }

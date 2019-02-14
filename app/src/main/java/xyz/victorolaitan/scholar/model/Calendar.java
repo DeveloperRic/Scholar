@@ -8,7 +8,9 @@ import java.util.UUID;
 import xyz.victorolaitan.easyjson.EasyJSON;
 import xyz.victorolaitan.easyjson.JSONElement;
 import xyz.victorolaitan.scholar.model.subject.Subject;
+import xyz.victorolaitan.scholar.session.DatabaseLink;
 import xyz.victorolaitan.scholar.util.Filterable;
+import xyz.victorolaitan.scholar.util.ModelCollection;
 import xyz.victorolaitan.scholar.util.Nameable;
 import xyz.victorolaitan.scholar.util.Schedule;
 import xyz.victorolaitan.scholar.util.ScholarModel;
@@ -17,8 +19,28 @@ import xyz.victorolaitan.scholar.util.Searchable;
 public class Calendar implements Filterable, Searchable<ScholarModel> {
 
     private List<Subject> subjects = new ArrayList<>();
-    private List<Event> events = new ArrayList<>();
-    private List<Todo> todos = new ArrayList<>();
+    private ModelCollection<Event> events = new ModelCollection<Event>() {
+        @Override
+        protected Event getMethod(DatabaseLink link, UUID id) {
+            return link.getEvent(id);
+        }
+
+        @Override
+        protected boolean postMethod(DatabaseLink link, Event model) {
+            return link.postEvent(model);
+        }
+    };
+    private ModelCollection<Todo> todos = new ModelCollection<Todo>() {
+        @Override
+        protected Todo getMethod(DatabaseLink link, UUID id) {
+            return link.getTodo(id);
+        }
+
+        @Override
+        protected boolean postMethod(DatabaseLink link, Todo model) {
+            return link.postTodo(model);
+        }
+    };
 
     public List<Subject> getSubjects() {
         return subjects;
@@ -34,7 +56,7 @@ public class Calendar implements Filterable, Searchable<ScholarModel> {
         subjects.remove(subject);
     }
 
-    public List<Event> getEvents() {
+    public ModelCollection<Event> getEvents() {
         return events;
     }
 
@@ -48,7 +70,7 @@ public class Calendar implements Filterable, Searchable<ScholarModel> {
         events.remove(event);
     }
 
-    public List<Todo> getTodos() {
+    public ModelCollection<Todo> getTodos() {
         return todos;
     }
 
@@ -126,11 +148,11 @@ public class Calendar implements Filterable, Searchable<ScholarModel> {
         }
         json.putArray("events");
         for (Event event : events) {
-            json.search("events").putElement(event.toJSON());
+            json.search("events").putPrimitive(event.getId().toString());
         }
         json.putArray("todos");
         for (Todo todo : todos) {
-            json.search("todos").putElement(todo.toJSON());
+            json.search("todos").putPrimitive(todo.getId().toString());
         }
         return json.getRootNode();
     }
@@ -143,11 +165,11 @@ public class Calendar implements Filterable, Searchable<ScholarModel> {
         }
         events.clear();
         for (JSONElement e : json.search("events").getChildren()) {
-            events.add(new Event().fromJSON(e));
+            events.add(UUID.fromString(e.getValue()));
         }
         todos.clear();
         for (JSONElement e : json.search("todos").getChildren()) {
-            todos.add(new Todo().fromJSON(e));
+            todos.add(UUID.fromString(e.getValue()));
         }
         return this;
     }

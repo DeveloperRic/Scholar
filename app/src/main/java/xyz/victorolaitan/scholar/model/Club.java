@@ -1,5 +1,7 @@
 package xyz.victorolaitan.scholar.model;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +35,7 @@ public class Club implements Indexable, Nameable {
         memberIds = new ArrayList<>();
     }
 
+    @NonNull
     @Override
     public UUID getId() {
         return id;
@@ -92,7 +95,7 @@ public class Club implements Indexable, Nameable {
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
-        json.putPrimitive("id", id);
+        json.putPrimitive("id", id.toString());
         json.putPrimitive("name", name);
         json.putPrimitive("description", description);
         json.putStructure("calendar", calendar.toJSON());

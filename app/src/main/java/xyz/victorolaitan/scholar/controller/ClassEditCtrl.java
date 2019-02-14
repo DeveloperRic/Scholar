@@ -14,6 +14,7 @@ import xyz.victorolaitan.scholar.model.Teacher;
 import xyz.victorolaitan.scholar.model.subject.Class;
 import xyz.victorolaitan.scholar.session.DatabaseLink;
 import xyz.victorolaitan.scholar.session.Session;
+import xyz.victorolaitan.scholar.util.Schedule;
 import xyz.victorolaitan.scholar.util.ScheduleChangeListener;
 import xyz.victorolaitan.scholar.util.TextChangeListener;
 import xyz.victorolaitan.scholar.util.Util;
@@ -68,7 +69,19 @@ public class ClassEditCtrl implements ModelCtrl {
         view.findViewById(R.id.editSchedule_changeDate).setOnClickListener(dateEditClickListener);
         txtDate.setOnClickListener(dateEditClickListener);
         view.findViewById(R.id.editSchedule_makeRecurring).setOnClickListener(v ->
-                activity.pushFragment(FragmentId.SCHEDULE_EDIT_FRAGMENT, aClass.getSchedule()));
+                activity.pushFragment(
+                        FragmentId.SCHEDULE_EDIT_FRAGMENT,
+                        new ScheduleEditCtrl.ScheduleView() {
+                            @Override
+                            public Schedule getSchedule() {
+                                return aClass.getSchedule();
+                            }
+
+                            @Override
+                            public boolean postModel(DatabaseLink database) {
+                                return ClassEditCtrl.this.postModel(database);
+                            }
+                        }));
 
         aClass.getSchedule().addChangeListener((ScheduleChangeListener) () -> this);
     }

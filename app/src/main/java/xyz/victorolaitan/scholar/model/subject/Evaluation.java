@@ -1,5 +1,7 @@
 package xyz.victorolaitan.scholar.model.subject;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,12 +10,16 @@ import java.util.UUID;
 import xyz.victorolaitan.easyjson.EasyJSON;
 import xyz.victorolaitan.easyjson.JSONElement;
 import xyz.victorolaitan.scholar.util.Filterable;
+import xyz.victorolaitan.scholar.util.HueHolder;
+import xyz.victorolaitan.scholar.util.Indexable;
 import xyz.victorolaitan.scholar.util.Nameable;
 import xyz.victorolaitan.scholar.util.Schedule;
 import xyz.victorolaitan.scholar.util.Searchable;
+import xyz.victorolaitan.scholar.util.SubjectHue;
 
-public class Evaluation implements Filterable, Searchable<EvalComponent> {
+public class Evaluation implements Filterable, Searchable<EvalComponent>, Indexable, HueHolder {
     private Course course;
+    private UUID id = UUID.randomUUID();
 
     private List<Deliverable> deliverables;
     private List<Test> tests;
@@ -93,6 +99,7 @@ public class Evaluation implements Filterable, Searchable<EvalComponent> {
     @Override
     public JSONElement toJSON() {
         EasyJSON json = EasyJSON.create();
+        json.putPrimitive("id", id.toString());
         json.putArray("deliverables");
         for (Deliverable deliverable : deliverables) {
             json.search("deliverables").putElement(deliverable.toJSON());
@@ -106,6 +113,7 @@ public class Evaluation implements Filterable, Searchable<EvalComponent> {
 
     @Override
     public Evaluation fromJSON(JSONElement json) {
+        id = UUID.fromString(json.valueOf("id"));
         deliverables.clear();
         for (JSONElement e : json.search("deliverables").getChildren()) {
             deliverables.add(new Deliverable(this).fromJSON(e));
@@ -130,5 +138,16 @@ public class Evaluation implements Filterable, Searchable<EvalComponent> {
             }
         }
         return null;
+    }
+
+    @NonNull
+    @Override
+    public UUID getId() {
+        return id;
+    }
+
+    @Override
+    public SubjectHue getHue() {
+        return course.getHue();
     }
 }

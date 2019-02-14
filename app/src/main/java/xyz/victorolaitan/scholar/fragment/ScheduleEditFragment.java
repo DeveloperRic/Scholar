@@ -9,20 +9,19 @@ import android.view.ViewGroup;
 import xyz.victorolaitan.scholar.ActivityId;
 import xyz.victorolaitan.scholar.R;
 import xyz.victorolaitan.scholar.controller.ScheduleEditCtrl;
-import xyz.victorolaitan.scholar.util.Schedule;
 
 import static xyz.victorolaitan.scholar.fragment.FragmentId.SCHEDULE_EDIT_FRAGMENT;
 
 public class ScheduleEditFragment extends Fragment<ScheduleEditCtrl> {
     private boolean popOnViewCreated;
+    private ScheduleEditCtrl.ScheduleView scheduleView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (controller == null)
             controller = new ScheduleEditCtrl();
         if (controller.getSchedule() == null) {
-            controller.setSchedule((Schedule) getSavedObject(SCHEDULE_EDIT_FRAGMENT, "schedule"));
-            popOnViewCreated = controller.getSchedule() == null;
+            popOnViewCreated = !setSchedule(getDummy(SCHEDULE_EDIT_FRAGMENT, "scheduleView"));
         }
         return inflater.inflate(R.layout.fragment_edit_schedule, container, false);
     }
@@ -37,6 +36,13 @@ public class ScheduleEditFragment extends Fragment<ScheduleEditCtrl> {
             controller.init(view);
             controller.updateInfo();
         }
+    }
+
+    public boolean setSchedule(ScheduleEditCtrl.ScheduleView scheduleView) {
+        if (scheduleView == null) return false;
+        this.scheduleView = scheduleView;
+        controller.setSchedule(scheduleView);
+        return true;
     }
 
     @Override
@@ -58,7 +64,7 @@ public class ScheduleEditFragment extends Fragment<ScheduleEditCtrl> {
     @Override
     public void onPause() {
         super.onPause();
-        saveObject(SCHEDULE_EDIT_FRAGMENT, "test", controller.getSchedule());
+        saveDummy(SCHEDULE_EDIT_FRAGMENT, "scheduleView", scheduleView);
         allowDestruction();
     }
 }

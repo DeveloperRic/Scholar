@@ -9,18 +9,23 @@ import java.util.UUID;
 import xyz.victorolaitan.easyjson.EasyJSON;
 import xyz.victorolaitan.easyjson.JSONElement;
 import xyz.victorolaitan.scholar.model.Teacher;
+import xyz.victorolaitan.scholar.session.DatabaseLink;
 import xyz.victorolaitan.scholar.util.Filterable;
+import xyz.victorolaitan.scholar.util.HueHolder;
+import xyz.victorolaitan.scholar.util.ModelCollection;
 import xyz.victorolaitan.scholar.util.Nameable;
 import xyz.victorolaitan.scholar.util.ScholarModel;
 import xyz.victorolaitan.scholar.util.Searchable;
+import xyz.victorolaitan.scholar.util.SubjectHue;
 
-public class Subject implements Nameable, Filterable, Searchable<ScholarModel> {
+public class Subject implements Nameable, Filterable, Searchable<ScholarModel>, HueHolder {
 
     private UUID subjectId;
     private String name;
     private String code;
+    private SubjectHue hue;
 
-    private List<Course> courseList;
+    private ModelCollection<Course> courseList;
 
     public static Subject newSubject(String name, String code) {
         return new Subject(name, code);
@@ -30,7 +35,17 @@ public class Subject implements Nameable, Filterable, Searchable<ScholarModel> {
         this.subjectId = UUID.randomUUID();
         this.name = name;
         this.code = code;
-        this.courseList = new ArrayList<>();
+        this.courseList = new ModelCollection<Course>() {
+            @Override
+            protected Course getMethod(DatabaseLink link, UUID id) {
+                return link.getCourse(id, Subject.this);
+            }
+
+            @Override
+            protected boolean postMethod(DatabaseLink link, Course model) {
+                return link.postCourse(model);
+            }
+        };
         this.courseList.addAll(Arrays.asList(courses));
     }
 
@@ -72,7 +87,16 @@ public class Subject implements Nameable, Filterable, Searchable<ScholarModel> {
         this.code = code;
     }
 
-    public List<Course> getCourseList() {
+    public void setHue(SubjectHue hue) {
+        this.hue = hue;
+    }
+
+    @Override
+    public SubjectHue getHue() {
+        return hue;
+    }
+
+    public ModelCollection<Course> getCourseList() {
         return courseList;
     }
 
@@ -125,9 +149,10 @@ public class Subject implements Nameable, Filterable, Searchable<ScholarModel> {
         json.putPrimitive("subjectId", subjectId.toString());
         json.putPrimitive("name", name);
         json.putPrimitive("code", code);
+        json.putPrimitive("hue", hue.toString());
         json.putArray("courseList");
         for (Course course : courseList) {
-            json.search("courseList").putElement(course.toJSON());
+            json.search("courseList").putPrimitive(course.getId().toString());
         }
         return json.getRootNode();
     }
@@ -137,9 +162,10 @@ public class Subject implements Nameable, Filterable, Searchable<ScholarModel> {
         subjectId = UUID.fromString(json.valueOf("subjectId"));
         name = json.valueOf("name");
         code = json.valueOf("code");
+        hue = SubjectHue.valueOf(json.stringValueOf("TEAL", "hue"));
         courseList.clear();
         for (JSONElement e : json.search("courseList").getChildren()) {
-            courseList.add(new Course(this).fromJSON(e));
+            courseList.add(UUID.fromString(e.getValue()));
         }
         return this;
     }

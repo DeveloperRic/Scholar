@@ -1,5 +1,7 @@
 package xyz.victorolaitan.scholar.model.subject;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,14 +10,18 @@ import java.util.UUID;
 import xyz.victorolaitan.easyjson.EasyJSON;
 import xyz.victorolaitan.easyjson.JSONElement;
 import xyz.victorolaitan.scholar.model.Teacher;
+import xyz.victorolaitan.scholar.session.DatabaseLink;
 import xyz.victorolaitan.scholar.util.Filterable;
+import xyz.victorolaitan.scholar.util.HueHolder;
 import xyz.victorolaitan.scholar.util.Indexable;
+import xyz.victorolaitan.scholar.util.ModelLink;
 import xyz.victorolaitan.scholar.util.Nameable;
 import xyz.victorolaitan.scholar.util.Schedule;
 import xyz.victorolaitan.scholar.util.ScholarModel;
 import xyz.victorolaitan.scholar.util.Searchable;
+import xyz.victorolaitan.scholar.util.SubjectHue;
 
-public class Course implements Nameable, Filterable, Indexable, Searchable<ScholarModel> {
+public class Course implements Nameable, Filterable, Indexable, Searchable<ScholarModel>,HueHolder {
 
     UUID id;
 
@@ -23,13 +29,24 @@ public class Course implements Nameable, Filterable, Indexable, Searchable<Schol
     private String name;
     private String code;
     private Teacher teacher;
-    private Evaluation evaluation;
+    private ModelLink<Evaluation> evaluation;
 
     private List<Class> classes;
 
     public Course(Subject subject) {
         this.subject = subject;
         classes = new ArrayList<>();
+        evaluation = new ModelLink<Evaluation>(new Evaluation(this)) {
+            @Override
+            protected Evaluation getMethod(DatabaseLink link, UUID id) {
+                return link.getEvaluation(id, Course.this);
+            }
+
+            @Override
+            protected boolean postMethod(DatabaseLink link, Evaluation model) {
+                return link.postEvaluation(model);
+            }
+        };
     }
 
     Course(Subject subject, String name, String code, Teacher teacher) {
@@ -38,10 +55,21 @@ public class Course implements Nameable, Filterable, Indexable, Searchable<Schol
         this.name = name;
         this.code = code;
         this.teacher = teacher;
-        evaluation = new Evaluation(this);
+        evaluation = new ModelLink<Evaluation>(new Evaluation(this)) {
+            @Override
+            protected Evaluation getMethod(DatabaseLink link, UUID id) {
+                return link.getEvaluation(id, Course.this);
+            }
+
+            @Override
+            protected boolean postMethod(DatabaseLink link, Evaluation model) {
+                return link.postEvaluation(model);
+            }
+        };
         classes = new ArrayList<>();
     }
 
+    @NonNull
     @Override
     public UUID getId() {
         return id;
@@ -86,7 +114,7 @@ public class Course implements Nameable, Filterable, Indexable, Searchable<Schol
     }
 
     public Evaluation getEvaluation() {
-        return evaluation;
+        return evaluation.get();
     }
 
     public List<Class> getClasses() {
@@ -115,7 +143,7 @@ public class Course implements Nameable, Filterable, Indexable, Searchable<Schol
     @Override
     public List<Nameable> filterRecursively(Date date) {
         List<Nameable> list = new ArrayList<>(filter(date));
-        list.addAll(evaluation.filter(date));
+        list.addAll(evaluation.get().filter(date));
         return list;
     }
 
@@ -127,7 +155,7 @@ public class Course implements Nameable, Filterable, Indexable, Searchable<Schol
         for (Class aClass : classes)
             sb.append(prefix).append(aClass.consoleFormat(prefix + "  "));
 
-        sb.append(evaluation.consoleFormat(prefix + "  "));
+        sb.append(evaluation.get().consoleFormat(prefix + "  "));
 
         return sb.append("\n").toString();
     }
@@ -139,7 +167,7 @@ public class Course implements Nameable, Filterable, Indexable, Searchable<Schol
         json.putPrimitive("name", name);
         json.putPrimitive("code", code);
         json.putStructure("teacher", teacher.toJSON());
-        json.putStructure("evaluation", evaluation.toJSON());
+        json.putPrimitive("evaluation", evaluation.id().toString());
         json.putArray("classes");
         for (Class aClass : classes) {
             json.search("classes").putElement(aClass.toJSON());
@@ -153,7 +181,6 @@ public class Course implements Nameable, Filterable, Indexable, Searchable<Schol
         name = json.valueOf("name");
         code = json.valueOf("code");
         teacher = new Teacher().fromJSON(json.search("teacher"));
-        evaluation = new Evaluation(this).fromJSON(json.search("evaluation"));
         classes.clear();
         for (JSONElement e : json.search("classes").getChildren()) {
             classes.add(new Class(this).fromJSON(e));
@@ -168,6 +195,11 @@ public class Course implements Nameable, Filterable, Indexable, Searchable<Schol
                 return aClass;
             }
         }
-        return evaluation.search(query);
+        return evaluation.get().search(query);
+    }
+
+    @Override
+    public SubjectHue getHue() {
+        return subject.getHue();
     }
 }

@@ -76,7 +76,9 @@ public class SubjectListCtrl implements FragmentCtrl {
     }
 
     public void onNewSubjectClick() {
-        activity.pushFragment(SUBJECT_EDIT_FRAGMENT, parent.getCalendar().newSubject("", ""));
+        activity.pushFragment(SUBJECT_EDIT_FRAGMENT, parent.getCalendar().newSubject(
+                "Subject " + (parent.getCalendar().getSubjects().size() + 1),
+                "SUBJ"));
     }
 
     public final class SubjectCard implements RecyclerCard {
@@ -131,7 +133,7 @@ public class SubjectListCtrl implements FragmentCtrl {
 
         private void onExpandClick(ImageView view) {
             if (!expanded) {
-                expandList(index, ((Subject) object).getCourseList(), COURSE);
+                expandList(index, ((Subject) object).getCourseList().toList(), COURSE);
                 view.setImageDrawable(view.getResources().getDrawable(R.drawable.ic_expand_less_black_24dp));
             } else {
                 collapseList(index, ((Subject) object).getCourseList().size());
