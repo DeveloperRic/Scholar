@@ -1,6 +1,12 @@
 import { Calendar } from "./calendar";
-import { Model } from "./_model";
+import { Model, ModelIndices } from "./_model";
 
 export interface Term extends Model {
   calendar: Model['_id'] | Calendar
+}
+
+export class TermIndices extends ModelIndices {
+  public static getIndices(): string[] {
+    return super.getIndices().concat('calendar')
+  }
 }

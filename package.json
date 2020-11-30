@@ -21,6 +21,9 @@
     "@angular/platform-server": "~10.0.4",
     "@angular/router": "~10.0.4",
     "@angular/service-worker": "~10.0.4",
+    "@types/bson": "^4.0.3",
+    "dexie": "^3.0.3",
+    "realm-web": "^1.0.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

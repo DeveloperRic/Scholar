@@ -1,7 +1,12 @@
 import { Person } from "./person";
-import { Model } from "./_model";
+import { Model, ModelIndices } from "./_model";
 
-export interface Account {
-  _id: Model['_id']
+export interface Account extends Omit<Model, 'account'> {
   profile?: Model['_id'] | Person
+}
+
+export class AccountIndices extends ModelIndices {
+  public static getIndices(): string[] {
+    return super.getIndices().concat('profile')
+  }
 }

@@ -1,6 +1,12 @@
-import { Evaluation } from "./evaluation";
-import { Model } from "./_model";
+import { Course } from './course';
+import { Model, ModelIndices } from "./_model";
 
 export interface EvaluationComponent extends Model {
-  evaluation: Model['_id'] | Evaluation
+  course: Model['_id'] | Course
+}
+
+export class EvaluationComponentIndices extends ModelIndices {
+  public static getIndices(): string[] {
+    return super.getIndices().concat('course')
+  }
 }
