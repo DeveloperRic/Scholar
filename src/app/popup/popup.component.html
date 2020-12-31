@@ -1,0 +1,8 @@
+<div id="loadingPopup" class="popup" *ngIf="popup.type == 'loading'">
+  <div class="spinner lds-dual-ring"></div>
+  <h3>{{popup.message}}</h3>
+</div>
+<div id="errorPopup" class="popup" *ngIf="popup.type == 'error'">
+  <div class="error-popup">{{popup.message}}</div>
+  <button class="dismiss" (click)="dismiss()">Dismiss</button>
+</div>

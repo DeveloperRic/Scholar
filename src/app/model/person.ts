@@ -5,11 +5,11 @@ export interface Person extends Model {
   lastName: string
   email: string
   /** milliseconds at 12:00 AM on DOB */
-  dateOfBirth: number
+  dateOfBirth?: number //TODO required if using Scholar Groups (> 13 y/o)
 }
 
 export class PersonIndices extends ModelIndices {
   public static getIndices(): string[] {
-    return super.getIndices().concat('firstName', 'lastName', '&email', 'dateOfBirth')
+    return super.getIndices().concat('firstName', 'lastName', '&email')
   }
 }

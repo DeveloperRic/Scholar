@@ -1,8 +1,7 @@
-import { ObjectId } from 'bson';
 import { Account } from "./account";
 
 export interface Model {
-  _id: ObjectId
+  _id: string
   account: Model['_id'] | Account
 }
 

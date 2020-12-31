@@ -1,6 +1,8 @@
 
+/**
+ * "light_colour . normal_colour . dark_colour"
+ */
 export enum Hue {
-  // "light_colour.colour.dark_colour"
   BLUE = "#bbdefb.#2196f3.#1976d2",
   BROWN = "#d7ccc8.#795548.#5d4037",
   GREY = "#cfd8dc.#607d8b.#455a64",

@@ -1,11 +1,11 @@
 import { EvaluationComponent, EvaluationComponentIndices } from "./evaluationComponent";
-import { ModelIndices } from './_model';
 
 export interface Deliverable extends EvaluationComponent {
   title: string
-  description: string
   deadline: number
+  /** Deliverable interface discriminator */
   percentComplete: number
+  description: string
 }
 
 export class DeliverableIndices extends EvaluationComponentIndices {
