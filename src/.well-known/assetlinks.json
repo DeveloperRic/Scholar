@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "victorolaitan",
+      "package_name": "xyz.victorolaitan.scholar",
+      "sha256_cert_fingerprints": [
+        "FD:6B:60:EA:86:27:09:31:7B:AD:46:0F:A3:66:84:45:AB:45:07:E2:4D:5C:54:E0:E0:56:C4:CB:D1:9F:5E:C8"
+      ]
+    }
+  }
+]
