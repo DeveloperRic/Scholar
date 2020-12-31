@@ -10,7 +10,8 @@ on:
     branches: [ master-pwa ]
 
 jobs:
-  checkout:
+
+  lint:
 
     runs-on: ubuntu-latest
 
@@ -19,12 +20,6 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v2
     - run: npm ci
-
-  lint:
-
-    runs-on: ubuntu-latest
-
-    steps:
     - run: npm run lint --if-present
 
   build:
@@ -32,6 +27,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2
     - run: npm run build --if-present
 
   test:
@@ -39,4 +37,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2
     - run: npm run test --if-present
