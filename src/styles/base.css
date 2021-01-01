@@ -54,7 +54,7 @@ html {
 /* tablets */
 @media only screen and (min-width: 760px) {
   html {
-    font-size: 1px;
+    font-size: 18px;
   }
 }
 
