@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { RealmRedirectComponent } from './realm-redirect.component';
 
@@ -6,7 +6,7 @@ describe('RealmRedirectComponent', () => {
   let component: RealmRedirectComponent;
   let fixture: ComponentFixture<RealmRedirectComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ RealmRedirectComponent ]
     })
