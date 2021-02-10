@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { SyncService } from '../database/sync.service';
+import { SyncService } from '../../database/sync.service';
 
 @Component({
   selector: 'app-navbar',

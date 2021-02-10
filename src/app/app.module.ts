@@ -5,17 +5,17 @@ import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
 
+import { environment } from '../environments/environment'
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { environment } from '../environments/environment';
-import { HomeComponent } from './home/home.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { ManageComponent } from './manage/manage.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RealmRedirectComponent } from './realm-redirect/realm-redirect.component';
-import { PopupComponent } from './popup/popup.component';
+import { HomeComponent } from './components/home/home.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
+import { ManageComponent } from './components/manage/manage.component';
+import { RealmRedirectComponent } from './components/realm-redirect/realm-redirect.component';
+import { PopupComponent } from './components/popup/popup.component';
 
 @NgModule({
   declarations: [

@@ -1,17 +1,17 @@
 import { Component, OnInit, Output } from '@angular/core';
-import { DatabaseService } from '../database/database.service';
-import { UtilService } from '../services/util.service'
-import { ErrorCodes } from "../services/ErrorCodes";
-import { Class, ClassOccurrence } from '../model/class';
-import { Reminder } from '../model/reminder';
-import { Test } from '../model/test';
-import { Deliverable } from '../model/deliverable';
+import { DatabaseService } from '../../database/database.service';
+import { UtilService } from '../../services/util.service'
+import { ErrorCodes } from "../../services/ErrorCodes";
+import { Class, ClassOccurrence } from '../../model/class';
+import { Reminder } from '../../model/reminder';
+import { Test } from '../../model/test';
+import { Deliverable } from '../../model/deliverable';
 import { ViewType } from '../manage/manage.component';
-import { Model } from '../model/_model';
+import { Model } from '../../model/_model';
 import { Router } from '@angular/router';
-import { DatabaseLink } from '../database/databaseLink';
-import { Course } from '../model/course';
-import { Term } from '../model/term';
+import { DatabaseLink } from '../../database/databaseLink';
+import { Course } from '../../model/course';
+import { Term } from '../../model/term';
 
 interface Card {
   type: CardType

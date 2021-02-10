@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RealmService } from '../database/realm.service';
+import { RealmService } from '../../database/realm.service';
 
 @Component({
   selector: 'app-realm-redirect',

@@ -2,24 +2,24 @@ import { Component, OnInit, Output } from '@angular/core';
 import { Location as NgLocation } from '@angular/common'
 import { FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UtilService } from '../services/util.service';
-import { ErrorCodes } from "../services/ErrorCodes";
-import { DatabaseService } from '../database/database.service';
-import { PopupService } from '../services/popup.service';
+import { UtilService } from '../../services/util.service';
+import { ErrorCodes } from "../../services/ErrorCodes";
+import { DatabaseService } from '../../database/database.service';
+import { PopupService } from '../../services/popup.service';
 import { ObjectId } from 'bson';
-import { Calendar } from '../model/calendar';
-import { Class } from '../model/class';
-import { Course } from '../model/course';
-import { Deliverable } from '../model/deliverable';
-import { Hue } from '../model/hue';
-import { Location } from '../model/location';
-import { RelativeWeeklyScheduleRepeat, ScheduleRepeatBasis, ScheduleRepeatDay } from '../model/schedule';
-import { Subject } from '../model/subject';
-import { Teacher } from '../model/teacher';
-import { Term } from '../model/term';
-import { Test } from '../model/test';
-import { Model } from '../model/_model';
-import { DatabaseLink } from '../database/databaseLink';
+import { Calendar } from '../../model/calendar';
+import { Class } from '../../model/class';
+import { Course } from '../../model/course';
+import { Deliverable } from '../../model/deliverable';
+import { Hue } from '../../model/hue';
+import { Location } from '../../model/location';
+import { RelativeWeeklyScheduleRepeat, ScheduleRepeatBasis, ScheduleRepeatDay } from '../../model/schedule';
+import { Subject } from '../../model/subject';
+import { Teacher } from '../../model/teacher';
+import { Term } from '../../model/term';
+import { Test } from '../../model/test';
+import { Model } from '../../model/_model';
+import { DatabaseLink } from '../../database/databaseLink';
 
 interface View {
   name: ViewType | '',
