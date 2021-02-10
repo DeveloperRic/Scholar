@@ -51,11 +51,11 @@ export class PopupService {
       message: message
     })
     return func()
-      .then(result => {
+      .then<[T, null]>(result => {
         this.dismissPopup()
         return [result, null]
       })
-      .catch(err => {
+      .catch<[null, any]>(err => {
         if (!knownErr || !this.util.errorMatchesCode(knownErr, err)) {
           console.error(err)
         }
