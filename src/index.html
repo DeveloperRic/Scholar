@@ -8,6 +8,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="manifest" href="manifest.webmanifest">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    style-src 'self' https://fonts.googleapis.com 'unsafe-inline';
+    font-src 'self' https://fonts.gstatic.com;
+    connect-src 'self' https://scholar-app.us.auth0.com https://stitch.mongodb.com;
+    frame-src 'self' https://scholar-app.us.auth0.com">
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
   <link
     href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&family=Open+Sans&family=Material+Icons&display=swap"
     rel="stylesheet">

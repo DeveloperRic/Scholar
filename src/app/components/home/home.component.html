@@ -12,7 +12,7 @@
     <div class="status-box">
       <h2 class="loading">Pardon the interruption</h2>
       <p>To enable backups (and to verify that you are human), you must login to use Scholar</p>
-      <button class="btn-accent" (click)="login()">Login with Google</button>
+      <app-login-button></app-login-button>
     </div>
   </div>
   <div *ngSwitchCase="'failed'" class="content">

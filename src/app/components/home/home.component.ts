@@ -95,18 +95,6 @@ export class HomeComponent implements OnInit {
     this.loadMore();
   }
 
-  login() { // TODO copy over to manage
-    this.databaseService.login()
-      .then(() => {
-        console.log('Home: Loggged in, retrying init...')
-        return this.init()
-      })
-      .catch(err => {
-        console.error('Home: Error: Login failed', err)
-        this.databaseStatus = 'failed'
-      })
-  }
-
   onScroll() { }
 
   loadMore() {

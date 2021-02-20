@@ -21,6 +21,7 @@ import { Test } from '../../model/test';
 import { Model } from '../../model/_model';
 import { DatabaseLink } from '../../database/databaseLink';
 
+//TODO each view should be a separate component
 interface View {
   name: ViewType | '',
   parentId?: Model['_id'],
@@ -127,30 +128,8 @@ export class ManageComponent implements OnInit {
       })
   }
 
-  login() {
-    this.databaseService.login()
-      .then(() => {
-        console.log('Manage: Loggged in, retrying init...')
-        return this.init()
-      })
-      .catch(err => {
-        console.error('Manage: Error: Login failed', err)
-        this.databaseStatus = 'failed'
-      })
-  }
-
-  logout() {
-    this.popupService.performWithPopup(
-      'Logging out',
-      () => this.databaseService.logout())
-      .then(() => {
-        this.router.navigateByUrl('/', { replaceUrl: true })
-        window.location.reload()
-      })
-  }
-
   private initView() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.activatedRoute.queryParams.subscribe(async params => {
         try {
           const view: View = {

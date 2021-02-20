@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Account } from '../model/account';
-import { ErrorCodes } from '../services/ErrorCodes';
 import { DatabaseLink } from './databaseLink';
 import { SyncService } from './sync.service';
 
@@ -22,10 +21,6 @@ export class DatabaseService {
     this.database = this.syncService
     console.log('DatabaseService: Done initialising')
     return this.database
-  }
-
-  async login() {
-    await this.syncService.onlineDb.login()
   }
 
   async logout() {

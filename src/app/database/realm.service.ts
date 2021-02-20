@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
+
 import * as Realm from "realm-web";
+
 import { DatabaseLink } from "./databaseLink";
 import { environment } from "../../environments/environment"
 import { Subject } from '../model/subject';
@@ -14,21 +16,18 @@ import { Test } from '../model/test';
 import { ObjectId } from 'bson';
 import { Model } from '../model/_model';
 import { PopupService } from '../services/popup.service';
-// import { AuthService } from '@auth0/auth0-angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RealmService implements DatabaseLink {
   private app: Realm.App
-  private accountId: ObjectId
 
   constructor(
     private popupService: PopupService
   ) {
     console.log('RealmService: Creating a new App instance')
     this.app = new Realm.App({ id: environment.REALM_APP_ID });
-    if (this.isLoggedIn()) this.accountId = new ObjectId(this.getLoggedInUser().id)
   }
 
   isLoggedIn() {
@@ -42,16 +41,19 @@ export class RealmService implements DatabaseLink {
     return this.app.currentUser
   }
 
-  async login() {
+  async login(jwt: string) {
+    if (!jwt) throw new Error('RealmService: Invalid use of login(jwt); jwt is required')
     console.log('RealmService: Logging in...')
-    // const credentials = Realm.Credentials.google(environment.REALM_REDIRECT_URL)
-    const credentials = Realm.Credentials.anonymous()
-    const user = await this.app.logIn(credentials)
-    this.accountId = new ObjectId(user.id)
+    const credentials = Realm.Credentials.jwt(jwt)
+    //TODO tell user that u are confirming credentials
+    await this.app.logIn(credentials)
+    console.log('RealmService: Successfully logged in')
   }
 
   async logout() {
+    console.log('RealmService: Logging out of Realm...')
     await this.app.currentUser.logOut()
+    console.log('RealmService: Successfully logged out of Realm')
   }
 
   private convertIdStringsToObjectIds<T extends Model>(model: T): T {
