@@ -6,12 +6,12 @@ import { Class, ClassOccurrence } from '../../model/class';
 import { Reminder } from '../../model/reminder';
 import { Test } from '../../model/test';
 import { Deliverable } from '../../model/deliverable';
-import { ViewType } from '../manage/manage.component';
 import { Model } from '../../model/_model';
 import { Router } from '@angular/router';
 import { DatabaseLink } from '../../database/databaseLink';
 import { Course } from '../../model/course';
 import { Term } from '../../model/term';
+import { ViewName } from '../../manage/manage.component';
 
 interface Card {
   type: CardType
@@ -200,7 +200,7 @@ export class HomeComponent implements OnInit {
     return date
   }
 
-  navigateToView(name: ViewType, modelId?: Model['_id'], parentId?: Model['_id']) {
+  navigateToView(name: ViewName, modelId?: Model['_id'], parentId?: Model['_id']) {
     let url = `/manage?view=${name}`
     if (modelId) url += `&_id=${modelId}`
     if (parentId) url += `&parent=${parentId}`
