@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 import { Injectable } from '@angular/core';
 import { ClassOccurrence } from '../model/class';
 import { Deliverable } from '../model/deliverable';
@@ -104,5 +106,16 @@ export class UtilService {
 
   errorMatchesCode(code: ErrorCodes, error: any): boolean {
     return this.getErrorCode(error) === code
+  }
+
+  public promiseToObservable<T>(func: () => Promise<T>): Observable<T> {
+    return new Observable(sub => {
+      func()
+        .then(res => {
+          sub.next(res)
+          sub.complete()
+        })
+        .catch(err => sub.error(err))
+    })
   }
 }

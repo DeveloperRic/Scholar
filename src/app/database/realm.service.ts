@@ -1,21 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core'
+import * as Realm from "realm-web"
 
-import * as Realm from "realm-web";
-
-import { DatabaseLink } from "./databaseLink";
+import { DatabaseLink } from "./databaseLink"
 import { environment } from "../../environments/environment"
-import { Subject } from '../model/subject';
-import { Account } from '../model/account';
-import { Calendar } from '../model/calendar';
-import { Class } from '../model/class';
-import { Course } from '../model/course';
-import { Deliverable } from '../model/deliverable';
-import { Teacher } from '../model/teacher';
-import { Term } from '../model/term';
-import { Test } from '../model/test';
-import { ObjectId } from 'bson';
-import { Model } from '../model/_model';
-import { PopupService } from '../services/popup.service';
+import { Subject } from '../model/subject'
+import { Account } from '../model/account'
+import { Calendar } from '../model/calendar'
+import { Class } from '../model/class'
+import { Course } from '../model/course'
+import { Deliverable } from '../model/deliverable'
+import { Teacher } from '../model/teacher'
+import { Term } from '../model/term'
+import { Test } from '../model/test'
+import { ObjectId } from 'bson'
+import { Model } from '../model/_model'
+import { PopupService } from '../services/popup.service'
+import { UtilService } from '../services/util.service'
 
 @Injectable({
   providedIn: 'root'
@@ -24,10 +24,11 @@ export class RealmService implements DatabaseLink {
   private app: Realm.App
 
   constructor(
-    private popupService: PopupService
+    private popupService: PopupService,
+    private util: UtilService
   ) {
     console.log('RealmService: Creating a new App instance')
-    this.app = new Realm.App({ id: environment.REALM_APP_ID });
+    this.app = new Realm.App({ id: environment.REALM_APP_ID })
   }
 
   isLoggedIn() {
@@ -71,8 +72,7 @@ export class RealmService implements DatabaseLink {
   }
 
   fetch = {
-    calendar: (_id: Calendar['_id']) => this.popupService.performWithPopup(
-      'Fetching calendar',
+    calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchCalendar(new ObjectId(_id))
     ),
     subject: (_id: Subject['_id']) => this.popupService.performWithPopup(
@@ -107,8 +107,8 @@ export class RealmService implements DatabaseLink {
   put = {
     // TODO ensure all account documents have unique emails
     // TODO rename Atlas DB to prod before launching (separate server for dev & prod)
-    calendar: (calendar: Calendar) => this.app.currentUser.functions.putCalendar(
-      this.convertIdStringsToObjectIds(calendar)
+    calendar: (calendar: Calendar) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putCalendar(this.convertIdStringsToObjectIds(calendar))
     ),
     subject: (subject: Subject) => this.app.currentUser.functions.putSubject(
       this.convertIdStringsToObjectIds(subject)
@@ -133,33 +133,27 @@ export class RealmService implements DatabaseLink {
     )
   }
   all = {
-    calendars: (accountId: Account['_id']) => this.popupService.performWithPopup(
-      'Fetching calendars',
+    calendars: (accountId: Account['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchCalendars(new ObjectId(accountId))),
-    subjects: (accountId: Account['_id']) => this.popupService.performWithPopup(
-      'Fetching subjects',
+    subjects: (accountId: Account['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchSubjects(new ObjectId(accountId))),
-    terms: (calendarId: Calendar['_id']) => this.popupService.performWithPopup(
-      'Fetching terms',
+    terms: (calendarId: Calendar['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchTerms(new ObjectId(calendarId))),
-    teachers: (calendarId: Calendar['_id']) => this.popupService.performWithPopup(
-      'Fetching teachers',
+    teachers: (calendarId: Calendar['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchTeachers(new ObjectId(calendarId))),
-    courses: (termId: Term['_id']) => this.popupService.performWithPopup(
-      'Fetching courses',
+    courses: (termId: Term['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchCourses(new ObjectId(termId))),
-    classes: (courseId: Course['_id']) => this.popupService.performWithPopup(
-      'Fetching classes',
+    classes: (courseId: Course['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchClasses(new ObjectId(courseId))),
-    deliverables: (courseId: Course['_id']) => this.popupService.performWithPopup(
-      'Fetching deliverables',
+    deliverables: (courseId: Course['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchDeliverables(new ObjectId(courseId))),
-    tests: (courseId: Course['_id']) => this.popupService.performWithPopup(
-      'Fetching tests',
+    tests: (courseId: Course['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchTests(new ObjectId(courseId)))
   }
   remove = {
-    calendar: async (_id: Calendar['_id']) => this.app.currentUser.functions.removeCalendar(new ObjectId(_id)),
+    calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeCalendar(new ObjectId(_id))
+    ),
     subject: async (_id: Subject['_id']) => this.app.currentUser.functions.removeSubject(new ObjectId(_id)),
     term: async (_id: Term['_id']) => this.app.currentUser.functions.removeTerm(new ObjectId(_id)),
     teacher: async (_id: Teacher['_id']) => this.app.currentUser.functions.removeTeacher(new ObjectId(_id)),

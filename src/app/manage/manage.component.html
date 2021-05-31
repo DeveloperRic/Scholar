@@ -1,0 +1,37 @@
+<span class="status-selector" [ngSwitch]="databaseStatus">
+  <div *ngSwitchCase="'initialising'" class="content">
+    <div class="status-box">
+      <h2 class="loading">Loading</h2>
+      <p>Scholar is initialising its application database.</p>
+    </div>
+  </div>
+  <div *ngSwitchCase="'failed'" class="content">
+    <div class="status-box">
+      <h2 class="error">Error</h2>
+      <p>
+        Scholar was denied access to the application database. Please follow the instructions &lt;here&gt; to fix
+        this.
+      </p>
+    </div>
+  </div>
+  <div *ngSwitchCase="'connected'" class="content">
+    <div class="header">
+      <h1>Manage</h1>
+      <app-logout-button class="logout"></app-logout-button>
+    </div>
+    <span *ngIf="(viewInfo$ | async) as viewInfo" [ngSwitch]="viewInfo.name">
+      <h3 class="color-accent go-back" *ngIf="canNavigateBack" (click)="popView()">
+        <br />
+        <!-- TODO not done -->
+        &nbsp;&lt;&emsp;Go Back
+      </h3>
+      <br />
+      <div class="loading" *ngIf="loading">
+        <mat-spinner></mat-spinner>
+      </div>
+      <manage-index *ngSwitchCase="'index'" (pushViewEvent)="updateViewQueryParams($event)"></manage-index>
+      <manage-calendars *ngSwitchCase="'calendars'" (pushViewEvent)="updateViewQueryParams($event)"></manage-calendars>
+      <manage-calendar *ngSwitchCase="'calendar'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()"></manage-calendar>
+    </span>
+  </div>
+</span>

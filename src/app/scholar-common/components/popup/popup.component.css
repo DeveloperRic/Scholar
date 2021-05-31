@@ -1,0 +1,245 @@
+/* =============================================== */
+
+:host {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: var(
+    --navbar-height
+  ); /* add 2px because the navbar is 2px off bottom */
+}
+
+#popup {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* =============== feedback selectors ======================= */
+
+#errorPopup .error-popup {
+  display: inline-flex;
+  max-width: 400px;
+  margin-bottom: 20px;
+  padding: 15px;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+}
+
+#errorPopup .error-popup i {
+  margin-left: 5px;
+}
+
+#errorPopup .error-popup div + i {
+  margin-left: 15px;
+}
+
+/* =============================================== */
+
+#loadingPopup div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#loadingPopup h3 {
+  max-width: 380px;
+  padding: 7px 8px;
+  margin-bottom: -7px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* =============================================== */
+
+#choosePopup {
+  align-items: center;
+  justify-content: center;
+}
+
+#choosePopup .body {
+  width: 50%;
+}
+
+#choosePopup .choose-popup {
+  display: flex;
+  width: 100%;
+  margin-bottom: 20px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+}
+
+#choosePopup .choose-popup i {
+  margin-left: 5px;
+}
+
+#choosePopup .choose-popup .header {
+  width: 100%;
+  padding: 15px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  font-size: 1.125rem;
+}
+
+#choosePopup .choose-popup .list {
+  width: 100%;
+}
+
+#choosePopup .choose-popup .list .item {
+  padding: 10px 15px;
+}
+
+#choosePopup .choose-popup .list .item:hover {
+  background-color: #7de7e8;
+}
+
+#choosePopup .choose-popup .list .selected {
+  background-color: var(--color-accent);
+}
+
+#choosePopup .choose-popup .footer {
+  width: 100%;
+  padding: 10px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  font-weight: 600;
+}
+
+#choosePopup .dismiss {
+  width: 50%;
+}
+
+/* =============================================== */
+
+#infoPopup {
+  align-items: center;
+  justify-content: center;
+}
+
+#infoPopup .info-popup {
+  display: flex;
+  width: 100%;
+  height: fit-content;
+  margin-bottom: 20px;
+  padding: 15px 0 15px 15px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border: 0.5px solid #0d47a1;
+  background-color: var(--bg-primary);
+  box-shadow: var(--drop-shadow-strong);
+  overflow-y: auto;
+}
+
+#infoPopup .info-popup i {
+  margin-right: 5px;
+}
+
+#infoPopup .info-popup .header {
+  display: flex;
+  width: 100%;
+  padding: 7px 10px 0 10px;
+  flex-direction: column-reverse;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  font-size: 1.125rem;
+}
+
+#infoPopup .info-popup .header h1,
+#infoPopup .info-popup .header h2,
+#infoPopup .info-popup .header h3,
+#infoPopup .info-popup .header h4 {
+  color: #3f51b5;
+}
+
+#infoPopup .info-popup .header + .text {
+  padding-top: 10px;
+}
+
+#infoPopup .info-popup .text {
+  width: 100%;
+  margin-top: 20px;
+  padding: 30px 20px 20px 15px;
+  font-size: 1rem;
+}
+
+#infoPopup .dismiss {
+  width: 50%;
+}
+
+@media only screen and (min-width: 760px) {
+  #infoPopup .info-popup .header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+/* =============================================== */
+
+@keyframes _popup-appear {
+  0% {
+    transform: scale(0%, 0%);
+  }
+  100% {
+    transform: scale(100%, 100%);
+  }
+}
+
+.popup {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: rgba(33, 33, 33, 0.7);
+}
+
+.popup h1,
+.popup h2,
+.popup h3,
+.popup h4 {
+  color: var(--color-inverse);
+}
+
+.popup .header .title {
+  flex-grow: 1;
+}
+
+.popup .header button {
+  height: fit-content;
+}
+
+.popup .body {
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popup .dismiss {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 10px;
+  text-align: center;
+  background-color: var(--bg-primary);
+}
+
+@media only screen and (min-width: 760px) {
+  .popup {
+    padding: 20px;
+  }
+}
+
+.error-popup {
+  border: 0.5px solid #b71c1c;
+  background-color: #f44336;
+  color: var(--bg-secondary-light);
+}

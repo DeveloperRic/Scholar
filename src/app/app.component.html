@@ -1,5 +1,5 @@
 <div class="page">
   <router-outlet></router-outlet>
 </div>
-<app-popup *ngIf="popupService.popup.visible"></app-popup>
+<app-popup *ngIf="popupService.popup$ | async as popup"></app-popup>
 <app-navbar></app-navbar>

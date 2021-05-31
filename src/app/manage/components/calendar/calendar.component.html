@@ -1,0 +1,58 @@
+<div *ngVar="(calendar$ | async) as calendar">
+  <h2>{{!calendar ? 'Create a New Calendar' : 'Editing Calendar: ' + calendar.year}}</h2>
+  <h3 class="remove-object color-red" *ngIf="calendar" (click)="removeCalendar(calendar)">
+    Remove this calendar
+  </h3>
+  <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="input">
+      Calendar year:
+      <input type="number" formControlName="year" [class]="{'invalid-input': !form.get('year').valid}">
+      <span class="color-red" *ngIf="!form.get('year').valid">
+        <br />
+        The calendar year must be a number and cannot be earlier than last year.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <button class="btn-accent" type="submit" [disabled]="!form.valid">
+      Save
+    </button>
+    <span class="color-red" *ngIf="!form.valid">
+      Some values you entered are invalid. Please check above.
+    </span>
+  </form>
+  <span *ngIf="!!calendar">
+    <br />
+    <br />
+    <span class="color-muted">
+      Scroll past this section for more options.
+    </span>
+    <h2>List of Terms in this Calendar</h2>
+    <div class="list-item bg-secondary" *ngFor="let term of (terms$ | async)"
+      (click)="navigateToView('term', term._id, calendar._id)">
+      {{term.name}}
+    </div>
+    <span class="color-red" *ngIf="!hasTerms">
+      You haven't added any school terms.
+      <br />
+    </span>
+    <br />
+    <button class="btn-primary" (click)="navigateToView('term', null, calendar._id)">
+      Click here to add a new term.
+    </button>
+    <br />
+    <br />
+    <h2>List of Teachers</h2>
+    <div class="list-item bg-secondary" *ngFor="let teacher of (teachers$ | async)"
+      (click)="navigateToView('teacher', teacher._id, calendar._id)">
+      {{teacher.firstName}} {{teacher.lastName}}
+    </div>
+    <span class="color-red" *ngIf="!hasTeachers">
+      You haven't added any teachers.
+      <br />
+    </span>
+    <button class="btn-primary" (click)="navigateToView('teacher', null, calendar._id)">
+      Click here to add a new teacher.
+    </button>
+  </span>
+</div>

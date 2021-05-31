@@ -5,7 +5,6 @@ import { IndexedDBService } from "./indexedDB.service";
 import { ErrorCodes } from "../services/ErrorCodes";
 import { timer } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { assert } from 'console';
 
 @Injectable({
   providedIn: 'root'
