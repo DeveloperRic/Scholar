@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core'
 
 @Component({
   selector: 'app-calendar',
@@ -8,11 +8,9 @@ import { Component, OnInit, Output } from '@angular/core';
 export class CalendarComponent implements OnInit {
   @Output() loading = true
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
-  onScroll() { }
-
+  onScroll() {}
 }

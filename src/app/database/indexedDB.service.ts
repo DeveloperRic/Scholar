@@ -20,22 +20,24 @@ import { DatabaseLink } from './databaseLink'
 
 const DATABASE_NAME = 'ScholarDatabase'
 const DATABASE_VERSION = 1
-const VERSIONS: Parameters<Dexie['Version']['prototype']['stores']>[0][] = [{
-  accounts: AccountIndices.getIndices().join(','),
-  calendars: CalendarIndices.getIndices().join(','),
-  classes: ClassIndices.getIndices().join(','),
-  courses: CourseIndices.getIndices().join(','),
-  deliverables: DeliverableIndices.getIndices().join(','),
-  events: EventIndices.getIndices().join(','),
-  groups: GroupIndices.getIndices().join(','),
-  linksPersonGroup: LinkPersonGroupIndices.getIndices().join(','),
-  people: PersonIndices.getIndices().join(','),
-  reminders: ReminderIndices.getIndices().join(','),
-  subjects: SubjectIndices.getIndices().join(','),
-  teachers: TeacherIndices.getIndices().join(','),
-  terms: TermIndices.getIndices().join(','),
-  tests: TestIndices.getIndices().join(',')
-}]
+const VERSIONS: Parameters<Dexie['Version']['prototype']['stores']>[0][] = [
+  {
+    accounts: AccountIndices.getIndices().join(','),
+    calendars: CalendarIndices.getIndices().join(','),
+    classes: ClassIndices.getIndices().join(','),
+    courses: CourseIndices.getIndices().join(','),
+    deliverables: DeliverableIndices.getIndices().join(','),
+    events: EventIndices.getIndices().join(','),
+    groups: GroupIndices.getIndices().join(','),
+    linksPersonGroup: LinkPersonGroupIndices.getIndices().join(','),
+    people: PersonIndices.getIndices().join(','),
+    reminders: ReminderIndices.getIndices().join(','),
+    subjects: SubjectIndices.getIndices().join(','),
+    teachers: TeacherIndices.getIndices().join(','),
+    terms: TermIndices.getIndices().join(','),
+    tests: TestIndices.getIndices().join(',')
+  }
+]
 
 @Injectable({
   providedIn: 'root'
@@ -56,9 +58,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   terms: Dexie.Table<Term, Term['_id']>
   tests: Dexie.Table<Test, Test['_id']>
 
-  public constructor(
-    private util: UtilService
-  ) {
+  public constructor(private util: UtilService) {
     super(DATABASE_NAME)
   }
 
@@ -92,8 +92,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     test: async (_id: Test['_id']) => await this.tests.get(_id)
   }
   put = {
-    calendar: (calendar: Calendar) => this.util.promiseToObservable(
-      () => this.calendars.put(calendar)),
+    calendar: (calendar: Calendar) => this.util.promiseToObservable(() => this.calendars.put(calendar)),
     subject: async (subject: Subject) => await this.subjects.put(subject),
     term: async (term: Term) => await this.terms.put(term),
     teacher: async (teacher: Teacher) => await this.teachers.put(teacher),
@@ -104,28 +103,18 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     test: async (test: Test) => await this.tests.put(test)
   }
   all = {
-    calendars: (accountId: Account['_id']) => this.util.promiseToObservable(
-      () => this.calendars.where({ account: accountId }).toArray()),
-    subjects: (accountId: Account['_id']) => this.util.promiseToObservable(
-      () => this.subjects.where({ account: accountId }).toArray()),
-    terms: (calendarId: Calendar['_id']) => this.util.promiseToObservable(
-      () => this.terms.where({ calendar: calendarId }).toArray()),
-    teachers: (calendarId: Calendar['_id']) => this.util.promiseToObservable(
-      () => this.teachers.where({ calendar: calendarId }).toArray()),
-    courses: (termId: Term['_id']) => this.util.promiseToObservable(
-      () => this.courses.where({ term: termId }).toArray()),
-    classes: (courseId: Course['_id']) => this.util.promiseToObservable(
-      () => this.classes.where({ course: courseId }).toArray()),
-    deliverables: (courseId: Course['_id']) => this.util.promiseToObservable(
-      () => this.deliverables.where({ course: courseId }).toArray()),
-    tests: (courseId: Course['_id']) => this.util.promiseToObservable(
-      () => this.tests.where({ course: courseId }).toArray()),
+    calendars: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.calendars.where({ account: accountId }).toArray()),
+    subjects: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.subjects.where({ account: accountId }).toArray()),
+    terms: (calendarId: Calendar['_id']) => this.util.promiseToObservable(() => this.terms.where({ calendar: calendarId }).toArray()),
+    teachers: (calendarId: Calendar['_id']) => this.util.promiseToObservable(() => this.teachers.where({ calendar: calendarId }).toArray()),
+    courses: (termId: Term['_id']) => this.util.promiseToObservable(() => this.courses.where({ term: termId }).toArray()),
+    classes: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.classes.where({ course: courseId }).toArray()),
+    deliverables: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.deliverables.where({ course: courseId }).toArray()),
+    tests: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.tests.where({ course: courseId }).toArray())
   }
   remove = {
     //TODO these should remove recursively (i.e. calendar>term>course....)
-    calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(
-      () => this.calendars.delete(_id)
-    ),
+    calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.calendars.delete(_id)),
     subject: async (_id: Subject['_id']) => await this.subjects.delete(_id),
     term: async (_id: Term['_id']) => await this.terms.delete(_id),
     teacher: async (_id: Teacher['_id']) => await this.teachers.delete(_id),
@@ -138,43 +127,60 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     classesWithinRange: async (min: Date, max: Date) => {
       //TODO use transactions
       const courses = await this.coursesWithinRange(min, max)
-      return (await this.classes
-        .where('course').anyOf(courses.map(courses => courses._id)).toArray())
-        .map(klass => {
-          klass.course = courses.find(course => course._id === klass.course)
-          return klass
-        })
+      return (
+        await this.classes
+          .where('course')
+          .anyOf(courses.map(courses => courses._id))
+          .toArray()
+      ).map(klass => {
+        klass.course = courses.find(course => course._id === klass.course)
+        return klass
+      })
     },
     deliverablesDueWithinRange: async (min: Date, max: Date) => {
       const courses = await this.coursesWithinRange(min, max)
-      return (await this.deliverables
-        .where('course').anyOf(courses.map(courses => courses._id))
-        .and(deliverable => deliverable.deadline >= min.getTime() && deliverable.deadline <= max.getTime())
-        .toArray())
-        .map(deliverable => {
-          deliverable.course = courses.find(course => course._id === deliverable.course)
-          return deliverable
-        })
+      return (
+        await this.deliverables
+          .where('course')
+          .anyOf(courses.map(courses => courses._id))
+          .and(deliverable => deliverable.deadline >= min.getTime() && deliverable.deadline <= max.getTime())
+          .toArray()
+      ).map(deliverable => {
+        deliverable.course = courses.find(course => course._id === deliverable.course)
+        return deliverable
+      })
     },
     testsWithinRange: async (min: Date, max: Date) => {
       const courses = await this.coursesWithinRange(min, max)
-      return (await this.tests
-        .where('course').anyOf(courses.map(courses => courses._id))
-        .and(test => test.date >= min.getTime() && test.date <= max.getTime())
-        .toArray())
-        .map(test => {
-          test.course = courses.find(course => course._id === test.course)
-          return test
-        })
+      return (
+        await this.tests
+          .where('course')
+          .anyOf(courses.map(courses => courses._id))
+          .and(test => test.date >= min.getTime() && test.date <= max.getTime())
+          .toArray()
+      ).map(test => {
+        test.course = courses.find(course => course._id === test.course)
+        return test
+      })
     }
   }
 
   private async coursesWithinRange(min: Date, max: Date) {
     const terms = await this.terms
-      .where('start').aboveOrEqual(min.getTime()).and(term => term.start <= max.getTime()) // MIN <= start <= end <= MAX || MIN <= start <= MAX <= end
-      .or('end').aboveOrEqual(min.getTime()).and(term => term.end <= max.getTime()) // start <= MIN <= end <= MAX
-      .or('start').belowOrEqual(min.getTime()).and(term => term.end >= max.getTime()).toArray() // start <= MIN <= MAX <= end
-    const courses = await this.courses.where('term').anyOf(terms.map(term => term._id)).toArray()
+      .where('start')
+      .aboveOrEqual(min.getTime())
+      .and(term => term.start <= max.getTime()) // MIN <= start <= end <= MAX || MIN <= start <= MAX <= end
+      .or('end')
+      .aboveOrEqual(min.getTime())
+      .and(term => term.end <= max.getTime()) // start <= MIN <= end <= MAX
+      .or('start')
+      .belowOrEqual(min.getTime())
+      .and(term => term.end >= max.getTime())
+      .toArray() // start <= MIN <= MAX <= end
+    const courses = await this.courses
+      .where('term')
+      .anyOf(terms.map(term => term._id))
+      .toArray()
     for (const course of courses) {
       course.subject = await this.fetch.subject(`${course.subject}`)
     }
@@ -187,9 +193,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   present.
   */
   async isStoragePersisted() {
-    return navigator.storage && navigator.storage.persisted ?
-      await navigator.storage.persisted() :
-      undefined
+    return navigator.storage && navigator.storage.persisted ? await navigator.storage.persisted() : undefined
   }
 
   /** Tries to convert to persisted storage.
@@ -197,9 +201,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     persisted the storage, false if not, and undefined if the API is not present.
   */
   async persist() {
-    return navigator.storage && navigator.storage.persist ?
-      await navigator.storage.persist() :
-      undefined
+    return navigator.storage && navigator.storage.persist ? await navigator.storage.persist() : undefined
   }
 
   /** Queries available disk quota.
@@ -208,9 +210,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     {quota: number, usage: number} or undefined.
   */
   async showEstimatedQuota() {
-    return navigator.storage && navigator.storage.estimate ?
-      await navigator.storage.estimate() :
-      undefined
+    return navigator.storage && navigator.storage.estimate ? await navigator.storage.estimate() : undefined
   }
 
   /** Tries to persist storage without ever prompting user.
@@ -223,29 +223,29 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   */
   async tryPersistWithoutPromtingUser() {
     if (!navigator.storage || !navigator.storage.persisted) {
-      return "never"
+      return 'never'
     }
     let persisted = await navigator.storage.persisted()
     if (persisted) {
-      return "persisted"
+      return 'persisted'
     }
     if (!navigator.permissions || !navigator.permissions.query) {
-      return "prompt" // It MAY be successful to prompt. Don't know.
+      return 'prompt' // It MAY be successful to prompt. Don't know.
     }
     const permission = await navigator.permissions.query({
-      name: "persistent-storage"
+      name: 'persistent-storage'
     })
-    if (permission.state === "granted") {
+    if (permission.state === 'granted') {
       persisted = await navigator.storage.persist()
       if (persisted) {
-        return "persisted"
+        return 'persisted'
       } else {
-        throw new Error("Failed to persist")
+        throw new Error('Failed to persist')
       }
     }
-    if (permission.state === "prompt") {
-      return "prompt"
+    if (permission.state === 'prompt') {
+      return 'prompt'
     }
-    return "never"
+    return 'never'
   }
 }

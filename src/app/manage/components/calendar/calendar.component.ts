@@ -27,24 +27,14 @@ export class CalendarComponent implements OnInit {
   hasTeachers: boolean
   form: FormGroup
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private databaseService: DatabaseService,
-    private popupService: PopupService
-  ) {
-  }
+  constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, private popupService: PopupService) {}
 
   ngOnInit() {
-    this.calendarId$ = this.activatedRoute.queryParamMap.pipe(
-      map(queryParams => queryParams.get('docId'))
-    )
+    this.calendarId$ = this.activatedRoute.queryParamMap.pipe(map(queryParams => queryParams.get('docId')))
     this.calendar$ = this.calendarId$.pipe(
       switchMap(calendarId => {
         if (!calendarId) return of(null)
-        return this.popupService.runWithPopup(
-          'Fetching calendar',
-          this.databaseService.database.fetch.calendar(calendarId)
-        )
+        return this.popupService.runWithPopup('Fetching calendar', this.databaseService.database.fetch.calendar(calendarId))
       }),
       map(calendar => {
         this.setForm(calendar)
@@ -82,40 +72,36 @@ export class CalendarComponent implements OnInit {
   }
 
   async submit() {
-    await this.popupService.runWithPopup(
-      'Saving calendar',
-      this.calendarId$.pipe(
-        take(1),
-        switchMap(calendarId => {
-          const calendar: Calendar = {
-            _id: calendarId || new ObjectId().toHexString(),
-            account: this.databaseService.accountId,
-            year: this.form.get('year').value
-          }
-          return this.databaseService.database.put.calendar(calendar).pipe(
-            map(() => calendar._id)
-          )
-        }),
-        map(docId => {
-          this.pushViewEvent.emit({
-            name: ViewName.CALENDAR,
-            docId,
-            replacesUrl: true
+    await this.popupService
+      .runWithPopup(
+        'Saving calendar',
+        this.calendarId$.pipe(
+          take(1),
+          switchMap(calendarId => {
+            const calendar: Calendar = {
+              _id: calendarId || new ObjectId().toHexString(),
+              account: this.databaseService.accountId,
+              year: this.form.get('year').value
+            }
+            return this.databaseService.database.put.calendar(calendar).pipe(map(() => calendar._id))
+          }),
+          map(docId => {
+            this.pushViewEvent.emit({
+              name: ViewName.CALENDAR,
+              docId,
+              replacesUrl: true
+            })
           })
-        })
-      ),
-      ErrorCodes.ERR_CALENDAR_EXISTS
-    ).toPromise()
+        ),
+        ErrorCodes.ERR_CALENDAR_EXISTS
+      )
+      .toPromise()
   }
 
   async removeCalendar(calendar: Calendar) {
     if (!confirm('Are you sure you want to remove this calendar?')) return
-    await this.popupService.runWithPopup(
-      'Removing calendar',
-      this.databaseService.database.remove.calendar(calendar._id).pipe(
-        map(() => this.popViewEvent.emit())
-      )
-    ).toPromise()
+    await this.popupService
+      .runWithPopup('Removing calendar', this.databaseService.database.remove.calendar(calendar._id).pipe(map(() => this.popViewEvent.emit())))
+      .toPromise()
   }
-
 }

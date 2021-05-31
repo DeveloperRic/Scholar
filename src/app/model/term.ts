@@ -1,5 +1,5 @@
-import { Calendar } from "./calendar";
-import { Model, ModelIndices } from "./_model";
+import { Calendar } from './calendar'
+import { Model, ModelIndices } from './_model'
 
 export interface Term extends Model {
   calendar: Model['_id'] | Calendar

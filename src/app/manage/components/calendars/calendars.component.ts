@@ -16,11 +16,7 @@ export class CalendarsComponent implements OnInit {
   calendars$: Observable<Calendar[]>
   noCalendars: boolean
 
-  constructor(
-    private databaseService: DatabaseService,
-    private popupService: PopupService
-  ) {
-  }
+  constructor(private databaseService: DatabaseService, private popupService: PopupService) {}
 
   ngOnInit() {
     this.calendars$ = this.popupService.runWithPopup(
@@ -37,5 +33,4 @@ export class CalendarsComponent implements OnInit {
   goToCalendar(calendar?: Calendar) {
     this.pushViewEvent.emit({ name: ViewName.CALENDAR, docId: calendar?._id })
   }
-
 }

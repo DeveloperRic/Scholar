@@ -1,4 +1,4 @@
-import { Model, ModelIndices } from "./_model";
+import { Model, ModelIndices } from './_model'
 
 export interface Person extends Model {
   firstName: string

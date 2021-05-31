@@ -1,4 +1,4 @@
-import { EvaluationComponent, EvaluationComponentIndices } from "./evaluationComponent";
+import { EvaluationComponent, EvaluationComponentIndices } from './evaluationComponent'
 
 export interface Deliverable extends EvaluationComponent {
   title: string

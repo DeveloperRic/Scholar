@@ -1,4 +1,3 @@
-
 export enum ErrorCodes {
   ERR_NOT_LOGGED_IN = 'Not logged into Realm',
   ERR_OFFLINE = 'Device is offline',

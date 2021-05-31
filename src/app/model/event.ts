@@ -1,6 +1,6 @@
-import { Location } from "./location";
-import { Schedule } from "./schedule";
-import { Model, ModelIndices } from "./_model";
+import { Location } from './location'
+import { Schedule } from './schedule'
+import { Model, ModelIndices } from './_model'
 
 export interface Event extends Model {
   title: string

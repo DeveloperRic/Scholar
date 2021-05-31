@@ -33,11 +33,11 @@ export interface ViewInfo {
 
 //TODO each view should be a separate component
 export interface View {
-  name: ViewName | '',
-  parentId?: Model['_id'],
-  list?: Model[],
-  model?: Model,
-  form?: FormGroup,
+  name: ViewName | ''
+  parentId?: Model['_id']
+  list?: Model[]
+  model?: Model
+  form?: FormGroup
   submit?: (form: FormGroup) => void
 }
 
@@ -53,12 +53,7 @@ export class ManageComponent implements OnInit {
   viewInfo$ = new ReplaySubject<ViewInfo>(1)
   canNavigateBack: boolean
 
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private databaseService: DatabaseService,
-    public popupService: PopupService,
-    private router: Router
-  ) { }
+  constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, public popupService: PopupService, private router: Router) {}
 
   ngOnInit(): void {
     this.init()
@@ -106,28 +101,27 @@ export class ManageComponent implements OnInit {
   }
 
   private async pushView(newView: ViewInfo) {
-    await this.viewInfo$.pipe(
-      take(1),
-      map(currentView => {
-        if (currentView) this.viewHistory.push(currentView)
-        this.canNavigateBack = newView.name != ViewName.INDEX && this.viewHistory.length != 0
-        this.viewInfo$.next(newView)
-      })
-    ).toPromise()
+    await this.viewInfo$
+      .pipe(
+        take(1),
+        map(currentView => {
+          if (currentView) this.viewHistory.push(currentView)
+          this.canNavigateBack = newView.name != ViewName.INDEX && this.viewHistory.length != 0
+          this.viewInfo$.next(newView)
+        })
+      )
+      .toPromise()
   }
 
   updateViewQueryParams(view: ViewInfo) {
-    this.router.navigate(
-      [],
-      {
-        queryParams: {
-          view: view.name == ViewName.INDEX ? null : view.name,
-          parentId: view.parentId || null,
-          docId: view.docId || null
-        },
-        replaceUrl: view.replacesUrl
-      }
-    )
+    this.router.navigate([], {
+      queryParams: {
+        view: view.name == ViewName.INDEX ? null : view.name,
+        parentId: view.parentId || null,
+        docId: view.docId || null
+      },
+      replaceUrl: view.replacesUrl
+    })
   }
 
   popView() {
@@ -135,5 +129,4 @@ export class ManageComponent implements OnInit {
     this.viewHistory.pop()
     history.back()
   }
-
 }

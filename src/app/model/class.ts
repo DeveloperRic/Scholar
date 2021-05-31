@@ -1,8 +1,8 @@
-import { Course } from "./course";
-import { Location } from "./location";
-import { RelativeWeeklyScheduleRepeat } from "./schedule";
-import { Teacher } from "./teacher";
-import { Model, ModelIndices } from "./_model";
+import { Course } from './course'
+import { Location } from './location'
+import { RelativeWeeklyScheduleRepeat } from './schedule'
+import { Teacher } from './teacher'
+import { Model, ModelIndices } from './_model'
 
 export interface Class extends Model {
   course: Model['_id'] | Course
@@ -17,7 +17,7 @@ export interface Class extends Model {
 
 /** Not for database use; objects will not serialise properly */
 export interface ClassOccurrence {
-  class: Class,
+  class: Class
   date: Date
 }
 

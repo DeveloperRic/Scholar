@@ -1,4 +1,3 @@
-
 export interface Schedule {
   start: number
   end?: number

@@ -1,5 +1,5 @@
-import { Group } from "./group";
-import { Model, ModelIndices } from "./_model";
+import { Group } from './group'
+import { Model, ModelIndices } from './_model'
 
 export interface Calendar extends Model {
   year: number

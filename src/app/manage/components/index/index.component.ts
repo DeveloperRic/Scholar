@@ -9,14 +9,11 @@ import { ViewInfo } from '../../manage.component'
 export class IndexComponent implements OnInit {
   @Output() pushViewEvent = new EventEmitter<ViewInfo>()
 
-  constructor(
-  ) { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   pushView(view: ViewInfo) {
     this.pushViewEvent.emit(view)
   }
-
 }

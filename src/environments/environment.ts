@@ -9,7 +9,7 @@ export const environment = {
   AUTH0_REDIRECT_URI: 'https://localhost:4200/login/callback',
   AUTH0_LOGOUT_URI: 'https://localhost:4200',
   REALM_APP_ID: 'scholar-tbawx'
-};
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

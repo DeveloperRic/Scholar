@@ -11,12 +11,7 @@ import { RealmService } from '../../../database/realm.service'
   styleUrls: ['./login-callback.component.css']
 })
 export class LoginCallbackComponent implements OnInit {
-
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-    private realmService: RealmService
-  ) { }
+  constructor(private router: Router, private authService: AuthService, private realmService: RealmService) {}
 
   ngOnInit(): void {
     console.log('LoginCallbackComponent: Waiting for Auth0 JWT...')
@@ -36,5 +31,4 @@ export class LoginCallbackComponent implements OnInit {
       }
     })
   }
-
 }

@@ -1,17 +1,17 @@
-import { Component, OnInit, Output } from '@angular/core';
-import { DatabaseService } from '../../database/database.service';
+import { Component, OnInit, Output } from '@angular/core'
+import { DatabaseService } from '../../database/database.service'
 import { UtilService } from '../../services/util.service'
-import { ErrorCodes } from "../../services/ErrorCodes";
-import { Class, ClassOccurrence } from '../../model/class';
-import { Reminder } from '../../model/reminder';
-import { Test } from '../../model/test';
-import { Deliverable } from '../../model/deliverable';
-import { Model } from '../../model/_model';
-import { Router } from '@angular/router';
-import { DatabaseLink } from '../../database/databaseLink';
-import { Course } from '../../model/course';
-import { Term } from '../../model/term';
-import { ViewName } from '../../manage/manage.component';
+import { ErrorCodes } from '../../services/ErrorCodes'
+import { Class, ClassOccurrence } from '../../model/class'
+import { Reminder } from '../../model/reminder'
+import { Test } from '../../model/test'
+import { Deliverable } from '../../model/deliverable'
+import { Model } from '../../model/_model'
+import { Router } from '@angular/router'
+import { DatabaseLink } from '../../database/databaseLink'
+import { Course } from '../../model/course'
+import { Term } from '../../model/term'
+import { ViewName } from '../../manage/manage.component'
 
 interface Card {
   type: CardType
@@ -36,7 +36,6 @@ interface DeliverableCard extends Card {
 interface NoDataCard extends Card {
   type: CardType.NO_DATA
 }
-
 
 interface TestCard extends Card {
   type: CardType.TEST
@@ -65,11 +64,7 @@ export class HomeComponent implements OnInit {
   @Output() loading = false
   @Output() cards: Card[] = []
 
-  constructor(
-    private router: Router,
-    private databaseService: DatabaseService,
-    private util: UtilService
-  ) { }
+  constructor(private router: Router, private databaseService: DatabaseService, private util: UtilService) {}
 
   ngOnInit(): void {
     console.log('Home: Initialising...')
@@ -78,24 +73,24 @@ export class HomeComponent implements OnInit {
 
   private async init() {
     try {
-      const database = await this.databaseService.init();
-      this.database = database;
-      this.databaseStatus = 'connected';
-      console.log('Home: Done initialising');
+      const database = await this.databaseService.init()
+      this.database = database
+      this.databaseStatus = 'connected'
+      console.log('Home: Done initialising')
     } catch (err) {
       if (err.message == ErrorCodes.ERR_NOT_LOGGED_IN) {
-        console.log('Home: Error: Not logged in, displaying login page');
-        this.databaseStatus = 'login';
+        console.log('Home: Error: Not logged in, displaying login page')
+        this.databaseStatus = 'login'
       } else {
-        console.error('Home: Error: Init failed', err);
-        this.databaseStatus = 'failed';
+        console.error('Home: Error: Init failed', err)
+        this.databaseStatus = 'failed'
       }
       return
     }
-    this.loadMore();
+    this.loadMore()
   }
 
-  onScroll() { }
+  onScroll() {}
 
   loadMore() {
     // if there's no max date, set one to yesterday so we start loading from today
@@ -187,12 +182,12 @@ export class HomeComponent implements OnInit {
     return [...classes, ...deliverables, ...tests].sort((a, b): number => {
       const aDate = this.getObjectDate(a)
       const bDate = this.getObjectDate(b)
-      return aDate < bDate ? -1 : (aDate > bDate ? 1 : 0)
+      return aDate < bDate ? -1 : aDate > bDate ? 1 : 0
     })
   }
 
   private getObjectDate(obj: ClassOccurrence | Deliverable | Test, ignoreTime = false): Date {
-    let date: Date;
+    let date: Date
     if (this.util.objectIsClassOccurrence(obj)) date = new Date((<ClassOccurrence>obj).date)
     else if (this.util.objectIsDeliverable(obj)) date = new Date((<Deliverable>obj).deadline)
     else date = new Date((<Test>obj).date)
@@ -208,8 +203,7 @@ export class HomeComponent implements OnInit {
   }
 
   toggleReminderDone(reminder: Reminder) {
-    reminder.done = !reminder.done;
+    reminder.done = !reminder.done
     alert('not implemne')
   }
-
 }

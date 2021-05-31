@@ -8,7 +8,7 @@ import { HomeComponent } from './components/home/home.component'
 import { LoginCallbackComponent } from './scholar-common/components/login-callback/login-callback.component'
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: "full" },
+  { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'calendar', component: CalendarComponent, canActivate: [AuthGuard] },
   // TODO AuthGuard connects to Auth0 not Realm so it requires a redirect, code a custom one to prevent redirects
   { path: 'manage', loadChildren: () => import('./manage/manage.module').then(m => m.ManageModule) },
@@ -20,4 +20,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

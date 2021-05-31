@@ -19,11 +19,7 @@ import { VarDirective } from './ng-var.directive'
     VarDirective
     // Don't forget to export new declarations
   ],
-  imports: [
-    CommonModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule
-  ],
+  imports: [CommonModule, MatProgressSpinnerModule, ReactiveFormsModule],
   exports: [
     LoginButtonComponent,
     LoginCallbackComponent,
@@ -36,4 +32,4 @@ import { VarDirective } from './ng-var.directive'
     ReactiveFormsModule
   ]
 })
-export class ScholarCommonModule { }
+export class ScholarCommonModule {}

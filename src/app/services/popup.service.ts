@@ -21,15 +21,12 @@ export interface ErrorPopupConfig extends PopupConfig {
 export class PopupService {
   public popup$: Observable<PopupConfig>
 
-  constructor(
-    private util: UtilService
-  ) {
-  }
+  constructor(private util: UtilService) {}
 
   newPopup(popup: ErrorPopupConfig | PopupConfig) {
     if (!popup.message) popup.message = 'Something went wrong'
     if ('error' in popup && popup.error) console.error(popup.error)
-    setTimeout(() => this.popup$ = of(popup))
+    setTimeout(() => (this.popup$ = of(popup)))
   }
 
   dismissPopup() {
@@ -39,10 +36,12 @@ export class PopupService {
   runWithPopup<T>(message: string, obs: Observable<T>, knownErr?: ErrorCodes): Observable<T> {
     return of(undefined).pipe(
       // display the loading popup
-      map(() => this.newPopup({
-        type: 'loading',
-        message: message
-      })),
+      map(() =>
+        this.newPopup({
+          type: 'loading',
+          message: message
+        })
+      ),
       // subscribe to the provided observable
       switchMap(_ => obs),
       // handle any errors

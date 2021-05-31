@@ -1,5 +1,5 @@
-import { Component, Output } from '@angular/core';
-import { PopupService } from './services/popup.service';
+import { Component, Output } from '@angular/core'
+import { PopupService } from './services/popup.service'
 
 @Component({
   selector: 'app-root',
@@ -7,10 +7,7 @@ import { PopupService } from './services/popup.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  @Output() title = 'scholar';
+  @Output() title = 'scholar'
 
-  constructor(
-    public popupService: PopupService
-  ) { }
-
+  constructor(public popupService: PopupService) {}
 }

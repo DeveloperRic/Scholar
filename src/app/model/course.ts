@@ -1,7 +1,7 @@
-import { Subject } from "./subject";
-import { Teacher } from "./teacher";
-import { Term } from './term';
-import { Model, ModelIndices } from "./_model";
+import { Subject } from './subject'
+import { Teacher } from './teacher'
+import { Term } from './term'
+import { Model, ModelIndices } from './_model'
 
 export interface Course extends Model {
   term: Model['_id'] | Term

@@ -1,21 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
+import { Component, OnInit } from '@angular/core'
+import { AuthService } from '@auth0/auth0-angular'
 
 @Component({
   selector: 'app-login-button',
   templateUrl: './login-button.component.html',
-  styles: [],
+  styles: []
 })
 export class LoginButtonComponent implements OnInit {
-  constructor(
-    private authService: AuthService
-  ) { }
+  constructor(private authService: AuthService) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   loginWithRedirect(): void {
     //TODO disallow signup with duplicate email address
     console.log('LoginButtonComponent: Redirecting to Auth0 login...')
-    this.authService.loginWithRedirect();
+    this.authService.loginWithRedirect()
   }
 }
