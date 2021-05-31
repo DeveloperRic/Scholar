@@ -4,9 +4,12 @@
 
 export const environment = {
   production: false,
-  REALM_APP_ID: 'scholar-tbawx',
-  REALM_REDIRECT_URL: 'http://localhost:4200/realm-redirect'
-};
+  AUTH0_DOMAIN: 'scholar-app.us.auth0.com',
+  AUTH0_CLIENT_ID: 'mtUXGbYYSMwB0dQTyL3z2aKVswND0bDu',
+  AUTH0_REDIRECT_URI: 'https://localhost:4200/login/callback',
+  AUTH0_LOGOUT_URI: 'https://localhost:4200',
+  REALM_APP_ID: 'scholar-tbawx'
+}
 
 /*
  * For easier debugging in development mode, you can import the following file

@@ -1,5 +1,5 @@
-import { Course } from './course';
-import { Model, ModelIndices } from "./_model";
+import { Course } from './course'
+import { Model, ModelIndices } from './_model'
 
 export interface EvaluationComponent extends Model {
   course: Model['_id'] | Course

@@ -1,4 +1,4 @@
-import { Model, ModelIndices } from "./_model";
+import { Model, ModelIndices } from './_model'
 
 export interface Group extends Model {
   name: string

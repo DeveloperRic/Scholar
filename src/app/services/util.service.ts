@@ -1,19 +1,23 @@
-import { Injectable } from '@angular/core';
-import { ClassOccurrence } from '../model/class';
-import { Deliverable } from '../model/deliverable';
-import { Hue } from '../model/hue';
-import { Test } from '../model/test';
-import { ErrorCodes } from './ErrorCodes';
+import { Observable } from 'rxjs'
+
+import { Injectable } from '@angular/core'
+import { ClassOccurrence } from '../model/class'
+import { Deliverable } from '../model/deliverable'
+import { Hue } from '../model/hue'
+import { Test } from '../model/test'
+import { ErrorCodes } from './ErrorCodes'
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilService {
-  public hues: { name: string, value: Hue }[] = Object.keys(Hue).sort().map(name => ({ name, value: Hue[name] }))
+  public hues: { name: string; value: Hue }[] = Object.keys(Hue)
+    .sort()
+    .map(name => ({ name, value: Hue[name] }))
 
-  constructor() { }
+  constructor() {}
 
-  public parseHue(hue: Hue): { lighter: string, normal: string, darker: string } {
+  public parseHue(hue: Hue): { lighter: string; normal: string; darker: string } {
     const colours = hue.split('.')
     return { lighter: colours[0], normal: colours[1], darker: colours[2] }
   }
@@ -24,9 +28,9 @@ export class UtilService {
    * @param isFromHTMLDateField use to toggle if it's from a date field
    */
   public parseDateStr(dateStr: string, isFromHTMLDateField = false) {
-    const parts = dateStr.split("-").map(part => parseInt(part));
-    if (isFromHTMLDateField) parts[1]--;
-    return new Date(parts[0], parts[1], parts.length > 2 ? parts[2] : null);
+    const parts = dateStr.split('-').map(part => parseInt(part))
+    if (isFromHTMLDateField) parts[1]--
+    return new Date(parts[0], parts[1], parts.length > 2 ? parts[2] : null)
   }
 
   /**
@@ -35,7 +39,7 @@ export class UtilService {
    */
   public toHTMLDatetime(date: string | number | Date): string {
     const utcDate = new Date(date)
-    const adjustedDate = new Date(utcDate.getTime() - (new Date().getTimezoneOffset() * 60000))
+    const adjustedDate = new Date(utcDate.getTime() - new Date().getTimezoneOffset() * 60000)
     const dateStr = adjustedDate.toISOString()
     return dateStr.substr(0, dateStr.length - 1)
   }
@@ -96,13 +100,23 @@ export class UtilService {
         const realmErr = JSON.parse(error.error)
         console.log('realmErr.message: ', realmErr.message) //TODO remove this
         return Object.values(ErrorCodes).includes(realmErr.message) ? realmErr.message : null
-      } catch (err) {
-      }
+      } catch (err) {}
     }
     return null
   }
 
   errorMatchesCode(code: ErrorCodes, error: any): boolean {
     return this.getErrorCode(error) === code
+  }
+
+  public promiseToObservable<T>(func: () => Promise<T>): Observable<T> {
+    return new Observable(sub => {
+      func()
+        .then(res => {
+          sub.next(res)
+          sub.complete()
+        })
+        .catch(err => sub.error(err))
+    })
   }
 }

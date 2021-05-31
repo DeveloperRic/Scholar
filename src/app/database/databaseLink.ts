@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs'
+
 import { Account } from '../model/account'
 import { Calendar } from '../model/calendar'
 import { Subject } from '../model/subject'
@@ -10,17 +12,17 @@ import { Test } from '../model/test'
 
 export interface DatabaseLink {
   all: {
-    calendars: (accountId: Account['_id']) => Promise<Calendar[]>
-    subjects: (accountId: Account['_id']) => Promise<Subject[]>
-    terms: (calendarId: Calendar['_id']) => Promise<Term[]>
-    teachers: (calendarId: Calendar['_id']) => Promise<Teacher[]>
-    courses: (termId: Term['_id']) => Promise<Course[]>
-    classes: (courseId: Course['_id']) => Promise<Class[]>
-    deliverables: (courseId: Course['_id']) => Promise<Deliverable[]>
-    tests: (courseId: Course['_id']) => Promise<Test[]>
+    calendars: (accountId: Account['_id']) => Observable<Calendar[]>
+    subjects: (accountId: Account['_id']) => Observable<Subject[]>
+    terms: (calendarId: Calendar['_id']) => Observable<Term[]>
+    teachers: (calendarId: Calendar['_id']) => Observable<Teacher[]>
+    courses: (termId: Term['_id']) => Observable<Course[]>
+    classes: (courseId: Course['_id']) => Observable<Class[]>
+    deliverables: (courseId: Course['_id']) => Observable<Deliverable[]>
+    tests: (courseId: Course['_id']) => Observable<Test[]>
   }
   fetch: {
-    calendar: (_id: Calendar['_id']) => Promise<Calendar>
+    calendar: (_id: Calendar['_id']) => Observable<Calendar>
     subject: (_id: Subject['_id']) => Promise<Subject>
     term: (_id: Term['_id']) => Promise<Term>
     teacher: (_id: Teacher['_id']) => Promise<Teacher>
@@ -29,8 +31,9 @@ export interface DatabaseLink {
     deliverable: (_id: Deliverable['_id']) => Promise<Deliverable>
     test: (_id: Test['_id']) => Promise<Test>
   }
+  //TODO realm doesnt return these ids
   put: {
-    calendar: (calendar: Calendar) => Promise<Calendar['_id']>
+    calendar: (calendar: Calendar) => Observable<Calendar['_id']>
     subject: (subject: Subject) => Promise<Subject['_id']>
     term: (term: Term) => Promise<Term['_id']>
     teacher: (teacher: Teacher) => Promise<Teacher['_id']>
@@ -40,7 +43,7 @@ export interface DatabaseLink {
     test: (test: Test) => Promise<Test['_id']>
   }
   remove: {
-    calendar: (_id: Calendar['_id']) => Promise<void>
+    calendar: (_id: Calendar['_id']) => Observable<void>
     subject: (_id: Subject['_id']) => Promise<void>
     term: (_id: Term['_id']) => Promise<void>
     teacher: (_id: Teacher['_id']) => Promise<void>

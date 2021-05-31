@@ -1,5 +1,5 @@
-import { EvaluationComponent, EvaluationComponentIndices } from "./evaluationComponent";
-import { ExamLocation } from './location';
+import { EvaluationComponent, EvaluationComponentIndices } from './evaluationComponent'
+import { ExamLocation } from './location'
 
 export interface Test extends EvaluationComponent {
   title: string

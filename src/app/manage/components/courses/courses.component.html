@@ -1,0 +1,13 @@
+<h2>Courses</h2>
+<div class="list-item bg-secondary" *ngFor="let course of (courses$ | async)"
+  (click)="navigateToView('course', course._id, view.model._id)">
+  {{course.name}}
+</div>
+<span class="color-red" *ngIf="noCourses">
+  You haven't added any courses.
+  <br />
+</span>
+<br />
+<button class="btn-primary" (click)="onAddCourseClick()">
+  Click here to add a new course.
+</button>

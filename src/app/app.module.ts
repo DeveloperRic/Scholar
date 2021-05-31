@@ -1,43 +1,32 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { RouterModule } from '@angular/router';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialogModule } from '@angular/material/dialog'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { environment } from '../environments/environment';
-import { HomeComponent } from './home/home.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { CalendarComponent } from './calendar/calendar.component';
-import { ManageComponent } from './manage/manage.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { RealmRedirectComponent } from './realm-redirect/realm-redirect.component';
-import { PopupComponent } from './popup/popup.component';
+import { NgModule } from '@angular/core'
+import { BrowserModule } from '@angular/platform-browser'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RouterModule } from '@angular/router'
+import { ServiceWorkerModule } from '@angular/service-worker'
+import { AuthModule } from '@auth0/auth0-angular'
+import { environment } from 'src/environments/environment'
+import { AppRoutingModule } from './app-routing.module'
+import { AppComponent } from './app.component'
+import { CalendarComponent } from './components/calendar/calendar.component'
+import { HomeComponent } from './components/home/home.component'
+import { ScholarCommonModule } from './scholar-common/scholar-common.module'
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    NavbarComponent,
-    CalendarComponent,
-    ManageComponent,
-    RealmRedirectComponent,
-    PopupComponent
-  ],
+  declarations: [AppComponent, CalendarComponent, HomeComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserAnimationsModule,
     AppRoutingModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     RouterModule,
-    BrowserAnimationsModule,
-    MatProgressSpinnerModule,
-    MatDialogModule,
-    ReactiveFormsModule
+    ScholarCommonModule,
+    AuthModule.forRoot({
+      domain: environment.AUTH0_DOMAIN,
+      clientId: environment.AUTH0_CLIENT_ID,
+      redirectUri: environment.AUTH0_REDIRECT_URI
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

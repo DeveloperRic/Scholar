@@ -1,5 +1,5 @@
-import { Hue } from "./hue";
-import { Model, ModelIndices } from "./_model";
+import { Hue } from './hue'
+import { Model, ModelIndices } from './_model'
 
 export interface Subject extends Model {
   code: string

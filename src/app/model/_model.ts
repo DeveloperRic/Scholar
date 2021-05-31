@@ -1,4 +1,4 @@
-import { Account } from "./account";
+import { Account } from './account'
 
 export interface Model {
   _id: string

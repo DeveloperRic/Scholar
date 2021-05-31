@@ -149,7 +149,7 @@ export const EVENT: Event = {
     start: new Date(2020, 11, 20).getTime()
   },
   location: {
-    name: 'Mike\'s place'
+    name: "Mike's place"
   }
 }
 objects.push(EVENT)

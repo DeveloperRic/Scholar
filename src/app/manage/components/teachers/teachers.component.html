@@ -1,0 +1,17 @@
+<h2 class="filter-row">
+  Teachers
+  <button class="material-icons" (click)="toggleFilterMenu()">filter_list</button>
+</h2>
+<app-manage-filter-menu *ngIf="filterMenuVisible" [enabledFilters]="enabledFilters"></app-manage-filter-menu>
+<div class="list-item bg-secondary" *ngFor="let teacher of (teachers$ | async)"
+  (click)="navigateToView('teacher', teacher._id, view.model._id)">
+  {{teacher.name}}
+</div>
+<span class="color-red" *ngIf="noTeachers">
+  You haven't added any teachers.
+  <br />
+</span>
+<br />
+<button class="btn-primary" (click)="onAddTeacherClick()">
+  Click here to add a new teacher.
+</button>

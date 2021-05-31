@@ -1,4 +1,10 @@
-@import url("../../styles/host.css");
+@import url('../../styles/host.css');
+
+.status-selector {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+}
 
 .header {
   display: flex;
@@ -12,9 +18,7 @@
 
 .header .logout {
   height: fit-content;
-  margin-right: calc(
-    var(--page-content-vert-padding) - var(--page-content-horz-padding)
-  ); /* make the button evenly spaced from the top-right corner */
+  margin-right: calc(var(--page-content-vert-padding) - var(--page-content-horz-padding)); /* make the button evenly spaced from the top-right corner */
 }
 
 .go-back {
@@ -54,6 +58,12 @@
   align-items: center;
 }
 
-.checkbox input[type="checkbox"] {
+.checkbox input[type='checkbox'] {
   margin-left: 0.375rem;
+}
+
+.filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

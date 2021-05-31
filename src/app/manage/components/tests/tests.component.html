@@ -1,0 +1,13 @@
+<h2>Tests</h2>
+<div class="list-item bg-secondary" *ngFor="let test of (tests$ | async)"
+  (click)="navigateToView('test', test._id, view.model._id)">
+  {{test.name}}
+</div>
+<span class="color-red" *ngIf="noTests">
+  You haven't added any tests.
+  <br />
+</span>
+<br />
+<button class="btn-primary" (click)="onAddTestClick()">
+  Click here to add a new test.
+</button>
