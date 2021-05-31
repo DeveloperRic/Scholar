@@ -1,0 +1,13 @@
+<table [formGroup]="form">
+  <tr *ngIf="filterIsEnabled(FilterField.CALENDAR)">
+    <td>Calendar</td>
+    <td>
+      <select formControlName="calendar">
+        <option value="">--Please select a calendar--</option>
+        <option *ngFor="let calendar of (calendars$ | async)" value="{{calendar._id}}">
+          {{calendar.year}}
+        </option>
+      </select>
+    </td>
+  </tr>
+</table>

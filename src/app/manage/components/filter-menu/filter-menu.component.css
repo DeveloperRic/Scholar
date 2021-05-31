@@ -1,0 +1,5 @@
+@import url("../../../styles/host.css");
+
+:host {
+  margin-bottom: 1.5rem;
+}

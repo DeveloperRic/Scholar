@@ -1,0 +1,13 @@
+<h2>Deliverables</h2>
+<div class="list-item bg-secondary" *ngFor="let deliverable of (deliverables$ | async)"
+  (click)="navigateToView('deliverable', deliverable._id, view.model._id)">
+  {{deliverable.name}}
+</div>
+<span class="color-red" *ngIf="noDeliverables">
+  You haven't added any deliverables.
+  <br />
+</span>
+<br />
+<button class="btn-primary" (click)="onAddDeliverableClick()">
+  Click here to add a new deliverable.
+</button>

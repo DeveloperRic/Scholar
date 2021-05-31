@@ -1,0 +1,17 @@
+<h2 class="filter-row">
+  Terms
+  <button class="material-icons" (click)="toggleFilterMenu()">filter_list</button>
+</h2>
+<app-manage-filter-menu *ngIf="filterMenuVisible" [enabledFilters]="enabledFilters"></app-manage-filter-menu>
+<div class="list-item bg-secondary" *ngFor="let term of (terms$ | async)"
+  (click)="navigateToView('term', term._id, view.model._id)">
+  {{term.name}}
+</div>
+<span class="color-red" *ngIf="noTerms">
+  You haven't added any school terms.
+  <br />
+</span>
+<br />
+<button class="btn-primary" (click)="onAddTermClick()">
+  Click here to add a new term.
+</button>

@@ -1,0 +1,13 @@
+<h2>Classes</h2>
+<div class="list-item bg-secondary" *ngFor="let klass of (classes$ | async)"
+  (click)="navigateToView('klass', klass._id, view.model._id)">
+  {{klass.name}}
+</div>
+<span class="color-red" *ngIf="noClasses">
+  You haven't added any classes.
+  <br />
+</span>
+<br />
+<button class="btn-primary" (click)="onAddClassClick()">
+  Click here to add a new klass.
+</button>
