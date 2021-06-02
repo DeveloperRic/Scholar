@@ -72,7 +72,9 @@ export class RealmService implements DatabaseLink {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchCalendar(new ObjectId(_id))),
     subject: (_id: Subject['_id']) =>
       this.popupService.performWithPopup('Fetching subject', () => this.app.currentUser.functions.fetchSubject(new ObjectId(_id))),
-    term: (_id: Term['_id']) => this.popupService.performWithPopup('Fetching term', () => this.app.currentUser.functions.fetchTerm(new ObjectId(_id))),
+    term: (_id: Term['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchTerm(new ObjectId(_id))
+    ),
     teacher: (_id: Teacher['_id']) =>
       this.popupService.performWithPopup('Fetching teacher', () => this.app.currentUser.functions.fetchTeacher(new ObjectId(_id))),
     course: (_id: Course['_id']) => this.popupService.performWithPopup('Fetching course', () => this.app.currentUser.functions.fetchCourse(new ObjectId(_id))),
@@ -87,7 +89,9 @@ export class RealmService implements DatabaseLink {
     calendar: (calendar: Calendar) =>
       this.util.promiseToObservable(() => this.app.currentUser.functions.putCalendar(this.convertIdStringsToObjectIds(calendar))),
     subject: (subject: Subject) => this.app.currentUser.functions.putSubject(this.convertIdStringsToObjectIds(subject)),
-    term: (term: Term) => this.app.currentUser.functions.putTerm(this.convertIdStringsToObjectIds(term)),
+    term: (term: Term) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putTerm(this.convertIdStringsToObjectIds(term))
+    ),
     teacher: (teacher: Teacher) => this.app.currentUser.functions.putTeacher(this.convertIdStringsToObjectIds(teacher)),
     course: (course: Course) => this.app.currentUser.functions.putCourse(this.convertIdStringsToObjectIds(course)),
     class: (klass: Class) => this.app.currentUser.functions.putClass(this.convertIdStringsToObjectIds(klass)),
@@ -107,7 +111,9 @@ export class RealmService implements DatabaseLink {
   remove = {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.removeCalendar(new ObjectId(_id))),
     subject: async (_id: Subject['_id']) => this.app.currentUser.functions.removeSubject(new ObjectId(_id)),
-    term: async (_id: Term['_id']) => this.app.currentUser.functions.removeTerm(new ObjectId(_id)),
+    term: (_id: Term['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeTerm(new ObjectId(_id))
+    ),
     teacher: async (_id: Teacher['_id']) => this.app.currentUser.functions.removeTeacher(new ObjectId(_id)),
     course: async (_id: Course['_id']) => this.app.currentUser.functions.removeCourse(new ObjectId(_id)),
     class: async (_id: Class['_id']) => this.app.currentUser.functions.removeClass(new ObjectId(_id)),

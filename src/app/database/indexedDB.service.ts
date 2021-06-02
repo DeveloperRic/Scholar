@@ -84,7 +84,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   fetch = {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.calendars.get(_id)),
     subject: async (_id: Subject['_id']) => await this.subjects.get(_id),
-    term: async (_id: Term['_id']) => await this.terms.get(_id),
+    term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.get(_id)),
     teacher: async (_id: Teacher['_id']) => await this.teachers.get(_id),
     course: async (_id: Course['_id']) => await this.courses.get(_id),
     class: async (_id: Class['_id']) => await this.classes.get(_id),
@@ -94,9 +94,9 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   put = {
     calendar: (calendar: Calendar) => this.util.promiseToObservable(() => this.calendars.put(calendar)),
     subject: async (subject: Subject) => await this.subjects.put(subject),
-    term: async (term: Term) => await this.terms.put(term),
+    term: (term: Term) => this.util.promiseToObservable(() => this.terms.put(term)),
     teacher: async (teacher: Teacher) => await this.teachers.put(teacher),
-    //TODO check that course does not exist
+    //TODO check that course does not already exist
     course: async (course: Course) => await this.courses.put(course),
     class: async (klass: Class) => await this.classes.put(klass),
     deliverable: async (deliverable: Deliverable) => await this.deliverables.put(deliverable),
@@ -116,7 +116,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     //TODO these should remove recursively (i.e. calendar>term>course....)
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.calendars.delete(_id)),
     subject: async (_id: Subject['_id']) => await this.subjects.delete(_id),
-    term: async (_id: Term['_id']) => await this.terms.delete(_id),
+    term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.delete(_id)),
     teacher: async (_id: Teacher['_id']) => await this.teachers.delete(_id),
     course: async (_id: Course['_id']) => await this.courses.delete(_id),
     class: async (_id: Class['_id']) => await this.classes.delete(_id),

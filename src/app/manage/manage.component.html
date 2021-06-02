@@ -31,7 +31,12 @@
       </div>
       <manage-index *ngSwitchCase="'index'" (pushViewEvent)="updateViewQueryParams($event)"></manage-index>
       <manage-calendars *ngSwitchCase="'calendars'" (pushViewEvent)="updateViewQueryParams($event)"></manage-calendars>
-      <manage-calendar *ngSwitchCase="'calendar'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()"></manage-calendar>
+      <manage-calendar *ngSwitchCase="'calendar'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()"></manage-calendar>
+      <manage-terms *ngSwitchCase="'terms'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-terms>
+      <manage-term *ngSwitchCase="'term'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-term>
     </span>
   </div>
 </span>

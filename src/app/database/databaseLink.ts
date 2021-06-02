@@ -24,7 +24,7 @@ export interface DatabaseLink {
   fetch: {
     calendar: (_id: Calendar['_id']) => Observable<Calendar>
     subject: (_id: Subject['_id']) => Promise<Subject>
-    term: (_id: Term['_id']) => Promise<Term>
+    term: (_id: Term['_id']) => Observable<Term>
     teacher: (_id: Teacher['_id']) => Promise<Teacher>
     course: (_id: Course['_id']) => Promise<Course>
     class: (_id: Class['_id']) => Promise<Class>
@@ -35,7 +35,7 @@ export interface DatabaseLink {
   put: {
     calendar: (calendar: Calendar) => Observable<Calendar['_id']>
     subject: (subject: Subject) => Promise<Subject['_id']>
-    term: (term: Term) => Promise<Term['_id']>
+    term: (term: Term) => Observable<Term['_id']>
     teacher: (teacher: Teacher) => Promise<Teacher['_id']>
     course: (course: Course) => Promise<Course['_id']>
     class: (klass: Class) => Promise<Class['_id']>
@@ -45,7 +45,7 @@ export interface DatabaseLink {
   remove: {
     calendar: (_id: Calendar['_id']) => Observable<void>
     subject: (_id: Subject['_id']) => Promise<void>
-    term: (_id: Term['_id']) => Promise<void>
+    term: (_id: Term['_id']) => Observable<void>
     teacher: (_id: Teacher['_id']) => Promise<void>
     course: (_id: Course['_id']) => Promise<void>
     class: (_id: Class['_id']) => Promise<void>

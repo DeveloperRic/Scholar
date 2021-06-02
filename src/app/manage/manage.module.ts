@@ -9,6 +9,7 @@ import { FilterMenu } from './components/filter-menu/filter-menu.component'
 import { IndexComponent } from './components/index/index.component'
 import { SubjectsComponent } from './components/subjects/subjects.component'
 import { TeachersComponent } from './components/teachers/teachers.component'
+import { TermComponent } from './components/term/term.component'
 import { TermsComponent } from './components/terms/terms.component'
 import { TestsComponent } from './components/tests/tests.component'
 import { ManageRoutingModule } from './manage-routing.module'
@@ -26,10 +27,11 @@ import { ManageComponent } from './manage.component'
     SubjectsComponent,
     TeachersComponent,
     TermsComponent,
+    TermComponent,
     TestsComponent,
     FilterMenu
   ],
   imports: [ManageRoutingModule, ScholarCommonModule],
   bootstrap: [ManageComponent]
 })
-export class ManageModule {}
+export class ManageModule { }
