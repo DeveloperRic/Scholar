@@ -7,7 +7,7 @@
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "format": "prettier --write **/*.ts",
+    "format": "prettier --write src/**/*.ts src/**/*.html src/**/*.css src/**/*.json",
     "e2e": "ng e2e",
     "package": "npm run format && npm run build"
   },
