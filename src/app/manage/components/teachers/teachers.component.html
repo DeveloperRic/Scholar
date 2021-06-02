@@ -1,17 +1,23 @@
 <h2 class="filter-row">
   Teachers
-  <button class="material-icons" (click)="toggleFilterMenu()">filter_list</button>
+  <button (click)="toggleFilterMenu()" [class]="{'bg-secondary': filterMenuVisible}">
+    <i class="material-icons">filter_list</i>
+    Filter
+  </button>
 </h2>
-<app-manage-filter-menu *ngIf="filterMenuVisible" [enabledFilters]="enabledFilters"></app-manage-filter-menu>
-<div class="list-item bg-secondary" *ngFor="let teacher of (teachers$ | async)"
-  (click)="navigateToView('teacher', teacher._id, view.model._id)">
-  {{teacher.name}}
+<manage-filter-menu *ngIf="filterMenuVisible" [enabledFilters]="enabledFilters"
+  (formChangeEvent)="onFilterChange($event)"></manage-filter-menu>
+<div class="list-item bg-secondary" *ngFor="let teacher of (teachers$ | async)" (click)="goToTeacher(teacher)">
+  {{teacher.calendar?.year ? teacher.calendar.year + ' - ' : ''}}{{teacher.firstName}} {{teacher.lastName}}
 </div>
-<span class="color-red" *ngIf="noTeachers">
+<span class="color-red" *ngIf="!hasTeachers">
   You haven't added any teachers.
   <br />
 </span>
 <br />
-<button class="btn-primary" (click)="onAddTeacherClick()">
-  Click here to add a new teacher.
+<button class="btn-primary" *ngIf="(calendar$ | async) as calendar" (click)="goToTeacher()">
+  Click here to add a new teacher for {{calendar.year}}
 </button>
+<span *ngIf="!(selectedCalendarId$ | async)">
+  To add new teachers, select a calendar in the top filter first
+</span>

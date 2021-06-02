@@ -8,6 +8,7 @@ import { DeliverablesComponent } from './components/deliverables/deliverables.co
 import { FilterMenu } from './components/filter-menu/filter-menu.component'
 import { IndexComponent } from './components/index/index.component'
 import { SubjectsComponent } from './components/subjects/subjects.component'
+import { TeacherComponent } from './components/teacher/teacher.component'
 import { TeachersComponent } from './components/teachers/teachers.component'
 import { TermComponent } from './components/term/term.component'
 import { TermsComponent } from './components/terms/terms.component'
@@ -26,6 +27,7 @@ import { ManageComponent } from './manage.component'
     DeliverablesComponent,
     SubjectsComponent,
     TeachersComponent,
+    TeacherComponent,
     TermsComponent,
     TermComponent,
     TestsComponent,

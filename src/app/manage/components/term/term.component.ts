@@ -46,10 +46,7 @@ export class TermComponent implements OnInit {
         if (!termId) return of(null)
         return this.popupService.runWithPopup('Fetching term', this.databaseService.database.fetch.term(termId))
       }),
-      map(term => {
-        this.setForm(term)
-        return term
-      })
+      switchMap(term => this.setForm(term))
     )
     this.calendar$ = this.calendarId$.pipe(
       switchMap(calendarId => this.databaseService.database.fetch.calendar(calendarId).pipe(
@@ -78,10 +75,10 @@ export class TermComponent implements OnInit {
     )
   }
 
-  async setForm(term?: Term) {
-    const currentMonth = new Date().getMonth()
-    await this.calendar$.pipe(
+  setForm(term?: Term): Observable<Term> {
+    return this.calendar$.pipe(
       map(calendar => {
+        const currentMonth = new Date().getMonth()
         const autoTermName = currentMonth >= 8 && currentMonth <= 11 ? 'Fall' : currentMonth >= 0 && currentMonth <= 3 ? 'Winter' : 'Summer'
         const autoStartDate = new Date(calendar.year, currentMonth, 1)
         const autoEndDate = new Date(calendar.year, currentMonth + 1, 0)
@@ -97,8 +94,9 @@ export class TermComponent implements OnInit {
           start: new FormControl(initialState.start, [Validators.required, this.util.getDateValidator(minDate, maxDate)]),
           end: new FormControl(initialState.end, [Validators.required, this.util.getDateValidator(minDate, maxDate)])
         })
+        return term
       })
-    ).toPromise()
+    )
   }
 
   async submit() {

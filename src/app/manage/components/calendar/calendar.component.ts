@@ -116,4 +116,15 @@ export class CalendarComponent implements OnInit {
       }))
     ).toPromise()
   }
+
+  async goToTeacher(teacher?: Teacher) {
+    await this.calendarId$.pipe(
+      take(1),
+      map(calendarId => this.pushViewEvent.emit({
+        name: ViewName.TEACHER,
+        docId: teacher?._id,
+        parentId: calendarId
+      }))
+    ).toPromise()
+  }
 }

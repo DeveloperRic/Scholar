@@ -13,12 +13,14 @@ export enum ViewName {
   CALENDAR = 'calendar',
   CALENDARS = 'calendars',
   TERM = 'term',
+  TERMS = 'term',
+  TEACHERS = 'teachers',
+  TEACHER = 'teacher',
   COURSE = 'course',
   CLASS = 'class',
   TEST = 'test',
   DELIVERABLE = 'deliverable',
-  SUBJECT = 'subject',
-  TEACHER = 'teacher'
+  SUBJECT = 'subject'
 }
 
 export const ID_REGEX = /^[a-f\d]{24}$/i

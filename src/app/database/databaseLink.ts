@@ -25,7 +25,7 @@ export interface DatabaseLink {
     calendar: (_id: Calendar['_id']) => Observable<Calendar>
     subject: (_id: Subject['_id']) => Promise<Subject>
     term: (_id: Term['_id']) => Observable<Term>
-    teacher: (_id: Teacher['_id']) => Promise<Teacher>
+    teacher: (_id: Teacher['_id']) => Observable<Teacher>
     course: (_id: Course['_id']) => Promise<Course>
     class: (_id: Class['_id']) => Promise<Class>
     deliverable: (_id: Deliverable['_id']) => Promise<Deliverable>
@@ -36,7 +36,7 @@ export interface DatabaseLink {
     calendar: (calendar: Calendar) => Observable<Calendar['_id']>
     subject: (subject: Subject) => Promise<Subject['_id']>
     term: (term: Term) => Observable<Term['_id']>
-    teacher: (teacher: Teacher) => Promise<Teacher['_id']>
+    teacher: (teacher: Teacher) => Observable<Teacher['_id']>
     course: (course: Course) => Promise<Course['_id']>
     class: (klass: Class) => Promise<Class['_id']>
     deliverable: (deliverable: Deliverable) => Promise<Deliverable['_id']>
@@ -46,7 +46,7 @@ export interface DatabaseLink {
     calendar: (_id: Calendar['_id']) => Observable<void>
     subject: (_id: Subject['_id']) => Promise<void>
     term: (_id: Term['_id']) => Observable<void>
-    teacher: (_id: Teacher['_id']) => Promise<void>
+    teacher: (_id: Teacher['_id']) => Observable<void>
     course: (_id: Course['_id']) => Promise<void>
     class: (_id: Class['_id']) => Promise<void>
     deliverable: (_id: Deliverable['_id']) => Promise<void>

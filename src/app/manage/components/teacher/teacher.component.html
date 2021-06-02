@@ -1,0 +1,45 @@
+<div *ngVar="(teacher$ | async) as teacher">
+  <h2 *ngIf="!teacher">Add a New Teacher</h2>
+  <h2 *ngIf="teacher && (calendar$ | async) as calendar">Editing Teacher: {{teacher.name}} {{calendar.year}}</h2>
+  <h3 class="remove-object color-red" *ngIf="teacher" (click)="removeTeacher(teacher)">
+    Remove this teacher
+  </h3>
+  <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="input">
+      First name:
+      <input type="text" formControlName="firstName" [class]="{'invalid-input': !form.get('firstName').valid}">
+      <span class="color-red" *ngIf="!form.get('firstName').valid">
+        <br />
+        The teacher's firstName cannot start with a space.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Last name:
+      <input type="text" formControlName="lastName" [class]="{'invalid-input': !form.get('lastName').valid}">
+      <span class="color-red" *ngIf="!form.get('lastName').valid">
+        <br />
+        The teacher's lastName cannot start with a space.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Email:
+      <input type="email" formControlName="email" [class]="{'invalid-input': !form.get('email').valid}">
+      <span class="color-red" *ngIf="!form.get('email').valid">
+        <br />
+        The email you entered is invalid.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <button class="btn-accent" type="submit" [disabled]="!form.valid">
+      Save
+    </button>
+    <span class="color-red" *ngIf="!form.valid">
+      Some values you entered are invalid. Please check above.
+    </span>
+  </form>
+</div>

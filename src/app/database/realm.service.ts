@@ -75,8 +75,9 @@ export class RealmService implements DatabaseLink {
     term: (_id: Term['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchTerm(new ObjectId(_id))
     ),
-    teacher: (_id: Teacher['_id']) =>
-      this.popupService.performWithPopup('Fetching teacher', () => this.app.currentUser.functions.fetchTeacher(new ObjectId(_id))),
+    teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(
+      () => this.popupService.performWithPopup('Fetching teacher', () => this.app.currentUser.functions.fetchTeacher(new ObjectId(_id)))
+    ),
     course: (_id: Course['_id']) => this.popupService.performWithPopup('Fetching course', () => this.app.currentUser.functions.fetchCourse(new ObjectId(_id))),
     class: (_id: Class['_id']) => this.popupService.performWithPopup('Fetching class', () => this.app.currentUser.functions.fetchClass(new ObjectId(_id))),
     deliverable: (_id: Deliverable['_id']) =>
@@ -92,7 +93,9 @@ export class RealmService implements DatabaseLink {
     term: (term: Term) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.putTerm(this.convertIdStringsToObjectIds(term))
     ),
-    teacher: (teacher: Teacher) => this.app.currentUser.functions.putTeacher(this.convertIdStringsToObjectIds(teacher)),
+    teacher: (teacher: Teacher) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putTeacher(this.convertIdStringsToObjectIds(teacher))
+    ),
     course: (course: Course) => this.app.currentUser.functions.putCourse(this.convertIdStringsToObjectIds(course)),
     class: (klass: Class) => this.app.currentUser.functions.putClass(this.convertIdStringsToObjectIds(klass)),
     deliverable: (deliverable: Deliverable) => this.app.currentUser.functions.putDeliverable(this.convertIdStringsToObjectIds(deliverable)),
@@ -114,7 +117,9 @@ export class RealmService implements DatabaseLink {
     term: (_id: Term['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.removeTerm(new ObjectId(_id))
     ),
-    teacher: async (_id: Teacher['_id']) => this.app.currentUser.functions.removeTeacher(new ObjectId(_id)),
+    teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeTeacher(new ObjectId(_id))
+    ),
     course: async (_id: Course['_id']) => this.app.currentUser.functions.removeCourse(new ObjectId(_id)),
     class: async (_id: Class['_id']) => this.app.currentUser.functions.removeClass(new ObjectId(_id)),
     deliverable: async (_id: Deliverable['_id']) => this.app.currentUser.functions.removeDeliverable(new ObjectId(_id)),

@@ -37,6 +37,12 @@
       </manage-terms>
       <manage-term *ngSwitchCase="'term'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
       </manage-term>
+      <manage-teachers *ngSwitchCase="'teachers'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-teachers>
+      <manage-teacher *ngSwitchCase="'teacher'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-teacher>
     </span>
   </div>
 </span>
