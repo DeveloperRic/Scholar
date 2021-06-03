@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { Observable, Subscription } from 'rxjs'
+import { Observable, of, Subscription } from 'rxjs'
+import { concatMap, map, shareReplay, switchMap, toArray } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
 import { Calendar } from 'src/app/model/calendar'
+import { Term } from 'src/app/model/term'
 import { ID_REGEX } from '../../manage.component'
 
 export enum FilterField {
@@ -22,11 +24,25 @@ export class FilterMenu implements OnInit, OnDestroy {
   FilterField = FilterField
   form: FormGroup
   calendars$: Observable<Calendar[]>
+  terms$: Observable<Term[]>
 
   constructor(private databaseService: DatabaseService) { }
 
   ngOnInit(): void {
-    this.calendars$ = this.databaseService.database.all.calendars(this.databaseService.accountId)
+    this.calendars$ = this.databaseService.database.all.calendars(this.databaseService.accountId).pipe(
+      shareReplay(1)
+    )
+    this.terms$ = this.calendars$.pipe(
+      switchMap(calendars => {
+        return of(...calendars).pipe(
+          concatMap(calendar => this.databaseService.database.all.terms(calendar._id).pipe(
+            switchMap(terms => of(...terms)),
+            map(term => ({ ...term, calendar }))
+          )),
+          toArray()
+        )
+      })
+    )
     this.setForm()
     // const form = new FormGroup({
     //   code: new FormControl(initialState.code, [Validators.required, Validators.pattern(CODE_REGEX)]),
@@ -62,6 +78,9 @@ export class FilterMenu implements OnInit, OnDestroy {
     const controls: { [name: string]: FormControl } = {}
     if (this.filterIsEnabled(FilterField.CALENDAR)) {
       controls.calendar = new FormControl('', [Validators.required, Validators.pattern(ID_REGEX)])
+    }
+    if (this.filterIsEnabled(FilterField.TERM)) {
+      controls.term = new FormControl('', [Validators.required, Validators.pattern(ID_REGEX)])
     }
     this.form = new FormGroup(controls)
     this.formChangeSubscription = this.form.valueChanges.subscribe(this.formChangeEvent)

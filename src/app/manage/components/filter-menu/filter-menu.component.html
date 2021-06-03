@@ -10,4 +10,15 @@
       </select>
     </td>
   </tr>
+  <tr *ngIf="filterIsEnabled(FilterField.TERM)">
+    <td>Term</td>
+    <td>
+      <select formControlName="term">
+        <option value="">--Please select a term--</option>
+        <option *ngFor="let term of (terms$ | async)" [value]="term._id">
+          {{term.calendar.year}} - {{term.name}}
+        </option>
+      </select>
+    </td>
+  </tr>
 </table>

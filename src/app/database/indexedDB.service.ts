@@ -86,7 +86,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     subject: (_id: Subject['_id']) => this.util.promiseToObservable(() => this.subjects.get(_id)),
     term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.get(_id)),
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.get(_id)),
-    course: async (_id: Course['_id']) => await this.courses.get(_id),
+    course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.get(_id)),
     class: async (_id: Class['_id']) => await this.classes.get(_id),
     deliverable: async (_id: Deliverable['_id']) => await this.deliverables.get(_id),
     test: async (_id: Test['_id']) => await this.tests.get(_id)
@@ -97,7 +97,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     term: (term: Term) => this.util.promiseToObservable(() => this.terms.put(term)),
     teacher: (teacher: Teacher) => this.util.promiseToObservable(() => this.teachers.put(teacher)),
     //TODO check that course does not already exist
-    course: async (course: Course) => await this.courses.put(course),
+    course: (course: Course) => this.util.promiseToObservable(() => this.courses.put(course)),
     class: async (klass: Class) => await this.classes.put(klass),
     deliverable: async (deliverable: Deliverable) => await this.deliverables.put(deliverable),
     test: async (test: Test) => await this.tests.put(test)
@@ -118,7 +118,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     subject: (_id: Subject['_id']) => this.util.promiseToObservable(() => this.subjects.delete(_id)),
     term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.delete(_id)),
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.delete(_id)),
-    course: async (_id: Course['_id']) => await this.courses.delete(_id),
+    course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.delete(_id)),
     class: async (_id: Class['_id']) => await this.classes.delete(_id),
     deliverable: async (_id: Deliverable['_id']) => await this.deliverables.delete(_id),
     test: async (_id: Test['_id']) => await this.tests.delete(_id)

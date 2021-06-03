@@ -3,6 +3,7 @@ import { ScholarCommonModule } from '../scholar-common/scholar-common.module'
 import { CalendarComponent } from './components/calendar/calendar.component'
 import { CalendarsComponent } from './components/calendars/calendars.component'
 import { ClassesComponent } from './components/classes/classes.component'
+import { CourseComponent } from './components/course/course.component'
 import { CoursesComponent } from './components/courses/courses.component'
 import { DeliverablesComponent } from './components/deliverables/deliverables.component'
 import { FilterMenu } from './components/filter-menu/filter-menu.component'
@@ -25,6 +26,7 @@ import { ManageComponent } from './manage.component'
     CalendarComponent,
     ClassesComponent,
     CoursesComponent,
+    CourseComponent,
     DeliverablesComponent,
     SubjectsComponent,
     SubjectComponent,
