@@ -15,7 +15,8 @@ import { ViewInfo, TITLE_REGEX, ViewName } from '../../manage.component'
 
 @Component({
   selector: 'manage-term',
-  templateUrl: './term.component.html'
+  templateUrl: './term.component.html',
+  styleUrls: ['../../manage.component.css']
 })
 export class TermComponent implements OnInit {
   @Output() pushViewEvent = new EventEmitter<ViewInfo>()
@@ -36,7 +37,9 @@ export class TermComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.termId$ = this.activatedRoute.queryParamMap.pipe(map(queryParams => queryParams.get('docId')))
+    this.termId$ = this.activatedRoute.queryParamMap.pipe(
+      map(queryParams => queryParams.get('docId'))
+    )
     this.calendarId$ = this.activatedRoute.queryParamMap.pipe(
       map(queryParams => queryParams.get('parentId')),
       filter(calendarId => !!calendarId)
@@ -49,20 +52,8 @@ export class TermComponent implements OnInit {
       switchMap(term => this.setForm(term))
     )
     this.calendar$ = this.calendarId$.pipe(
-      switchMap(calendarId => this.databaseService.database.fetch.calendar(calendarId).pipe(
-        map(calendar => {
-          if (!calendar) {
-            this.popViewEvent.emit()
-            this.popupService.newPopup({
-              type: 'error',
-              message: `Detected invalid calendarId ${calendarId}`
-            })
-            return
-          }
-          return calendar
-        }),
-        filter(calendar => !!calendar)
-      )))
+      switchMap(calendarId => this.databaseService.database.fetch.calendar(calendarId))
+    )
     this.courses$ = this.termId$.pipe(
       switchMap(termId => {
         if (!termId) return of([])
@@ -143,8 +134,7 @@ export class TermComponent implements OnInit {
     this.pushViewEvent.emit({
       name: ViewName.COURSE,
       docId: course?._id,
-      parentId: <Term['_id']>course?.term,
-      replacesUrl: true
+      parentId: <Term['_id']>course?.term
     })
   }
 }

@@ -10,12 +10,12 @@ import { Course } from 'src/app/model/course'
 import { Teacher } from 'src/app/model/teacher'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
 import { PopupService } from 'src/app/services/popup.service'
-import { UtilService } from 'src/app/services/util.service'
-import { ViewInfo, TITLE_REGEX, ViewName, NAME_REGEX } from '../../manage.component'
+import { ViewInfo, ViewName, NAME_REGEX } from '../../manage.component'
 
 @Component({
   selector: 'manage-teacher',
-  templateUrl: './teacher.component.html'
+  templateUrl: './teacher.component.html',
+  styleUrls: ['../../manage.component.css']
 })
 export class TeacherComponent implements OnInit {
   @Output() pushViewEvent = new EventEmitter<ViewInfo>()
@@ -29,16 +29,17 @@ export class TeacherComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private databaseService: DatabaseService,
-    private popupService: PopupService,
-    private util: UtilService
+    private popupService: PopupService
   ) { }
 
   ngOnInit() {
-    this.teacherId$ = this.activatedRoute.queryParamMap.pipe(map(queryParams => queryParams.get('docId')))
+    this.teacherId$ = this.activatedRoute.queryParamMap.pipe(
+      map(queryParams => queryParams.get('docId'))
+    )
     this.calendarId$ = this.activatedRoute.queryParamMap.pipe(
       map(queryParams => queryParams.get('parentId')),
       filter(calendarId => !!calendarId)
-      // TODO use share() / replay subject for things like this
+      // TODO use shareReplay() / replay subject for things like this
     )
     this.teacher$ = this.teacherId$.pipe(
       switchMap(teacherId => {
@@ -48,20 +49,7 @@ export class TeacherComponent implements OnInit {
       map(teacher => this.setForm(teacher))
     )
     this.calendar$ = this.calendarId$.pipe(
-      switchMap(calendarId => this.databaseService.database.fetch.calendar(calendarId).pipe(
-        map(calendar => {
-          if (!calendar) {
-            this.popViewEvent.emit()
-            this.popupService.newPopup({
-              type: 'error',
-              message: `Detected invalid calendarId ${calendarId}`
-            })
-            return
-          }
-          return calendar
-        }),
-        filter(calendar => !!calendar)
-      ))
+      switchMap(calendarId => this.databaseService.database.fetch.calendar(calendarId))
     )
   }
 
