@@ -7,6 +7,7 @@ import { CoursesComponent } from './components/courses/courses.component'
 import { DeliverablesComponent } from './components/deliverables/deliverables.component'
 import { FilterMenu } from './components/filter-menu/filter-menu.component'
 import { IndexComponent } from './components/index/index.component'
+import { SubjectComponent } from './components/subject/subject.component'
 import { SubjectsComponent } from './components/subjects/subjects.component'
 import { TeacherComponent } from './components/teacher/teacher.component'
 import { TeachersComponent } from './components/teachers/teachers.component'
@@ -26,6 +27,7 @@ import { ManageComponent } from './manage.component'
     CoursesComponent,
     DeliverablesComponent,
     SubjectsComponent,
+    SubjectComponent,
     TeachersComponent,
     TeacherComponent,
     TermsComponent,

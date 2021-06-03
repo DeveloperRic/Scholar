@@ -1,13 +1,12 @@
 <h2>Subjects</h2>
-<div class="list-item bg-secondary" *ngFor="let subject of (subjects$ | async)"
-  (click)="navigateToView('subject', subject._id, view.model._id)">
-  {{subject.name}}
+<div class="list-item bg-secondary" *ngFor="let subject of (subjects$ | async)" (click)="goToSubject(subject)">
+  {{ subject.code }} / {{ subject.name }}
 </div>
 <span class="color-red" *ngIf="noSubjects">
   You haven't added any school subjects.
   <br />
 </span>
 <br />
-<button class="btn-primary" (click)="onAddSubjectClick()">
+<button class="btn-primary" (click)="goToSubject()">
   Click here to add a new subject.
 </button>

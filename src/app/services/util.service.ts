@@ -15,7 +15,7 @@ export class UtilService {
     .sort()
     .map(name => ({ name, value: Hue[name] }))
 
-  constructor() {}
+  constructor() { }
 
   public parseHue(hue: Hue): { lighter: string; normal: string; darker: string } {
     const colours = hue.split('.')
@@ -100,7 +100,7 @@ export class UtilService {
         const realmErr = JSON.parse(error.error)
         console.log('realmErr.message: ', realmErr.message) //TODO remove this
         return Object.values(ErrorCodes).includes(realmErr.message) ? realmErr.message : null
-      } catch (err) {}
+      } catch (err) { }
     }
     return null
   }
@@ -131,6 +131,14 @@ export class UtilService {
       } catch {
         return { badDate: { value: control.value } }
       }
+      return {}
+    }
+  }
+
+  public getHueValidator(): ValidatorFn {
+    return control => {
+      if (control.value == '') return {}
+      if (!Object.values(Hue).includes(control.value)) return { badHue: { value: control.value } }
       return {}
     }
   }

@@ -70,13 +70,14 @@ export class RealmService implements DatabaseLink {
 
   fetch = {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchCalendar(new ObjectId(_id))),
-    subject: (_id: Subject['_id']) =>
-      this.popupService.performWithPopup('Fetching subject', () => this.app.currentUser.functions.fetchSubject(new ObjectId(_id))),
+    subject: (_id: Subject['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchSubject(new ObjectId(_id))
+    ),
     term: (_id: Term['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchTerm(new ObjectId(_id))
     ),
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(
-      () => this.popupService.performWithPopup('Fetching teacher', () => this.app.currentUser.functions.fetchTeacher(new ObjectId(_id)))
+      () => this.app.currentUser.functions.fetchTeacher(new ObjectId(_id))
     ),
     course: (_id: Course['_id']) => this.popupService.performWithPopup('Fetching course', () => this.app.currentUser.functions.fetchCourse(new ObjectId(_id))),
     class: (_id: Class['_id']) => this.popupService.performWithPopup('Fetching class', () => this.app.currentUser.functions.fetchClass(new ObjectId(_id))),
@@ -89,7 +90,9 @@ export class RealmService implements DatabaseLink {
     // TODO rename Atlas DB to prod before launching (separate server for dev & prod)
     calendar: (calendar: Calendar) =>
       this.util.promiseToObservable(() => this.app.currentUser.functions.putCalendar(this.convertIdStringsToObjectIds(calendar))),
-    subject: (subject: Subject) => this.app.currentUser.functions.putSubject(this.convertIdStringsToObjectIds(subject)),
+    subject: (subject: Subject) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putSubject(this.convertIdStringsToObjectIds(subject))
+    ),
     term: (term: Term) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.putTerm(this.convertIdStringsToObjectIds(term))
     ),
@@ -113,7 +116,9 @@ export class RealmService implements DatabaseLink {
   }
   remove = {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.removeCalendar(new ObjectId(_id))),
-    subject: async (_id: Subject['_id']) => this.app.currentUser.functions.removeSubject(new ObjectId(_id)),
+    subject: (_id: Subject['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeSubject(new ObjectId(_id))
+    ),
     term: (_id: Term['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.removeTerm(new ObjectId(_id))
     ),

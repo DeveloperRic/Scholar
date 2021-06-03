@@ -83,7 +83,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
 
   fetch = {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.calendars.get(_id)),
-    subject: async (_id: Subject['_id']) => await this.subjects.get(_id),
+    subject: (_id: Subject['_id']) => this.util.promiseToObservable(() => this.subjects.get(_id)),
     term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.get(_id)),
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.get(_id)),
     course: async (_id: Course['_id']) => await this.courses.get(_id),
@@ -93,7 +93,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   }
   put = {
     calendar: (calendar: Calendar) => this.util.promiseToObservable(() => this.calendars.put(calendar)),
-    subject: async (subject: Subject) => await this.subjects.put(subject),
+    subject: (subject: Subject) => this.util.promiseToObservable(() => this.subjects.put(subject)),
     term: (term: Term) => this.util.promiseToObservable(() => this.terms.put(term)),
     teacher: (teacher: Teacher) => this.util.promiseToObservable(() => this.teachers.put(teacher)),
     //TODO check that course does not already exist
@@ -115,7 +115,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   remove = {
     //TODO these should remove recursively (i.e. calendar>term>course....)
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.calendars.delete(_id)),
-    subject: async (_id: Subject['_id']) => await this.subjects.delete(_id),
+    subject: (_id: Subject['_id']) => this.util.promiseToObservable(() => this.subjects.delete(_id)),
     term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.delete(_id)),
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.delete(_id)),
     course: async (_id: Course['_id']) => await this.courses.delete(_id),
@@ -182,7 +182,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
       .anyOf(terms.map(term => term._id))
       .toArray()
     for (const course of courses) {
-      course.subject = await this.fetch.subject(`${course.subject}`)
+      course.subject = await this.fetch.subject(`${course.subject}`).toPromise()
     }
     return courses
   }

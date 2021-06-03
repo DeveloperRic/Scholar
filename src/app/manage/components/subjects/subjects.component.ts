@@ -1,20 +1,22 @@
-import { Component, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
+import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
 import { Subject } from 'src/app/model/subject'
 import { PopupService } from 'src/app/services/popup.service'
+import { ViewInfo, ViewName } from '../../manage.component'
 
 @Component({
   selector: 'manage-subjects',
-  templateUrl: './subjects.component.html'
+  templateUrl: './subjects.component.html',
+  styleUrls: ['../../manage.component.css']
 })
 export class SubjectsComponent implements OnInit {
+  @Output() pushViewEvent = new EventEmitter<ViewInfo>()
   subjects$: Observable<Subject[]>
   noSubjects: boolean
 
-  constructor(private router: Router, private databaseService: DatabaseService, private popupService: PopupService) {}
+  constructor(private databaseService: DatabaseService, private popupService: PopupService) { }
 
   ngOnInit() {
     this.subjects$ = this.popupService.runWithPopup(
@@ -28,7 +30,7 @@ export class SubjectsComponent implements OnInit {
     )
   }
 
-  onAddSubjectClick() {
-    // TODO navigateToView(this.router, ViewType.TERM)
+  goToSubject(subject?: Subject) {
+    this.pushViewEvent.emit({ name: ViewName.SUBJECT, docId: subject?._id })
   }
 }

@@ -23,7 +23,7 @@ export interface DatabaseLink {
   }
   fetch: {
     calendar: (_id: Calendar['_id']) => Observable<Calendar>
-    subject: (_id: Subject['_id']) => Promise<Subject>
+    subject: (_id: Subject['_id']) => Observable<Subject>
     term: (_id: Term['_id']) => Observable<Term>
     teacher: (_id: Teacher['_id']) => Observable<Teacher>
     course: (_id: Course['_id']) => Promise<Course>
@@ -34,7 +34,7 @@ export interface DatabaseLink {
   //TODO realm doesnt return these ids
   put: {
     calendar: (calendar: Calendar) => Observable<Calendar['_id']>
-    subject: (subject: Subject) => Promise<Subject['_id']>
+    subject: (subject: Subject) => Observable<Subject['_id']>
     term: (term: Term) => Observable<Term['_id']>
     teacher: (teacher: Teacher) => Observable<Teacher['_id']>
     course: (course: Course) => Promise<Course['_id']>
@@ -44,7 +44,7 @@ export interface DatabaseLink {
   }
   remove: {
     calendar: (_id: Calendar['_id']) => Observable<void>
-    subject: (_id: Subject['_id']) => Promise<void>
+    subject: (_id: Subject['_id']) => Observable<void>
     term: (_id: Term['_id']) => Observable<void>
     teacher: (_id: Teacher['_id']) => Observable<void>
     course: (_id: Course['_id']) => Promise<void>

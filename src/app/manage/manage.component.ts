@@ -16,11 +16,12 @@ export enum ViewName {
   TERMS = 'term',
   TEACHERS = 'teachers',
   TEACHER = 'teacher',
+  SUBJECTS = 'subjects',
+  SUBJECT = 'subject',
   COURSE = 'course',
   CLASS = 'class',
   TEST = 'test',
-  DELIVERABLE = 'deliverable',
-  SUBJECT = 'subject'
+  DELIVERABLE = 'deliverable'
 }
 
 export const ID_REGEX = /^[a-f\d]{24}$/i
@@ -58,7 +59,7 @@ export class ManageComponent implements OnInit {
   viewInfo$ = new ReplaySubject<ViewInfo>(1)
   canNavigateBack: boolean
 
-  constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, public popupService: PopupService, private router: Router) {}
+  constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, public popupService: PopupService, private router: Router) { }
 
   ngOnInit(): void {
     this.init()
