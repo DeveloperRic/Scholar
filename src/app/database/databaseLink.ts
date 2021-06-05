@@ -28,7 +28,7 @@ export interface DatabaseLink {
     teacher: (_id: Teacher['_id']) => Observable<Teacher>
     course: (_id: Course['_id']) => Observable<Course>
     class: (_id: Class['_id']) => Observable<Class>
-    deliverable: (_id: Deliverable['_id']) => Promise<Deliverable>
+    deliverable: (_id: Deliverable['_id']) => Observable<Deliverable>
     test: (_id: Test['_id']) => Observable<Test>
   }
   //TODO realm doesnt return these ids
@@ -39,7 +39,7 @@ export interface DatabaseLink {
     teacher: (teacher: Teacher) => Observable<Teacher['_id']>
     course: (course: Course) => Observable<Course['_id']>
     class: (klass: Class) => Observable<Class['_id']>
-    deliverable: (deliverable: Deliverable) => Promise<Deliverable['_id']>
+    deliverable: (deliverable: Deliverable) => Observable<Deliverable['_id']>
     test: (test: Test) => Observable<Test['_id']>
   }
   remove: {
@@ -49,7 +49,7 @@ export interface DatabaseLink {
     teacher: (_id: Teacher['_id']) => Observable<void>
     course: (_id: Course['_id']) => Observable<void>
     class: (_id: Class['_id']) => Observable<void>
-    deliverable: (_id: Deliverable['_id']) => Promise<void>
+    deliverable: (_id: Deliverable['_id']) => Observable<void>
     test: (_id: Test['_id']) => Observable<void>
   }
   search: {

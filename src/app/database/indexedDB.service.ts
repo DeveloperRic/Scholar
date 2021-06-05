@@ -88,7 +88,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.get(_id)),
     course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.get(_id)),
     class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.get(_id)),
-    deliverable: async (_id: Deliverable['_id']) => await this.deliverables.get(_id),
+    deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(() => this.deliverables.get(_id)),
     test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.get(_id))
   }
   put = {
@@ -99,7 +99,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     //TODO check that course does not already exist
     course: (course: Course) => this.util.promiseToObservable(() => this.courses.put(course)),
     class: (klass: Class) => this.util.promiseToObservable(() => this.classes.put(klass)),
-    deliverable: async (deliverable: Deliverable) => await this.deliverables.put(deliverable),
+    deliverable: (deliverable: Deliverable) => this.util.promiseToObservable(() => this.deliverables.put(deliverable)),
     test: (test: Test) => this.util.promiseToObservable(() => this.tests.put(test))
   }
   all = {
@@ -120,7 +120,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.delete(_id)),
     course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.delete(_id)),
     class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.delete(_id)),
-    deliverable: async (_id: Deliverable['_id']) => await this.deliverables.delete(_id),
+    deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(() => this.deliverables.delete(_id)),
     test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.delete(_id))
   }
   search = {

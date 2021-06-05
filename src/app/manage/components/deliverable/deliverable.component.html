@@ -1,0 +1,55 @@
+<div *ngVar="(deliverable$ | async) as deliverable">
+  <h2 *ngIf="!deliverable">Add a New Deliverable</h2>
+  <h2 *ngIf="deliverable && (course$ | async) as course">
+    Editing Deliverable: {{course.subject.code}} {{course.code}} | {{deliverable.title}}
+  </h2>
+  <h3 class="remove-object color-red" *ngIf="deliverable" (click)="removeDeliverable(deliverable)">
+    Remove this deliverable
+  </h3>
+  <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="input">
+      Title:
+      <input type="text" formControlName="title" [class]="{ 'invalid-input': !form.get('title').valid }" />
+      <span class="color-red" *ngIf="!form.get('title').valid">
+        <br />
+        The deliverable title must start with a letter or number and only contain alphanumeric characters or spaces.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Deadline:
+      <input type="datetime-local" formControlName="deadline"
+        [class]="{ 'invalid-input': !form.get('deadline').valid }" />
+      <span class="color-red" *ngIf="!form.get('deadline').valid">
+        <br />
+        The deliverable deadline cannot occur before its course's term starts or after the term ends.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Percent complete:
+      <input type="number" formControlName="percentComplete"
+        [class]="{ 'invalid-input': !form.get('percentComplete').valid }" />
+      <span class="color-red" *ngIf="!form.get('percentComplete').valid">
+        <br />
+        The complete percentage must be a number between 0 and 100 incluisive.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Description:
+      <input type="text" formControlName="description" [class]="{ 'invalid-input': !form.get('description').valid }" />
+      <span class="color-red" *ngIf="!form.get('description').valid">
+        <br />
+        The deliverable description must be a string.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <button class="btn-accent" type="submit" [disabled]="!form.valid">Save</button>
+    <span class="color-red" *ngIf="!form.valid"> Some values you entered are invalid. Please check above. </span>
+  </form>
+</div>

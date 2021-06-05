@@ -85,8 +85,9 @@ export class RealmService implements DatabaseLink {
     class: (_id: Class['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchClass(new ObjectId(_id))
     ),
-    deliverable: (_id: Deliverable['_id']) =>
-      this.popupService.performWithPopup('Fetching deliverable', () => this.app.currentUser.functions.fetchDeliverable(new ObjectId(_id))),
+    deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchDeliverable(new ObjectId(_id))
+    ),
     test: (_id: Test['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.fetchTest(new ObjectId(_id))
     )
@@ -111,7 +112,9 @@ export class RealmService implements DatabaseLink {
     class: (klass: Class) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.putClass(this.convertIdStringsToObjectIds(klass))
     ),
-    deliverable: (deliverable: Deliverable) => this.app.currentUser.functions.putDeliverable(this.convertIdStringsToObjectIds(deliverable)),
+    deliverable: (deliverable: Deliverable) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putDeliverable(this.convertIdStringsToObjectIds(deliverable))
+    ),
     test: (test: Test) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.putTest(this.convertIdStringsToObjectIds(test))
     )
@@ -143,7 +146,9 @@ export class RealmService implements DatabaseLink {
     class: (_id: Class['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.removeClass(new ObjectId(_id))
     ),
-    deliverable: async (_id: Deliverable['_id']) => this.app.currentUser.functions.removeDeliverable(new ObjectId(_id)),
+    deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeDeliverable(new ObjectId(_id))
+    ),
     test: (_id: Test['_id']) => this.util.promiseToObservable(
       () => this.app.currentUser.functions.removeTest(new ObjectId(_id))
     )

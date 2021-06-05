@@ -173,19 +173,42 @@ export class CourseComponent implements OnInit {
       .toPromise()
   }
 
-  goToClass(klass?: Class) {
-    this.pushViewEvent.emit({
-      name: ViewName.CLASS,
-      docId: klass?._id,
-      parentId: <Course['_id']>klass?.course
-    })
+  async goToClass(klass?: Class) {
+    await this.course$.pipe(
+      take(1),
+      map(course => {
+        this.pushViewEvent.emit({
+          name: ViewName.CLASS,
+          docId: klass?._id,
+          parentId: <Course['_id']>klass?.course || course._id
+        })
+      })
+    ).toPromise()
   }
 
-  goToTest(test?: Test) {
-    this.pushViewEvent.emit({
-      name: ViewName.TEST,
-      docId: test?._id,
-      parentId: <Course['_id']>test?.course
-    })
+  async goToTest(test?: Test) {
+    await this.course$.pipe(
+      take(1),
+      map(course => {
+        this.pushViewEvent.emit({
+          name: ViewName.TEST,
+          docId: test?._id,
+          parentId: <Course['_id']>test?.course || course._id
+        })
+      })
+    ).toPromise()
+  }
+
+  async goToDeliverable(deliverable?: Deliverable) {
+    await this.course$.pipe(
+      take(1),
+      map(course => {
+        this.pushViewEvent.emit({
+          name: ViewName.DELIVERABLE,
+          docId: deliverable?._id,
+          parentId: <Course['_id']>deliverable?.course || course._id
+        })
+      })
+    ).toPromise()
   }
 }
