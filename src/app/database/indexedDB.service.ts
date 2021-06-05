@@ -89,7 +89,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.get(_id)),
     class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.get(_id)),
     deliverable: async (_id: Deliverable['_id']) => await this.deliverables.get(_id),
-    test: async (_id: Test['_id']) => await this.tests.get(_id)
+    test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.get(_id))
   }
   put = {
     calendar: (calendar: Calendar) => this.util.promiseToObservable(() => this.calendars.put(calendar)),
@@ -100,7 +100,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     course: (course: Course) => this.util.promiseToObservable(() => this.courses.put(course)),
     class: (klass: Class) => this.util.promiseToObservable(() => this.classes.put(klass)),
     deliverable: async (deliverable: Deliverable) => await this.deliverables.put(deliverable),
-    test: async (test: Test) => await this.tests.put(test)
+    test: (test: Test) => this.util.promiseToObservable(() => this.tests.put(test))
   }
   all = {
     calendars: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.calendars.where({ account: accountId }).toArray()),
@@ -121,7 +121,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.delete(_id)),
     class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.delete(_id)),
     deliverable: async (_id: Deliverable['_id']) => await this.deliverables.delete(_id),
-    test: async (_id: Test['_id']) => await this.tests.delete(_id)
+    test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.delete(_id))
   }
   search = {
     classesWithinRange: async (min: Date, max: Date) => {

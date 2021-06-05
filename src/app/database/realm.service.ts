@@ -87,7 +87,9 @@ export class RealmService implements DatabaseLink {
     ),
     deliverable: (_id: Deliverable['_id']) =>
       this.popupService.performWithPopup('Fetching deliverable', () => this.app.currentUser.functions.fetchDeliverable(new ObjectId(_id))),
-    test: (_id: Test['_id']) => this.popupService.performWithPopup('Fetching test', () => this.app.currentUser.functions.fetchTest(new ObjectId(_id)))
+    test: (_id: Test['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchTest(new ObjectId(_id))
+    )
   }
   put = {
     // TODO ensure all account documents have unique emails
@@ -110,7 +112,9 @@ export class RealmService implements DatabaseLink {
       () => this.app.currentUser.functions.putClass(this.convertIdStringsToObjectIds(klass))
     ),
     deliverable: (deliverable: Deliverable) => this.app.currentUser.functions.putDeliverable(this.convertIdStringsToObjectIds(deliverable)),
-    test: (test: Test) => this.app.currentUser.functions.putTest(this.convertIdStringsToObjectIds(test))
+    test: (test: Test) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putTest(this.convertIdStringsToObjectIds(test))
+    )
   }
   all = {
     calendars: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchCalendars(new ObjectId(accountId))),
@@ -140,7 +144,9 @@ export class RealmService implements DatabaseLink {
       () => this.app.currentUser.functions.removeClass(new ObjectId(_id))
     ),
     deliverable: async (_id: Deliverable['_id']) => this.app.currentUser.functions.removeDeliverable(new ObjectId(_id)),
-    test: async (_id: Test['_id']) => this.app.currentUser.functions.removeTest(new ObjectId(_id))
+    test: (_id: Test['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeTest(new ObjectId(_id))
+    )
   }
   search = {
     classesWithinRange: (min: Date, max: Date) =>

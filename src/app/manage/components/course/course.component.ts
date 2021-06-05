@@ -180,4 +180,12 @@ export class CourseComponent implements OnInit {
       parentId: <Course['_id']>klass?.course
     })
   }
+
+  goToTest(test?: Test) {
+    this.pushViewEvent.emit({
+      name: ViewName.TEST,
+      docId: test?._id,
+      parentId: <Course['_id']>test?.course
+    })
+  }
 }

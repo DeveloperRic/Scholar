@@ -1,6 +1,6 @@
 <div *ngVar="(class$ | async) as class">
   <h2 *ngIf="!class">Add a New Class</h2>
-  <h2 *ngIf="class && (course$ | async) as course">Editing Class: {{class.name}} {{course.year}}</h2>
+  <h2 *ngIf="class && (course$ | async) as course">Editing Class: {{course.subject.code}} {{course.code}} {{class.code}}</h2>
   <h3 class="remove-object color-red" *ngIf="class" (click)="removeClass(class)">
     Remove this class
   </h3>

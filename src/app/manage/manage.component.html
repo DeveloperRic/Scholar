@@ -60,6 +60,10 @@
       </manage-classes>
       <manage-class *ngSwitchCase="'class'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
       </manage-class>
+      <manage-tests *ngSwitchCase="'tests'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-tests>
+      <manage-test *ngSwitchCase="'test'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-test>
     </span>
   </div>
 </span>

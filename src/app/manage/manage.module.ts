@@ -15,6 +15,7 @@ import { TeacherComponent } from './components/teacher/teacher.component'
 import { TeachersComponent } from './components/teachers/teachers.component'
 import { TermComponent } from './components/term/term.component'
 import { TermsComponent } from './components/terms/terms.component'
+import { TestComponent } from './components/test/test.component'
 import { TestsComponent } from './components/tests/tests.component'
 import { ManageRoutingModule } from './manage-routing.module'
 import { ManageComponent } from './manage.component'
@@ -37,6 +38,7 @@ import { ManageComponent } from './manage.component'
     TermsComponent,
     TermComponent,
     TestsComponent,
+    TestComponent,
     FilterMenu
   ],
   imports: [ManageRoutingModule, ScholarCommonModule],

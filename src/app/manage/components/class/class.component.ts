@@ -5,7 +5,7 @@ import { ObjectId } from 'bson'
 import { Observable, of, zip } from 'rxjs'
 import { filter, map, switchMap, take } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
-import { Course } from 'src/app/model/course'
+import { Course as _Course } from 'src/app/model/course'
 import { Class } from 'src/app/model/class'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
 import { PopupService } from 'src/app/services/popup.service'
@@ -15,6 +15,9 @@ import { UtilService } from 'src/app/services/util.service'
 import { Teacher } from 'src/app/model/teacher'
 import { Term } from 'src/app/model/term'
 import { Calendar } from 'src/app/model/calendar'
+import { Subject } from 'src/app/model/subject'
+
+type Course = _Course & { subject: Subject }
 
 @Component({
   selector: 'manage-class',
@@ -57,7 +60,15 @@ export class ClassComponent implements OnInit {
       switchMap(klass => this.setForm(klass))
     )
     this.course$ = this.courseId$.pipe(
-      switchMap(courseId => this.databaseService.database.fetch.course(courseId))
+      switchMap(courseId => this.databaseService.database.fetch.course(courseId)),
+      switchMap(course => {
+        if (!course) return of(null)
+        return this.databaseService.database.fetch.subject(<Subject['_id']>course.subject).pipe(
+          map(subject => {
+            return <Course>{ ...course, subject }
+          })
+        )
+      })
     )
     this.teachers$ = this.course$.pipe(
       switchMap(course => this.databaseService.database.fetch.term(<Term['_id']>course.term)),
