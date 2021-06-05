@@ -63,6 +63,7 @@ export class CourseComponent implements OnInit {
           'Fetching course',
           this.databaseService.database.fetch.course(courseId).pipe(
             switchMap(course => {
+              // TODO notify user that doc has been deleted if they navigate via bookmark
               return this.databaseService.database.fetch.subject(<Subject['_id']>course.subject).pipe(
                 map(subject => {
                   return <Course>{ ...course, subject }
@@ -174,10 +175,9 @@ export class CourseComponent implements OnInit {
 
   goToClass(klass?: Class) {
     this.pushViewEvent.emit({
-      name: ViewName.COURSE,
+      name: ViewName.CLASS,
       docId: klass?._id,
-      parentId: <Course['_id']>klass?.course,
-      replacesUrl: true
+      parentId: <Course['_id']>klass?.course
     })
   }
 }

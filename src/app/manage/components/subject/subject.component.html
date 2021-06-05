@@ -27,7 +27,7 @@
     <label class="input">
       Hue:
       <select formControlName="hue">
-        <option *ngFor="let hue of util.hues" value="{{ hue.value }}">{{ hue.name }}</option>
+        <option *ngFor="let hue of util.hues" [value]="hue.value">{{ hue.name }}</option>
       </select>
       <span class="color-red" *ngIf="!form.get('hue').valid">
         <br />

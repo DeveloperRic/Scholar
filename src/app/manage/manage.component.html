@@ -55,6 +55,11 @@
       <manage-course *ngSwitchCase="'course'" (pushViewEvent)="updateViewQueryParams($event)"
         (popViewEvent)="popView()">
       </manage-course>
+      <manage-classes *ngSwitchCase="'classes'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-classes>
+      <manage-class *ngSwitchCase="'class'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-class>
     </span>
   </div>
 </span>

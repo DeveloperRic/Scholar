@@ -79,7 +79,12 @@ export class UtilService {
   }
 
   public parseTimeStr(time: string): number[] {
-    return time.split(':').map(part => parseInt(part))
+    return time.split(':').map(part => parseInt(part, 10))
+  }
+
+  public convertInputTimeStringToDate(time: string): Date {
+    const [hour, min] = this.parseTimeStr(time)
+    return new Date(0, 0, 0, hour, min)
   }
 
   public objectIsClassOccurrence(obj: ClassOccurrence | Deliverable | Test): obj is ClassOccurrence {
@@ -140,6 +145,19 @@ export class UtilService {
       if (control.value == '') return {}
       if (!Object.values(Hue).includes(control.value)) return { badHue: { value: control.value } }
       return {}
+    }
+  }
+
+  public getJSONValidator<T extends {}>(errorKey: string): ValidatorFn {
+    return control => {
+      const errors = {}
+      if (control.value == '') return errors
+      try {
+        const _obj: T = JSON.parse(control.value)
+      } catch {
+        errors[errorKey] = { value: control.value }
+      }
+      return errors
     }
   }
 }

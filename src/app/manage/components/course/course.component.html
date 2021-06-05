@@ -30,7 +30,7 @@
       Subject:
       <select formControlName="subject">
         <option value="">--Please select a subject--</option>
-        <option *ngFor="let subject of (subjects$ | async)" value="{{ subject._id }}">
+        <option *ngFor="let subject of (subjects$ | async)" [value]="subject._id">
           {{ subject.code }} / {{ subject.name }}
         </option>
       </select>
@@ -45,7 +45,7 @@
       Teacher:
       <select formControlName="teacher">
         <option value="">--Optionally, select a teacher--</option>
-        <option *ngFor="let teacher of (teachers$ | async)" value="{{ teacher._id }}">
+        <option *ngFor="let teacher of (teachers$ | async)" [value]="teacher._id">
           {{ teacher.firstName }} {{ teacher.lastName }}
         </option>
       </select>
@@ -64,7 +64,7 @@
     <br />
     <h2>List of Classes in this Course</h2>
     <div class="list-item bg-secondary" *ngFor="let class of (classes$ | async)" (click)="goToClass(class)">
-      {{class.code}} / {{class.name}}
+      {{class.code}}
     </div>
     <span class="color-red" *ngIf="!hasClasses">
       You haven't added any classes to this course.

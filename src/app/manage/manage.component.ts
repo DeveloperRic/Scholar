@@ -20,6 +20,7 @@ export enum ViewName {
   SUBJECT = 'subject',
   COURSES = 'courses',
   COURSE = 'course',
+  CLASSES = 'classes',
   CLASS = 'class',
   TEST = 'test',
   DELIVERABLE = 'deliverable'

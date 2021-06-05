@@ -4,12 +4,18 @@ import { Observable, of, Subscription } from 'rxjs'
 import { concatMap, map, shareReplay, switchMap, toArray } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
 import { Calendar } from 'src/app/model/calendar'
-import { Term } from 'src/app/model/term'
+import { Course as _Course } from 'src/app/model/course'
+import { Subject } from 'src/app/model/subject'
+import { Term as _Term } from 'src/app/model/term'
 import { ID_REGEX } from '../../manage.component'
+
+type Term = _Term & { calendar: Calendar }
+type Course = _Course & { subject: Subject }
 
 export enum FilterField {
   CALENDAR,
-  TERM
+  TERM,
+  COURSE
 }
 
 @Component({
@@ -25,6 +31,7 @@ export class FilterMenu implements OnInit, OnDestroy {
   form: FormGroup
   calendars$: Observable<Calendar[]>
   terms$: Observable<Term[]>
+  courses$: Observable<Course[]>
 
   constructor(private databaseService: DatabaseService) { }
 
@@ -38,6 +45,23 @@ export class FilterMenu implements OnInit, OnDestroy {
           concatMap(calendar => this.databaseService.database.all.terms(calendar._id).pipe(
             switchMap(terms => of(...terms)),
             map(term => ({ ...term, calendar }))
+          )),
+          toArray()
+        )
+      })
+    )
+    this.courses$ = this.terms$.pipe(
+      switchMap(terms => {
+        return of(...terms).pipe(
+          concatMap(term => this.databaseService.database.all.courses(term._id).pipe(
+            switchMap(courses => of(...courses)),
+            switchMap(course => {
+              return this.databaseService.database.fetch.subject(<Subject['_id']>course.subject).pipe(
+                map(subject => {
+                  return <Course>{ ...course, subject }
+                })
+              )
+            })
           )),
           toArray()
         )
@@ -81,6 +105,9 @@ export class FilterMenu implements OnInit, OnDestroy {
     }
     if (this.filterIsEnabled(FilterField.TERM)) {
       controls.term = new FormControl('', [Validators.required, Validators.pattern(ID_REGEX)])
+    }
+    if (this.filterIsEnabled(FilterField.COURSE)) {
+      controls.course = new FormControl('', [Validators.required, Validators.pattern(ID_REGEX)])
     }
     this.form = new FormGroup(controls)
     this.formChangeSubscription = this.form.valueChanges.subscribe(this.formChangeEvent)

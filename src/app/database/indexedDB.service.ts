@@ -87,7 +87,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.get(_id)),
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.get(_id)),
     course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.get(_id)),
-    class: async (_id: Class['_id']) => await this.classes.get(_id),
+    class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.get(_id)),
     deliverable: async (_id: Deliverable['_id']) => await this.deliverables.get(_id),
     test: async (_id: Test['_id']) => await this.tests.get(_id)
   }
@@ -98,7 +98,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     teacher: (teacher: Teacher) => this.util.promiseToObservable(() => this.teachers.put(teacher)),
     //TODO check that course does not already exist
     course: (course: Course) => this.util.promiseToObservable(() => this.courses.put(course)),
-    class: async (klass: Class) => await this.classes.put(klass),
+    class: (klass: Class) => this.util.promiseToObservable(() => this.classes.put(klass)),
     deliverable: async (deliverable: Deliverable) => await this.deliverables.put(deliverable),
     test: async (test: Test) => await this.tests.put(test)
   }
@@ -119,7 +119,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.delete(_id)),
     teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.delete(_id)),
     course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.delete(_id)),
-    class: async (_id: Class['_id']) => await this.classes.delete(_id),
+    class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.delete(_id)),
     deliverable: async (_id: Deliverable['_id']) => await this.deliverables.delete(_id),
     test: async (_id: Test['_id']) => await this.tests.delete(_id)
   }

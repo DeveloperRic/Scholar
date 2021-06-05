@@ -21,4 +21,15 @@
       </select>
     </td>
   </tr>
+  <tr *ngIf="filterIsEnabled(FilterField.COURSE)">
+    <td>Course</td>
+    <td>
+      <select formControlName="course">
+        <option value="">--Please select a course--</option>
+        <option *ngFor="let course of (courses$ | async)" [value]="course._id">
+          {{course.subject.code}} {{course.code}}
+        </option>
+      </select>
+    </td>
+  </tr>
 </table>
