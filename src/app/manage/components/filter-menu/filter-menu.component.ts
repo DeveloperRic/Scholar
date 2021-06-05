@@ -1,30 +1,72 @@
-import { Component, Input, OnInit } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { Observable } from 'rxjs'
-
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core'
+import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { Observable, of, Subscription } from 'rxjs'
+import { concatMap, map, shareReplay, switchMap, toArray } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
 import { Calendar } from 'src/app/model/calendar'
+import { Course as _Course } from 'src/app/model/course'
+import { Subject } from 'src/app/model/subject'
+import { Term as _Term } from 'src/app/model/term'
 import { ID_REGEX } from '../../manage.component'
+
+type Term = _Term & { calendar: Calendar }
+type Course = _Course & { subject: Subject }
 
 export enum FilterField {
   CALENDAR,
-  TERM
+  TERM,
+  COURSE
 }
 
 @Component({
   selector: 'manage-filter-menu',
   templateUrl: './filter-menu.component.html',
-  styles: ['./manage-filter-menu.component.css']
+  styles: ['./filter-menu.component.css']
 })
-export class FilterMenu implements OnInit {
+export class FilterMenu implements OnInit, OnDestroy {
   @Input() enabledFilters: FilterField[]
+  @Output() formChangeEvent = new EventEmitter()
+  formChangeSubscription: Subscription
   FilterField = FilterField
   form: FormGroup
-  calendars$: Observable<Calendar[]> = this.getCalendars()
+  calendars$: Observable<Calendar[]>
+  terms$: Observable<Term[]>
+  courses$: Observable<Course[]>
 
-  constructor(private databaseService: DatabaseService) {}
+  constructor(private databaseService: DatabaseService) { }
 
   ngOnInit(): void {
+    this.calendars$ = this.databaseService.database.all.calendars(this.databaseService.accountId).pipe(
+      shareReplay(1)
+    )
+    this.terms$ = this.calendars$.pipe(
+      switchMap(calendars => {
+        return of(...calendars).pipe(
+          concatMap(calendar => this.databaseService.database.all.terms(calendar._id).pipe(
+            switchMap(terms => of(...terms)),
+            map(term => ({ ...term, calendar }))
+          )),
+          toArray()
+        )
+      })
+    )
+    this.courses$ = this.terms$.pipe(
+      switchMap(terms => {
+        return of(...terms).pipe(
+          concatMap(term => this.databaseService.database.all.courses(term._id).pipe(
+            switchMap(courses => of(...courses)),
+            switchMap(course => {
+              return this.databaseService.database.fetch.subject(<Subject['_id']>course.subject).pipe(
+                map(subject => {
+                  return <Course>{ ...course, subject }
+                })
+              )
+            })
+          )),
+          toArray()
+        )
+      })
+    )
     this.setForm()
     // const form = new FormGroup({
     //   code: new FormControl(initialState.code, [Validators.required, Validators.pattern(CODE_REGEX)]),
@@ -52,19 +94,26 @@ export class FilterMenu implements OnInit {
     // }
   }
 
+  ngOnDestroy() {
+    if (this.formChangeSubscription) this.formChangeSubscription.unsubscribe()
+  }
+
   private setForm() {
     const controls: { [name: string]: FormControl } = {}
     if (this.filterIsEnabled(FilterField.CALENDAR)) {
       controls.calendar = new FormControl('', [Validators.required, Validators.pattern(ID_REGEX)])
     }
+    if (this.filterIsEnabled(FilterField.TERM)) {
+      controls.term = new FormControl('', [Validators.required, Validators.pattern(ID_REGEX)])
+    }
+    if (this.filterIsEnabled(FilterField.COURSE)) {
+      controls.course = new FormControl('', [Validators.required, Validators.pattern(ID_REGEX)])
+    }
     this.form = new FormGroup(controls)
+    this.formChangeSubscription = this.form.valueChanges.subscribe(this.formChangeEvent)
   }
 
   filterIsEnabled(field: FilterField) {
     return this.enabledFilters.includes(field)
-  }
-
-  getCalendars() {
-    return this.databaseService.database.all.calendars(this.databaseService.accountId)
   }
 }

@@ -31,7 +31,45 @@
       </div>
       <manage-index *ngSwitchCase="'index'" (pushViewEvent)="updateViewQueryParams($event)"></manage-index>
       <manage-calendars *ngSwitchCase="'calendars'" (pushViewEvent)="updateViewQueryParams($event)"></manage-calendars>
-      <manage-calendar *ngSwitchCase="'calendar'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()"></manage-calendar>
+      <manage-calendar *ngSwitchCase="'calendar'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()"></manage-calendar>
+      <manage-terms *ngSwitchCase="'terms'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-terms>
+      <manage-term *ngSwitchCase="'term'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-term>
+      <manage-teachers *ngSwitchCase="'teachers'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-teachers>
+      <manage-teacher *ngSwitchCase="'teacher'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-teacher>
+      <manage-subjects *ngSwitchCase="'subjects'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-subjects>
+      <manage-subject *ngSwitchCase="'subject'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-subject>
+      <manage-courses *ngSwitchCase="'courses'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-courses>
+      <manage-course *ngSwitchCase="'course'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-course>
+      <manage-classes *ngSwitchCase="'classes'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-classes>
+      <manage-class *ngSwitchCase="'class'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-class>
+      <manage-tests *ngSwitchCase="'tests'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-tests>
+      <manage-test *ngSwitchCase="'test'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
+      </manage-test>
+      <manage-deliverables *ngSwitchCase="'deliverables'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-deliverables>
+      <manage-deliverable *ngSwitchCase="'deliverable'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()">
+      </manage-deliverable>
     </span>
   </div>
 </span>

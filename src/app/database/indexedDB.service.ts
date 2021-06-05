@@ -83,24 +83,24 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
 
   fetch = {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.calendars.get(_id)),
-    subject: async (_id: Subject['_id']) => await this.subjects.get(_id),
-    term: async (_id: Term['_id']) => await this.terms.get(_id),
-    teacher: async (_id: Teacher['_id']) => await this.teachers.get(_id),
-    course: async (_id: Course['_id']) => await this.courses.get(_id),
-    class: async (_id: Class['_id']) => await this.classes.get(_id),
-    deliverable: async (_id: Deliverable['_id']) => await this.deliverables.get(_id),
-    test: async (_id: Test['_id']) => await this.tests.get(_id)
+    subject: (_id: Subject['_id']) => this.util.promiseToObservable(() => this.subjects.get(_id)),
+    term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.get(_id)),
+    teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.get(_id)),
+    course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.get(_id)),
+    class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.get(_id)),
+    deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(() => this.deliverables.get(_id)),
+    test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.get(_id))
   }
   put = {
     calendar: (calendar: Calendar) => this.util.promiseToObservable(() => this.calendars.put(calendar)),
-    subject: async (subject: Subject) => await this.subjects.put(subject),
-    term: async (term: Term) => await this.terms.put(term),
-    teacher: async (teacher: Teacher) => await this.teachers.put(teacher),
-    //TODO check that course does not exist
-    course: async (course: Course) => await this.courses.put(course),
-    class: async (klass: Class) => await this.classes.put(klass),
-    deliverable: async (deliverable: Deliverable) => await this.deliverables.put(deliverable),
-    test: async (test: Test) => await this.tests.put(test)
+    subject: (subject: Subject) => this.util.promiseToObservable(() => this.subjects.put(subject)),
+    term: (term: Term) => this.util.promiseToObservable(() => this.terms.put(term)),
+    teacher: (teacher: Teacher) => this.util.promiseToObservable(() => this.teachers.put(teacher)),
+    //TODO check that course does not already exist
+    course: (course: Course) => this.util.promiseToObservable(() => this.courses.put(course)),
+    class: (klass: Class) => this.util.promiseToObservable(() => this.classes.put(klass)),
+    deliverable: (deliverable: Deliverable) => this.util.promiseToObservable(() => this.deliverables.put(deliverable)),
+    test: (test: Test) => this.util.promiseToObservable(() => this.tests.put(test))
   }
   all = {
     calendars: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.calendars.where({ account: accountId }).toArray()),
@@ -115,13 +115,13 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   remove = {
     //TODO these should remove recursively (i.e. calendar>term>course....)
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.calendars.delete(_id)),
-    subject: async (_id: Subject['_id']) => await this.subjects.delete(_id),
-    term: async (_id: Term['_id']) => await this.terms.delete(_id),
-    teacher: async (_id: Teacher['_id']) => await this.teachers.delete(_id),
-    course: async (_id: Course['_id']) => await this.courses.delete(_id),
-    class: async (_id: Class['_id']) => await this.classes.delete(_id),
-    deliverable: async (_id: Deliverable['_id']) => await this.deliverables.delete(_id),
-    test: async (_id: Test['_id']) => await this.tests.delete(_id)
+    subject: (_id: Subject['_id']) => this.util.promiseToObservable(() => this.subjects.delete(_id)),
+    term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.delete(_id)),
+    teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(() => this.teachers.delete(_id)),
+    course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.delete(_id)),
+    class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.delete(_id)),
+    deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(() => this.deliverables.delete(_id)),
+    test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.delete(_id))
   }
   search = {
     classesWithinRange: async (min: Date, max: Date) => {
@@ -182,7 +182,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
       .anyOf(terms.map(term => term._id))
       .toArray()
     for (const course of courses) {
-      course.subject = await this.fetch.subject(`${course.subject}`)
+      course.subject = await this.fetch.subject(`${course.subject}`).toPromise()
     }
     return courses
   }

@@ -1,13 +1,24 @@
-<h2>Tests</h2>
-<div class="list-item bg-secondary" *ngFor="let test of (tests$ | async)"
-  (click)="navigateToView('test', test._id, view.model._id)">
-  {{test.name}}
+<h2 class="filter-row">
+  Tests
+  <button (click)="toggleFilterMenu()" [class]="{'bg-secondary': filterMenuVisible}">
+    <i class="material-icons">filter_list</i>
+    Filter
+  </button>
+</h2>
+<manage-filter-menu *ngIf="filterMenuVisible" [enabledFilters]="enabledFilters"
+  (formChangeEvent)="onFilterChange($event)"></manage-filter-menu>
+<div class="list-item bg-secondary" *ngFor="let test of (tests$ | async)" (click)="goToTest(test)">
+  <!-- TODO sort doc lists -->
+  {{ test.date | date: 'd MMM' }} | {{test.course.subject.code}} {{test.course.code}} | {{ test.title }}
 </div>
-<span class="color-red" *ngIf="noTests">
+<span class="color-red" *ngIf="!hasTests">
   You haven't added any tests.
   <br />
 </span>
 <br />
-<button class="btn-primary" (click)="onAddTestClick()">
-  Click here to add a new test.
+<button class="btn-primary" *ngIf="(course$ | async) as course" (click)="goToTest()">
+  Click here to add a new test for {{course.subject.code}} {{course.code}}
 </button>
+<span *ngIf="!(selectedCourseId$ | async)">
+  To add new tests, select a course in the top filter first
+</span>

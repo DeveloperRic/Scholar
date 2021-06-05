@@ -1,0 +1,60 @@
+<div *ngVar="(test$ | async) as test">
+  <h2 *ngIf="!test">Add a New Test</h2>
+  <h2 *ngIf="test && (course$ | async) as course">
+    Editing Test: {{course.subject.code}} {{course.code}} | {{test.title}}
+  </h2>
+  <h3 class="remove-object color-red" *ngIf="test" (click)="removeTest(test)">
+    Remove this test
+  </h3>
+  <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="input">
+      Title:
+      <input type="text" formControlName="title" [class]="{ 'invalid-input': !form.get('title').valid }" />
+      <span class="color-red" *ngIf="!form.get('title').valid">
+        <br />
+        The test title must start with a letter or number and only contain alphanumeric characters or spaces.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Date:
+      <input type="datetime-local" formControlName="date" [class]="{ 'invalid-input': !form.get('date').valid }" />
+      <span class="color-red" *ngIf="!form.get('date').valid">
+        <br />
+        The test date cannot occur before its course's term starts or after the term ends.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <label class="input pick-object">
+      Location:
+      <input type="text" formControlName="location" />
+      <div class="btn btn-inverse" (click)="pickLocation(form.get('location'))">Set a location</div>
+      <br />
+    </label>
+    <br />
+    <label class="input">
+      Score percent:
+      <input type="number" formControlName="scorePercent"
+        [class]="{ 'invalid-input': !form.get('scorePercent').valid }" />
+      <span class="color-red" *ngIf="!form.get('scorePercent').valid">
+        <br />
+        The test score must be a number between 0 and 100 incluisive.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Description:
+      <input type="text" formControlName="description" [class]="{ 'invalid-input': !form.get('description').valid }" />
+      <span class="color-red" *ngIf="!form.get('description').valid">
+        <br />
+        The test description must be a string.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <button class="btn-accent" type="submit" [disabled]="!form.valid">Save</button>
+    <span class="color-red" *ngIf="!form.valid"> Some values you entered are invalid. Please check above. </span>
+  </form>
+</div>

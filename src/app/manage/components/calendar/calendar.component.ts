@@ -14,7 +14,8 @@ import { ViewInfo, ViewName } from '../../manage.component'
 
 @Component({
   selector: 'manage-calendar',
-  templateUrl: './calendar.component.html'
+  templateUrl: './calendar.component.html',
+  styleUrls: ['../../manage.component.css']
 })
 export class CalendarComponent implements OnInit {
   @Output() pushViewEvent = new EventEmitter<ViewInfo>()
@@ -27,7 +28,7 @@ export class CalendarComponent implements OnInit {
   hasTeachers: boolean
   form: FormGroup
 
-  constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, private popupService: PopupService) {}
+  constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, private popupService: PopupService) { }
 
   ngOnInit() {
     this.calendarId$ = this.activatedRoute.queryParamMap.pipe(map(queryParams => queryParams.get('docId')))
@@ -103,5 +104,27 @@ export class CalendarComponent implements OnInit {
     await this.popupService
       .runWithPopup('Removing calendar', this.databaseService.database.remove.calendar(calendar._id).pipe(map(() => this.popViewEvent.emit())))
       .toPromise()
+  }
+
+  async goToTerm(term?: Term) {
+    await this.calendarId$.pipe(
+      take(1),
+      map(calendarId => this.pushViewEvent.emit({
+        name: ViewName.TERM,
+        docId: term?._id,
+        parentId: calendarId
+      }))
+    ).toPromise()
+  }
+
+  async goToTeacher(teacher?: Teacher) {
+    await this.calendarId$.pipe(
+      take(1),
+      map(calendarId => this.pushViewEvent.emit({
+        name: ViewName.TEACHER,
+        docId: teacher?._id,
+        parentId: calendarId
+      }))
+    ).toPromise()
   }
 }

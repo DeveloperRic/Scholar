@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs'
-
 import { Injectable } from '@angular/core'
+import { ValidatorFn } from '@angular/forms'
+import { Observable } from 'rxjs'
 import { ClassOccurrence } from '../model/class'
 import { Deliverable } from '../model/deliverable'
 import { Hue } from '../model/hue'
@@ -15,7 +15,7 @@ export class UtilService {
     .sort()
     .map(name => ({ name, value: Hue[name] }))
 
-  constructor() {}
+  constructor() { }
 
   public parseHue(hue: Hue): { lighter: string; normal: string; darker: string } {
     const colours = hue.split('.')
@@ -79,7 +79,12 @@ export class UtilService {
   }
 
   public parseTimeStr(time: string): number[] {
-    return time.split(':').map(part => parseInt(part))
+    return time.split(':').map(part => parseInt(part, 10))
+  }
+
+  public convertInputTimeStringToDate(time: string): Date {
+    const [hour, min] = this.parseTimeStr(time)
+    return new Date(0, 0, 0, hour, min)
   }
 
   public objectIsClassOccurrence(obj: ClassOccurrence | Deliverable | Test): obj is ClassOccurrence {
@@ -100,7 +105,7 @@ export class UtilService {
         const realmErr = JSON.parse(error.error)
         console.log('realmErr.message: ', realmErr.message) //TODO remove this
         return Object.values(ErrorCodes).includes(realmErr.message) ? realmErr.message : null
-      } catch (err) {}
+      } catch (err) { }
     }
     return null
   }
@@ -118,5 +123,41 @@ export class UtilService {
         })
         .catch(err => sub.error(err))
     })
+  }
+
+  public getDateValidator(min?: Date, max?: Date): ValidatorFn {
+    return control => {
+      if (control.value == '') return {}
+      try {
+        const date = new Date(control.value)
+        if ((min && date < min) || (max && date > max)) {
+          return { badDate: { value: control.value } }
+        }
+      } catch {
+        return { badDate: { value: control.value } }
+      }
+      return {}
+    }
+  }
+
+  public getHueValidator(): ValidatorFn {
+    return control => {
+      if (control.value == '') return {}
+      if (!Object.values(Hue).includes(control.value)) return { badHue: { value: control.value } }
+      return {}
+    }
+  }
+
+  public getJSONValidator<T extends {}>(errorKey: string): ValidatorFn {
+    return control => {
+      const errors = {}
+      if (control.value == '') return errors
+      try {
+        const _obj: T = JSON.parse(control.value)
+      } catch {
+        errors[errorKey] = { value: control.value }
+      }
+      return errors
+    }
   }
 }

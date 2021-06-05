@@ -13,15 +13,25 @@ export enum ViewName {
   CALENDAR = 'calendar',
   CALENDARS = 'calendars',
   TERM = 'term',
-  COURSE = 'course',
-  CLASS = 'class',
-  TEST = 'test',
-  DELIVERABLE = 'deliverable',
+  TERMS = 'term',
+  TEACHERS = 'teachers',
+  TEACHER = 'teacher',
+  SUBJECTS = 'subjects',
   SUBJECT = 'subject',
-  TEACHER = 'teacher'
+  COURSES = 'courses',
+  COURSE = 'course',
+  CLASSES = 'classes',
+  CLASS = 'class',
+  TESTS = 'tests',
+  TEST = 'test',
+  DELIVERABLES = 'deliverables',
+  DELIVERABLE = 'deliverable'
 }
 
 export const ID_REGEX = /^[a-f\d]{24}$/i
+export const CODE_REGEX = /^\w[\w-]*$/
+export const TITLE_REGEX = /^\w[\w -]*$/
+export const NAME_REGEX = /^[^\s][^\n]*$/
 
 export interface ViewInfo {
   name: ViewName
@@ -53,7 +63,7 @@ export class ManageComponent implements OnInit {
   viewInfo$ = new ReplaySubject<ViewInfo>(1)
   canNavigateBack: boolean
 
-  constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, public popupService: PopupService, private router: Router) {}
+  constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, public popupService: PopupService, private router: Router) { }
 
   ngOnInit(): void {
     this.init()

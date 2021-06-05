@@ -1,0 +1,104 @@
+<!-- TODO don't show anything until we know if there is/isn't a document -->
+<div *ngVar="(course$ | async) as course">
+  <h2 *ngIf="!course">Add a New Course</h2>
+  <h2 *ngIf="course && (calendar$ | async) as calendar">Editing Course: {{course.subject.code}} {{course.code}}</h2>
+  <h3 class="remove-object color-red" *ngIf="course" (click)="removeCourse(course)">
+    Remove this course
+  </h3>
+  <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="input">
+      Code:
+      <input type="text" formControlName="code" [class]="{ 'invalid-input': !form.get('code').valid }" />
+      <span class="color-red" *ngIf="!form.get('code').valid">
+        <br />
+        The course code must be an alphanumeric string with no spaces.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Name:
+      <input type="text" formControlName="name" [class]="{ 'invalid-input': !form.get('name').valid }" />
+      <span class="color-red" *ngIf="!form.get('name').valid">
+        <br />
+        The course name must start with a letter or number and only contain alphanumeric characters or spaces.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Subject:
+      <select formControlName="subject">
+        <option value="">--Please select a subject--</option>
+        <option *ngFor="let subject of (subjects$ | async)" [value]="subject._id">
+          {{ subject.code }} / {{ subject.name }}
+        </option>
+      </select>
+      <span class="color-red" *ngIf="!form.get('subject').valid">
+        <br />
+        The subject you specified doesn't exist.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Teacher:
+      <select formControlName="teacher">
+        <option value="">--Optionally, select a teacher--</option>
+        <option *ngFor="let teacher of (teachers$ | async)" [value]="teacher._id">
+          {{ teacher.firstName }} {{ teacher.lastName }}
+        </option>
+      </select>
+      <span class="color-red" *ngIf="!form.get('teacher').valid">
+        <br />
+        The teacher you specified doesn't exist.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <button class="btn-accent" type="submit" [disabled]="!form.valid">Save</button>
+    <span class="color-red" *ngIf="!form.valid"> Some values you entered are invalid. Please check above. </span>
+  </form>
+  <span *ngIf="course">
+    <br />
+    <br />
+    <h2>List of Classes in this Course</h2>
+    <div class="list-item bg-secondary" *ngFor="let class of (classes$ | async)" (click)="goToClass(class)">
+      {{class.code}}
+    </div>
+    <span class="color-red" *ngIf="!hasClasses">
+      You haven't added any classes to this course.
+      <br />
+    </span>
+    <br />
+    <button class="btn-primary" (click)="goToClass()">
+      Click here to add a new class
+    </button>
+    <br />
+    <br />
+    <span class="color-muted"> Scroll past this section for more options. </span>
+    <h2>List of Tests in this Course</h2>
+    <div class="list-item bg-secondary" *ngFor="let test of (tests$ | async)" (click)="goToTest(test)">
+      {{ test.date | date: 'd MMM' }} | {{ test.title }}
+    </div>
+    <span class="color-red" *ngIf="!hasTests">
+      You haven't added any tests to this course.
+      <br />
+    </span>
+    <br />
+    <button class="btn-primary" (click)="goToTest()">Click here to add a new test</button>
+    <br />
+    <br />
+    <h2>List of Deliverables in this Course</h2>
+    <div class="list-item bg-secondary" *ngFor="let deliverable of (deliverables$ | async)"
+      (click)="goToDeliverable(deliverable)">
+      {{ deliverable.deadline | date: 'd MMM' }} | {{ deliverable.title }}
+    </div>
+    <span class="color-red" *ngIf="!hasDeliverables">
+      You haven't added any deliverables to this course.
+      <br />
+    </span>
+    <br />
+    <button class="btn-primary" (click)="goToDeliverable()">Click here to add a new deliverable</button>
+  </span>
+</div>

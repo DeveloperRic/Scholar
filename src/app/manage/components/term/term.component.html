@@ -1,0 +1,63 @@
+<div *ngVar="(term$ | async) as term">
+  <h2 *ngIf="!term">Add a New Term</h2>
+  <h2 *ngIf="term && (calendar$ | async) as calendar">Editing Term: {{term.name}} {{calendar.year}}</h2>
+  <h3 class="remove-object color-red" *ngIf="term" (click)="removeTerm(term)">
+    Remove this term
+  </h3>
+  <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="input">
+      Name:
+      <input type="text" formControlName="name" [class]="{'invalid-input': !form.get('name').valid}">
+      <span class="color-red" *ngIf="!form.get('name').valid">
+        <br />
+        The term name must start with a letter or number and only contain alphanumeric characters or spaces.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Start:
+      <input type="date" formControlName="start" max="{{form.get('end').value | date:'yyyy-MM-dd'}}"
+        [class]="{'invalid-input': !form.get('start').valid}">
+      <span class="color-red" *ngIf="!form.get('start').valid">
+        <br />
+        The term cannot start after it ends and cannot start before its calendar starts
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      End:
+      <input type="date" formControlName="end" min="{{form.get('start').value | date:'yyyy-MM-dd'}}"
+        [class]="{'invalid-input': !form.get('end').valid}">
+      <span class="color-red" *ngIf="!form.get('end').valid">
+        <br />
+        The term cannot end before it starts and cannot end after its calendar ends
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <button class="btn-accent" type="submit" [disabled]="!form.valid">
+      Save
+    </button>
+    <span class="color-red" *ngIf="!form.valid">
+      Some values you entered are invalid. Please check above.
+    </span>
+  </form>
+  <span *ngIf="term">
+    <br />
+    <br />
+    <h2>List of Courses in this Term</h2>
+    <div class="list-item bg-secondary" *ngFor="let course of (courses$ | async)" (click)="goToCourse(course)">
+      {{course.code}} / {{course.name}}
+    </div>
+    <span class="color-red" *ngIf="!hasCourses">
+      You haven't added any courses to this term.
+      <br />
+    </span>
+    <br />
+    <button class="btn-primary" (click)="goToCourse()">
+      Click here to add a new course.
+    </button>
+  </span>
+</div>

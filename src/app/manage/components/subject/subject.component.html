@@ -1,0 +1,42 @@
+<div *ngVar="(subject$ | async) as subject">
+  <h2>{{!subject ? 'Create a New Subject' : 'Editing Subject: ' + subject.code}}</h2>
+  <h3 class="remove-object color-red" *ngIf="subject" (click)="removeSubject(subject)">
+    Remove this subject
+  </h3>
+  <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="input">
+      Code:
+      <input type="text" formControlName="code" [class]="{ 'invalid-input': !form.get('code').valid }" />
+      <span class="color-red" *ngIf="!form.get('code').valid">
+        <br />
+        The subject code must be an alphanumeric string with no spaces.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Name:
+      <input type="text" formControlName="name" [class]="{ 'invalid-input': !form.get('name').valid }" />
+      <span class="color-red" *ngIf="!form.get('name').valid">
+        <br />
+        The subject name must start with a letter or number and only contain alphanumeric characters or spaces.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Hue:
+      <select formControlName="hue">
+        <option *ngFor="let hue of util.hues" [value]="hue.value">{{ hue.name }}</option>
+      </select>
+      <span class="color-red" *ngIf="!form.get('hue').valid">
+        <br />
+        The hue you specified is not supported.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <button class="btn-accent" type="submit" [disabled]="!form.valid">Save</button>
+    <span class="color-red" *ngIf="!form.valid"> Some values you entered are invalid. Please check above. </span>
+  </form>
+</div>

@@ -70,29 +70,54 @@ export class RealmService implements DatabaseLink {
 
   fetch = {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchCalendar(new ObjectId(_id))),
-    subject: (_id: Subject['_id']) =>
-      this.popupService.performWithPopup('Fetching subject', () => this.app.currentUser.functions.fetchSubject(new ObjectId(_id))),
-    term: (_id: Term['_id']) => this.popupService.performWithPopup('Fetching term', () => this.app.currentUser.functions.fetchTerm(new ObjectId(_id))),
-    teacher: (_id: Teacher['_id']) =>
-      this.popupService.performWithPopup('Fetching teacher', () => this.app.currentUser.functions.fetchTeacher(new ObjectId(_id))),
-    course: (_id: Course['_id']) => this.popupService.performWithPopup('Fetching course', () => this.app.currentUser.functions.fetchCourse(new ObjectId(_id))),
-    class: (_id: Class['_id']) => this.popupService.performWithPopup('Fetching class', () => this.app.currentUser.functions.fetchClass(new ObjectId(_id))),
-    deliverable: (_id: Deliverable['_id']) =>
-      this.popupService.performWithPopup('Fetching deliverable', () => this.app.currentUser.functions.fetchDeliverable(new ObjectId(_id))),
-    test: (_id: Test['_id']) => this.popupService.performWithPopup('Fetching test', () => this.app.currentUser.functions.fetchTest(new ObjectId(_id)))
+    subject: (_id: Subject['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchSubject(new ObjectId(_id))
+    ),
+    term: (_id: Term['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchTerm(new ObjectId(_id))
+    ),
+    teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchTeacher(new ObjectId(_id))
+    ),
+    course: (_id: Course['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchCourse(new ObjectId(_id))
+    ),
+    class: (_id: Class['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchClass(new ObjectId(_id))
+    ),
+    deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchDeliverable(new ObjectId(_id))
+    ),
+    test: (_id: Test['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.fetchTest(new ObjectId(_id))
+    )
   }
   put = {
     // TODO ensure all account documents have unique emails
     // TODO rename Atlas DB to prod before launching (separate server for dev & prod)
     calendar: (calendar: Calendar) =>
       this.util.promiseToObservable(() => this.app.currentUser.functions.putCalendar(this.convertIdStringsToObjectIds(calendar))),
-    subject: (subject: Subject) => this.app.currentUser.functions.putSubject(this.convertIdStringsToObjectIds(subject)),
-    term: (term: Term) => this.app.currentUser.functions.putTerm(this.convertIdStringsToObjectIds(term)),
-    teacher: (teacher: Teacher) => this.app.currentUser.functions.putTeacher(this.convertIdStringsToObjectIds(teacher)),
-    course: (course: Course) => this.app.currentUser.functions.putCourse(this.convertIdStringsToObjectIds(course)),
-    class: (klass: Class) => this.app.currentUser.functions.putClass(this.convertIdStringsToObjectIds(klass)),
-    deliverable: (deliverable: Deliverable) => this.app.currentUser.functions.putDeliverable(this.convertIdStringsToObjectIds(deliverable)),
-    test: (test: Test) => this.app.currentUser.functions.putTest(this.convertIdStringsToObjectIds(test))
+    subject: (subject: Subject) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putSubject(this.convertIdStringsToObjectIds(subject))
+    ),
+    term: (term: Term) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putTerm(this.convertIdStringsToObjectIds(term))
+    ),
+    teacher: (teacher: Teacher) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putTeacher(this.convertIdStringsToObjectIds(teacher))
+    ),
+    course: (course: Course) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putCourse(this.convertIdStringsToObjectIds(course))
+    ),
+    class: (klass: Class) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putClass(this.convertIdStringsToObjectIds(klass))
+    ),
+    deliverable: (deliverable: Deliverable) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putDeliverable(this.convertIdStringsToObjectIds(deliverable))
+    ),
+    test: (test: Test) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.putTest(this.convertIdStringsToObjectIds(test))
+    )
   }
   all = {
     calendars: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchCalendars(new ObjectId(accountId))),
@@ -106,13 +131,27 @@ export class RealmService implements DatabaseLink {
   }
   remove = {
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.removeCalendar(new ObjectId(_id))),
-    subject: async (_id: Subject['_id']) => this.app.currentUser.functions.removeSubject(new ObjectId(_id)),
-    term: async (_id: Term['_id']) => this.app.currentUser.functions.removeTerm(new ObjectId(_id)),
-    teacher: async (_id: Teacher['_id']) => this.app.currentUser.functions.removeTeacher(new ObjectId(_id)),
-    course: async (_id: Course['_id']) => this.app.currentUser.functions.removeCourse(new ObjectId(_id)),
-    class: async (_id: Class['_id']) => this.app.currentUser.functions.removeClass(new ObjectId(_id)),
-    deliverable: async (_id: Deliverable['_id']) => this.app.currentUser.functions.removeDeliverable(new ObjectId(_id)),
-    test: async (_id: Test['_id']) => this.app.currentUser.functions.removeTest(new ObjectId(_id))
+    subject: (_id: Subject['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeSubject(new ObjectId(_id))
+    ),
+    term: (_id: Term['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeTerm(new ObjectId(_id))
+    ),
+    teacher: (_id: Teacher['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeTeacher(new ObjectId(_id))
+    ),
+    course: (_id: Course['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeCourse(new ObjectId(_id))
+    ),
+    class: (_id: Class['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeClass(new ObjectId(_id))
+    ),
+    deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeDeliverable(new ObjectId(_id))
+    ),
+    test: (_id: Test['_id']) => this.util.promiseToObservable(
+      () => this.app.currentUser.functions.removeTest(new ObjectId(_id))
+    )
   }
   search = {
     classesWithinRange: (min: Date, max: Date) =>

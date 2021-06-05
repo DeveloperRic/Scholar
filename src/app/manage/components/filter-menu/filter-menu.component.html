@@ -4,8 +4,30 @@
     <td>
       <select formControlName="calendar">
         <option value="">--Please select a calendar--</option>
-        <option *ngFor="let calendar of (calendars$ | async)" value="{{calendar._id}}">
+        <option *ngFor="let calendar of (calendars$ | async)" [value]="calendar._id">
           {{calendar.year}}
+        </option>
+      </select>
+    </td>
+  </tr>
+  <tr *ngIf="filterIsEnabled(FilterField.TERM)">
+    <td>Term</td>
+    <td>
+      <select formControlName="term">
+        <option value="">--Please select a term--</option>
+        <option *ngFor="let term of (terms$ | async)" [value]="term._id">
+          {{term.calendar.year}} - {{term.name}}
+        </option>
+      </select>
+    </td>
+  </tr>
+  <tr *ngIf="filterIsEnabled(FilterField.COURSE)">
+    <td>Course</td>
+    <td>
+      <select formControlName="course">
+        <option value="">--Please select a course--</option>
+        <option *ngFor="let course of (courses$ | async)" [value]="course._id">
+          {{course.subject.code}} {{course.code}}
         </option>
       </select>
     </td>

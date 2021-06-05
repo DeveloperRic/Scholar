@@ -1,13 +1,24 @@
-<h2>Classes</h2>
-<div class="list-item bg-secondary" *ngFor="let klass of (classes$ | async)"
-  (click)="navigateToView('klass', klass._id, view.model._id)">
-  {{klass.name}}
+<h2 class="filter-row">
+  Classes
+  <button (click)="toggleFilterMenu()" [class]="{'bg-secondary': filterMenuVisible}">
+    <i class="material-icons">filter_list</i>
+    Filter
+  </button>
+</h2>
+<manage-filter-menu *ngIf="filterMenuVisible" [enabledFilters]="enabledFilters"
+  (formChangeEvent)="onFilterChange($event)"></manage-filter-menu>
+<div class="list-item bg-secondary" *ngFor="let class of (classes$ | async)" (click)="goToClass(class)">
+  {{class.course.subject.code}} {{class.course.code}} {{ class.code }}
 </div>
-<span class="color-red" *ngIf="noClasses">
+<span class="color-red" *ngIf="!hasClasses">
+  <!-- TODO these messages should specify if a filter is enabled -->
   You haven't added any classes.
   <br />
 </span>
 <br />
-<button class="btn-primary" (click)="onAddClassClick()">
-  Click here to add a new klass.
+<button class="btn-primary" *ngIf="(course$ | async) as course" (click)="goToClass()">
+  Click here to add a new class for {{course.subject.code}} {{course.code}}
 </button>
+<span *ngIf="!(selectedCourseId$ | async)">
+  To add new classes, select a course in the top filter first
+</span>

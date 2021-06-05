@@ -23,34 +23,34 @@ export interface DatabaseLink {
   }
   fetch: {
     calendar: (_id: Calendar['_id']) => Observable<Calendar>
-    subject: (_id: Subject['_id']) => Promise<Subject>
-    term: (_id: Term['_id']) => Promise<Term>
-    teacher: (_id: Teacher['_id']) => Promise<Teacher>
-    course: (_id: Course['_id']) => Promise<Course>
-    class: (_id: Class['_id']) => Promise<Class>
-    deliverable: (_id: Deliverable['_id']) => Promise<Deliverable>
-    test: (_id: Test['_id']) => Promise<Test>
+    subject: (_id: Subject['_id']) => Observable<Subject>
+    term: (_id: Term['_id']) => Observable<Term>
+    teacher: (_id: Teacher['_id']) => Observable<Teacher>
+    course: (_id: Course['_id']) => Observable<Course>
+    class: (_id: Class['_id']) => Observable<Class>
+    deliverable: (_id: Deliverable['_id']) => Observable<Deliverable>
+    test: (_id: Test['_id']) => Observable<Test>
   }
   //TODO realm doesnt return these ids
   put: {
     calendar: (calendar: Calendar) => Observable<Calendar['_id']>
-    subject: (subject: Subject) => Promise<Subject['_id']>
-    term: (term: Term) => Promise<Term['_id']>
-    teacher: (teacher: Teacher) => Promise<Teacher['_id']>
-    course: (course: Course) => Promise<Course['_id']>
-    class: (klass: Class) => Promise<Class['_id']>
-    deliverable: (deliverable: Deliverable) => Promise<Deliverable['_id']>
-    test: (test: Test) => Promise<Test['_id']>
+    subject: (subject: Subject) => Observable<Subject['_id']>
+    term: (term: Term) => Observable<Term['_id']>
+    teacher: (teacher: Teacher) => Observable<Teacher['_id']>
+    course: (course: Course) => Observable<Course['_id']>
+    class: (klass: Class) => Observable<Class['_id']>
+    deliverable: (deliverable: Deliverable) => Observable<Deliverable['_id']>
+    test: (test: Test) => Observable<Test['_id']>
   }
   remove: {
     calendar: (_id: Calendar['_id']) => Observable<void>
-    subject: (_id: Subject['_id']) => Promise<void>
-    term: (_id: Term['_id']) => Promise<void>
-    teacher: (_id: Teacher['_id']) => Promise<void>
-    course: (_id: Course['_id']) => Promise<void>
-    class: (_id: Class['_id']) => Promise<void>
-    deliverable: (_id: Deliverable['_id']) => Promise<void>
-    test: (_id: Test['_id']) => Promise<void>
+    subject: (_id: Subject['_id']) => Observable<void>
+    term: (_id: Term['_id']) => Observable<void>
+    teacher: (_id: Teacher['_id']) => Observable<void>
+    course: (_id: Course['_id']) => Observable<void>
+    class: (_id: Class['_id']) => Observable<void>
+    deliverable: (_id: Deliverable['_id']) => Observable<void>
+    test: (_id: Test['_id']) => Observable<void>
   }
   search: {
     classesWithinRange: (min: Date, max: Date) => Promise<Class[]>
