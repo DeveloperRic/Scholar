@@ -16,7 +16,7 @@ import { Teacher, TeacherIndices } from '../model/teacher'
 import { Term, TermIndices } from '../model/term'
 import { Test, TestIndices } from '../model/test'
 import { UtilService } from '../services/util.service'
-import { DatabaseLink } from './databaseLink'
+import { ClassesWithinRangeResult, DatabaseLink, DeliverablesDueWithinRangeResult, TestsWithinRangeResult } from './databaseLink'
 
 const DATABASE_NAME = 'ScholarDatabase'
 const DATABASE_VERSION = 1
@@ -134,7 +134,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
           .toArray()
       ).map(klass => {
         klass.course = courses.find(course => course._id === klass.course)
-        return klass
+        return <ClassesWithinRangeResult[0]>klass
       })
     },
     deliverablesDueWithinRange: async (min: Date, max: Date) => {
@@ -147,7 +147,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
           .toArray()
       ).map(deliverable => {
         deliverable.course = courses.find(course => course._id === deliverable.course)
-        return deliverable
+        return <DeliverablesDueWithinRangeResult[0]>deliverable
       })
     },
     testsWithinRange: async (min: Date, max: Date) => {
@@ -160,7 +160,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
           .toArray()
       ).map(test => {
         test.course = courses.find(course => course._id === test.course)
-        return test
+        return <TestsWithinRangeResult[0]>test
       })
     }
   }

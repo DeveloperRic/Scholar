@@ -10,6 +10,16 @@ import { Class } from '../model/class'
 import { Deliverable } from '../model/deliverable'
 import { Test } from '../model/test'
 
+export type ClassesWithinRangeResult = (
+  Omit<Class, 'course'> & { course: Course }
+)[]
+export type DeliverablesDueWithinRangeResult = (
+  Omit<Deliverable, 'course'> & { course: Course }
+)[]
+export type TestsWithinRangeResult = (
+  Omit<Test, 'course'> & { course: Course }
+)[]
+
 export interface DatabaseLink {
   all: {
     calendars: (accountId: Account['_id']) => Observable<Calendar[]>
@@ -53,8 +63,8 @@ export interface DatabaseLink {
     test: (_id: Test['_id']) => Observable<void>
   }
   search: {
-    classesWithinRange: (min: Date, max: Date) => Promise<Class[]>
-    deliverablesDueWithinRange: (min: Date, max: Date) => Promise<Deliverable[]>
-    testsWithinRange: (min: Date, max: Date) => Promise<Test[]>
+    classesWithinRange: (min: Date, max: Date) => Promise<ClassesWithinRangeResult>
+    deliverablesDueWithinRange: (min: Date, max: Date) => Promise<DeliverablesDueWithinRangeResult>
+    testsWithinRange: (min: Date, max: Date) => Promise<TestsWithinRangeResult>
   }
 }

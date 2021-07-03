@@ -1,4 +1,4 @@
-<div class="offline" *ngIf="!isOnline">
+<div class="offline" *ngIf="!(isOnline$ | async)">
   You are offline, content may be out of date
 </div>
 <div class="buttons">
@@ -8,13 +8,13 @@
     </i>
     Home
   </button>
-  <button class="nav-btn" (click)="navigateTo('calendar')" [class]="{'color-accent': currentPageIs('calendar')}">
+  <button class="nav-btn" *ngIf="isLoggedIn$ | async" (click)="navigateTo('calendar')" [class]="{'color-accent': currentPageIs('calendar')}">
     <i class="material-icons" [class]="{'color-accent': currentPageIs('calendar')}">
       date_range
     </i>
     Calendar
   </button>
-  <button class="nav-btn" (click)="navigateTo('manage')" [class]="{'color-accent': currentPageIs('manage')}">
+  <button class="nav-btn" *ngIf="isLoggedIn$ | async" (click)="navigateTo('manage')" [class]="{'color-accent': currentPageIs('manage')}">
     <i class="material-icons" [class]="{'color-accent': currentPageIs('manage')}">
       settings
     </i>

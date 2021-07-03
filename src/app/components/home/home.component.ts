@@ -2,16 +2,18 @@ import { Component, OnInit, Output } from '@angular/core'
 import { DatabaseService } from '../../database/database.service'
 import { UtilService } from '../../services/util.service'
 import { ErrorCodes } from '../../services/ErrorCodes'
-import { Class, ClassOccurrence } from '../../model/class'
+import { ClassOccurrence } from '../../model/class'
 import { Reminder } from '../../model/reminder'
-import { Test } from '../../model/test'
-import { Deliverable } from '../../model/deliverable'
 import { Model } from '../../model/_model'
 import { Router } from '@angular/router'
-import { DatabaseLink } from '../../database/databaseLink'
+import { ClassesWithinRangeResult, DatabaseLink, DeliverablesDueWithinRangeResult, TestsWithinRangeResult } from '../../database/databaseLink'
 import { Course } from '../../model/course'
 import { Term } from '../../model/term'
 import { ViewName } from '../../manage/manage.component'
+
+type Class = ClassesWithinRangeResult[0]
+type Deliverable = DeliverablesDueWithinRangeResult[0]
+type Test = TestsWithinRangeResult[0]
 
 interface Card {
   type: CardType
@@ -64,7 +66,7 @@ export class HomeComponent implements OnInit {
   @Output() loading = false
   @Output() cards: Card[] = []
 
-  constructor(private router: Router, private databaseService: DatabaseService, private util: UtilService) {}
+  constructor(private router: Router, private databaseService: DatabaseService, private util: UtilService) { }
 
   ngOnInit(): void {
     console.log('Home: Initialising...')
@@ -90,7 +92,7 @@ export class HomeComponent implements OnInit {
     this.loadMore()
   }
 
-  onScroll() {}
+  onScroll() { }
 
   loadMore() {
     // if there's no max date, set one to yesterday so we start loading from today
@@ -195,10 +197,10 @@ export class HomeComponent implements OnInit {
     return date
   }
 
-  navigateToView(name: ViewName, modelId?: Model['_id'], parentId?: Model['_id']) {
+  navigateToManageView(name: ViewName, docId?: Model['_id'], parentId?: Model['_id']) {
     let url = `/manage?view=${name}`
-    if (modelId) url += `&_id=${modelId}`
-    if (parentId) url += `&parent=${parentId}`
+    if (docId) url += `&docId=${docId}`
+    if (parentId) url += `&parentId=${parentId}`
     this.router.navigateByUrl(url)
   }
 

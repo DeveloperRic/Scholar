@@ -1,6 +1,8 @@
 import { Location } from '@angular/common'
-import { Component, OnInit, Output } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { Router } from '@angular/router'
+import { Observable } from 'rxjs'
+import { RealmService } from 'src/app/database/realm.service'
 import { SyncService } from '../../../database/sync.service'
 
 @Component({
@@ -10,15 +12,21 @@ import { SyncService } from '../../../database/sync.service'
 })
 export class NavbarComponent implements OnInit {
   private currentPage: string
-  @Output() isOnline: boolean
+  isOnline$: Observable<boolean>
+  isLoggedIn$: Observable<boolean>
 
-  constructor(private router: Router, private location: Location) {}
+  constructor(
+    private router: Router,
+    private location: Location,
+    private realmService: RealmService
+  ) { }
 
   ngOnInit(): void {
     this.location.onUrlChange(() => {
       this.currentPage = this.location.path().substr(1)
     })
-    SyncService.isOnline.subscribe(isOnline => (this.isOnline = isOnline))
+    this.isOnline$ = SyncService.isOnline
+    this.isLoggedIn$ = this.realmService.isLoggedIn$
   }
 
   currentPageIs(pageName: string) {
