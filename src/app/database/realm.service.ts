@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import * as Realm from 'realm-web'
+import { BehaviorSubject } from 'rxjs'
 
 import { DatabaseLink } from './databaseLink'
 import { environment } from '../../environments/environment'
@@ -22,10 +23,12 @@ import { UtilService } from '../services/util.service'
 })
 export class RealmService implements DatabaseLink {
   private app: Realm.App
+  isLoggedIn$: BehaviorSubject<boolean>
 
   constructor(private popupService: PopupService, private util: UtilService) {
     console.log('RealmService: Creating a new App instance')
     this.app = new Realm.App({ id: environment.REALM_APP_ID })
+    this.isLoggedIn$ = new BehaviorSubject<boolean>(this.isLoggedIn())
   }
 
   isLoggedIn() {
@@ -46,12 +49,14 @@ export class RealmService implements DatabaseLink {
     //TODO tell user that u are confirming credentials
     await this.app.logIn(credentials)
     console.log('RealmService: Successfully logged in')
+    this.isLoggedIn$.next(this.isLoggedIn())
   }
 
   async logout() {
     console.log('RealmService: Logging out of Realm...')
     await this.app.currentUser.logOut()
     console.log('RealmService: Successfully logged out of Realm')
+    this.isLoggedIn$.next(this.isLoggedIn())
   }
 
   private convertIdStringsToObjectIds<T extends Model>(model: T): T {
