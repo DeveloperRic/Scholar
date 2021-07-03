@@ -35,7 +35,7 @@
       </p>
       <p *ngSwitchCase="'class'" class="home-card home-card-class"
         [ngStyle]="{'color': util.parseHue(card.data.course.subject.hue).darker}"
-        (click)="navigateToView('class', card.data._id)">
+        (click)="navigateToManageView('class', card.data._id, card.data.course._id)">
         <span class="home-card-label">
           <i class="material-icons">class&nbsp;</i>
           Class
@@ -50,7 +50,7 @@
       </p>
       <p *ngSwitchCase="'deliverable'" class="home-card home-card-deliverable"
         [ngStyle]="{'color': util.parseHue(card.data.course.subject.hue).darker}"
-        (click)="navigateToView('deliverable', card.data._id)">
+        (click)="navigateToManageView('deliverable', card.data._id, card.data.course._id)">
         <span class="home-card-label color-orange">
           <i class="material-icons">done&nbsp;</i>
           Deliverable
@@ -76,7 +76,7 @@
       </p>
       <p *ngSwitchCase="'test'" class="home-card home-card-test"
         [ngStyle]="{'color': util.parseHue(card.data.course.subject.hue).darker}"
-        (click)="navigateToView('test', card.data._id)">
+        (click)="navigateToManageView('test', card.data._id, card.data.course._id)">
         <span class="home-card-label color-red">
           <i class="material-icons">mode_edit&nbsp;</i>
           Test
