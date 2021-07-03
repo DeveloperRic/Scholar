@@ -19,7 +19,17 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "assets": ["src/favicon.ico", "src/assets", "src/manifest.webmanifest", "src/.well-known/assetlinks.json"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
+              "src/.well-known/assetlinks.json",
+              {
+                "glob": "_redirects",
+                "input": "src",
+                "output": "/"
+              }
+            ],
             "styles": ["src/custom-theme.scss", "src/styles/base.css"],
             "scripts": []
           },
