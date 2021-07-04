@@ -1,5 +1,5 @@
 <div *ngVar="(calendar$ | async) as calendar">
-  <h2>{{!calendar ? 'Create a New Calendar' : 'Editing Calendar: ' + calendar.year}}</h2>
+  <h2>{{!calendar ? 'Add a New Academic Calendar' : 'Editing Calendar: ' + calendar.year}}</h2>
   <h3 class="remove-object color-red" *ngIf="calendar" (click)="removeCalendar(calendar)">
     Remove this calendar
   </h3>

@@ -1,12 +1,12 @@
-<h2>Calendars</h2>
+<h2>Academic Calendars</h2>
 <div class="list-item bg-secondary" *ngFor="let calendar of (calendars$ | async)" (click)="goToCalendar(calendar)">
   {{calendar.year}}
 </div>
 <span class="color-red" *ngIf="noCalendars">
-  You haven't added any school calendars.
+  You haven't added any academic calendars.
   <br />
 </span>
 <br />
 <button class="btn-primary" (click)="goToCalendar()">
-  Click here to add a new calendar.
+  Click here to add a new academic calendar.
 </button>
