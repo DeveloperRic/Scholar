@@ -8,9 +8,10 @@ import { DatabaseService } from 'src/app/database/database.service'
 import { Calendar } from 'src/app/model/calendar'
 import { Course } from 'src/app/model/course'
 import { Teacher } from 'src/app/model/teacher'
+import { EMAIL_SCHEMA_REGEX, NAME_REGEX } from 'src/app/model/_model'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
 import { PopupService } from 'src/app/services/popup.service'
-import { ViewInfo, ViewName, NAME_REGEX } from '../../manage.component'
+import { ViewInfo, ViewName } from '../../manage.component'
 
 @Component({
   selector: 'manage-teacher',
@@ -62,7 +63,7 @@ export class TeacherComponent implements OnInit {
     this.form = new FormGroup({
       firstName: new FormControl(initialState.firstName, [Validators.required, Validators.pattern(NAME_REGEX)]),
       lastName: new FormControl(initialState.lastName, [Validators.required, Validators.pattern(NAME_REGEX)]),
-      email: new FormControl(initialState.email, Validators.email)
+      email: new FormControl(initialState.email, [Validators.email, Validators.pattern(EMAIL_SCHEMA_REGEX)])
     })
     return teacher
   }
@@ -78,9 +79,10 @@ export class TeacherComponent implements OnInit {
             account: this.databaseService.accountId,
             calendar: calendarId,
             firstName: this.form.get('firstName').value,
-            lastName: this.form.get('lastName').value,
-            email: this.form.get('email').value
+            lastName: this.form.get('lastName').value
           }
+          const email = this.form.get('email').value
+          if (email) teacher.email = email
           return this.databaseService.database.put.teacher(teacher).pipe(
             map(() => this.pushViewEvent.emit({
               name: ViewName.TEACHER,

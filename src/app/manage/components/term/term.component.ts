@@ -8,10 +8,11 @@ import { DatabaseService } from 'src/app/database/database.service'
 import { Calendar } from 'src/app/model/calendar'
 import { Course } from 'src/app/model/course'
 import { Term } from 'src/app/model/term'
+import { TITLE_REGEX } from 'src/app/model/_model'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
 import { PopupService } from 'src/app/services/popup.service'
 import { UtilService } from 'src/app/services/util.service'
-import { ViewInfo, TITLE_REGEX, ViewName } from '../../manage.component'
+import { ViewInfo, ViewName } from '../../manage.component'
 
 @Component({
   selector: 'manage-term',

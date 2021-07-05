@@ -9,7 +9,7 @@ import { Course as _Course } from 'src/app/model/course'
 import { Class } from 'src/app/model/class'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
 import { PopupService } from 'src/app/services/popup.service'
-import { ViewInfo, ViewName, CODE_REGEX } from '../../manage.component'
+import { ViewInfo, ViewName } from '../../manage.component'
 import { RelativeWeeklyScheduleRepeat, ScheduleRepeatBasis, ScheduleRepeatDay } from 'src/app/model/schedule'
 import { UtilService } from 'src/app/services/util.service'
 import { Teacher } from 'src/app/model/teacher'
@@ -17,6 +17,7 @@ import { Term } from 'src/app/model/term'
 import { Calendar } from 'src/app/model/calendar'
 import { Subject } from 'src/app/model/subject'
 import { StartEndDateValidator } from 'src/app/services/start-end-date.validator'
+import { CODE_REGEX } from 'src/app/model/_model'
 
 type Course = _Course & { subject: Subject }
 

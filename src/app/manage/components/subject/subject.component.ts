@@ -8,9 +8,10 @@ import { PopupService } from 'src/app/services/popup.service'
 import { Subject } from 'src/app/model/subject'
 import { ObjectId } from 'bson'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
-import { CODE_REGEX, TITLE_REGEX, ViewInfo, ViewName } from '../../manage.component'
+import { ViewInfo, ViewName } from '../../manage.component'
 import { Hue } from 'src/app/model/hue'
 import { UtilService } from 'src/app/services/util.service'
+import { CODE_REGEX, TITLE_REGEX } from 'src/app/model/_model'
 
 @Component({
   selector: 'manage-subject',
