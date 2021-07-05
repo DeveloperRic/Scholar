@@ -79,9 +79,10 @@ export class TeacherComponent implements OnInit {
             account: this.databaseService.accountId,
             calendar: calendarId,
             firstName: this.form.get('firstName').value,
-            lastName: this.form.get('lastName').value,
-            email: this.form.get('email').value
+            lastName: this.form.get('lastName').value
           }
+          const email = this.form.get('email').value
+          if (email) teacher.email = email
           return this.databaseService.database.put.teacher(teacher).pipe(
             map(() => this.pushViewEvent.emit({
               name: ViewName.TEACHER,
