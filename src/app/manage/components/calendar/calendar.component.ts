@@ -11,6 +11,7 @@ import { ObjectId } from 'bson'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
 import { Teacher } from 'src/app/model/teacher'
 import { ViewInfo, ViewName } from '../../manage.component'
+import { StartEndDateValidator } from 'src/app/services/start-end-date.validator'
 
 @Component({
   selector: 'manage-calendar',
@@ -66,10 +67,16 @@ export class CalendarComponent implements OnInit {
 
   setForm(calendar?: Calendar) {
     const currentYear = new Date().getFullYear()
-    const initialState = calendar?.year ?? currentYear
+    const initialState = {
+      year: calendar?.year ?? currentYear,
+      yearEnd: calendar?.yearEnd ?? (calendar.year == null ? currentYear + 1 : '')
+    }
+    const startEndValidators = new StartEndDateValidator('year', 'yearEnd', yearNum => new Date(yearNum, 0))
     this.form = new FormGroup({
-      year: new FormControl(initialState, [Validators.required, Validators.min(currentYear - 1)])
+      year: new FormControl(initialState.year, [Validators.required, Validators.min(currentYear - 1)]),
+      yearEnd: new FormControl(initialState.yearEnd, [Validators.required, startEndValidators.endValidator])
     })
+    startEndValidators.setForm(this.form)
   }
 
   async submit() {
@@ -82,7 +89,8 @@ export class CalendarComponent implements OnInit {
             const calendar: Calendar = {
               _id: calendarId || new ObjectId().toHexString(),
               account: this.databaseService.accountId,
-              year: this.form.get('year').value
+              year: this.form.get('year').value,
+              yearEnd: this.form.get('yearEnd').value
             }
             return this.databaseService.database.put.calendar(calendar).pipe(map(() => calendar._id))
           }),

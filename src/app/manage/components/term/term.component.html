@@ -1,6 +1,6 @@
 <div *ngVar="(term$ | async) as term">
   <h2 *ngIf="!term">Add a New Term</h2>
-  <h2 *ngIf="term && (calendar$ | async) as calendar">Editing Term: {{term.name}} {{calendar.year}}</h2>
+  <h2 *ngIf="term">Editing Term: {{term.name}} {{getTermYear(term)}}</h2>
   <h3 class="remove-object color-red" *ngIf="term" (click)="removeTerm(term)">
     Remove this term
   </h3>

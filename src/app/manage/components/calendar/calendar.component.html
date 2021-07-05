@@ -1,15 +1,26 @@
 <div *ngVar="(calendar$ | async) as calendar">
-  <h2>{{!calendar ? 'Add a New Academic Calendar' : 'Editing Calendar: ' + calendar.year}}</h2>
+  <h2 *ngIf="!calendar">Add a New Academic Calendar</h2>
+  <h2 *ngIf="calendar">Editing Calendar: {{calendar.year}} - {{calendar.yearEnd}}</h2>
   <h3 class="remove-object color-red" *ngIf="calendar" (click)="removeCalendar(calendar)">
     Remove this calendar
   </h3>
   <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
     <label class="input">
-      Calendar year:
+      From year:
       <input type="number" formControlName="year" [class]="{'invalid-input': !form.get('year').valid}">
       <span class="color-red" *ngIf="!form.get('year').valid">
         <br />
-        The calendar year must be a number and cannot be earlier than last year.
+        The calendar cannot start earlier than last year.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      To year:
+      <input type="number" formControlName="yearEnd" [class]="{'invalid-input': !form.get('yearEnd').valid}">
+      <span class="color-red" *ngIf="!form.get('yearEnd').valid">
+        <br />
+        The calendar cannot end before it starts.
       </span>
       <div class="label-floor"></div>
     </label>

@@ -10,6 +10,9 @@ import { ClassesWithinRangeResult, DatabaseLink, DeliverablesDueWithinRangeResul
 import { Course } from '../../model/course'
 import { Term } from '../../model/term'
 import { ViewName } from '../../manage/manage.component'
+import { ensureLoggedIn } from 'src/app/scholar-common/guards/is-logged-in.guard'
+import { AuthService } from '@auth0/auth0-angular'
+import { RealmService } from 'src/app/database/realm.service'
 
 type Class = ClassesWithinRangeResult[0]
 type Deliverable = DeliverablesDueWithinRangeResult[0]
@@ -66,7 +69,13 @@ export class HomeComponent implements OnInit {
   @Output() loading = false
   @Output() cards: Card[] = []
 
-  constructor(private router: Router, private databaseService: DatabaseService, private util: UtilService) { }
+  constructor(
+    private router: Router,
+    private databaseService: DatabaseService,
+    private util: UtilService,
+    private authService: AuthService,
+    private realmService: RealmService
+  ) { }
 
   ngOnInit(): void {
     console.log('Home: Initialising...')
@@ -76,6 +85,8 @@ export class HomeComponent implements OnInit {
   private async init() {
     try {
       const database = await this.databaseService.init()
+      // at this point we are authenticated in realm but not necessarily in auth0; ensure that we are
+      await this.ensureLoggedIn()
       this.database = database
       this.databaseStatus = 'connected'
       console.log('Home: Done initialising')
@@ -90,6 +101,10 @@ export class HomeComponent implements OnInit {
       return
     }
     this.loadMore()
+  }
+
+  private async ensureLoggedIn(): Promise<boolean> {
+    return await ensureLoggedIn(this.authService, this.realmService, '/').toPromise()
   }
 
   onScroll() { }

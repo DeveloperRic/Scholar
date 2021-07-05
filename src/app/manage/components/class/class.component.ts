@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
-import { FormGroup, FormControl, Validators, ValidatorFn, AbstractControl } from '@angular/forms'
+import { FormGroup, FormControl, Validators, ValidatorFn } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { ObjectId } from 'bson'
 import { Observable, of, zip } from 'rxjs'
@@ -16,6 +16,7 @@ import { Teacher } from 'src/app/model/teacher'
 import { Term } from 'src/app/model/term'
 import { Calendar } from 'src/app/model/calendar'
 import { Subject } from 'src/app/model/subject'
+import { StartEndDateValidator } from 'src/app/services/start-end-date.validator'
 
 type Course = _Course & { subject: Subject }
 
@@ -33,8 +34,6 @@ export class ClassComponent implements OnInit {
   course$: Observable<Course>
   teachers$: Observable<Teacher[]>
   form: FormGroup
-  startControlWasInvalid = false
-  endControlWasInvalid = false
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -91,10 +90,11 @@ export class ClassComponent implements OnInit {
           teacher: klass ? klass.teacher || '' : course.teacher,
           location: klass ? JSON.stringify(klass.location) : ''
         }
+        const startEndValidators = new StartEndDateValidator('start', 'end', this.util.convertInputTimeStringToDate)
         this.form = new FormGroup({
           code: new FormControl(initialState.code, [Validators.required, Validators.pattern(CODE_REGEX)]),
-          start: new FormControl(initialState.start, [Validators.required, this.util.getDateValidator(), this.getStartEndValidator()]),
-          end: new FormControl(initialState.end, [Validators.required, this.util.getDateValidator(), this.getStartEndValidator()]),
+          start: new FormControl(initialState.start, [Validators.required, this.util.getDateValidator()]),
+          end: new FormControl(initialState.end, [Validators.required, this.util.getDateValidator(), startEndValidators.endValidator]),
           // schedule: new FormControl(initialState.schedule, [Validators.required, this.getJSONValidator<Schedule>('badSchedule')]),
           repeat: new FormGroup(
             Object.keys(initialState.repeat).reduce((obj, key) => {
@@ -106,45 +106,10 @@ export class ClassComponent implements OnInit {
           teacher: new FormControl(initialState.teacher, Validators.pattern(/^[a-f\d]{24}$/i)),
           location: new FormControl(initialState.location, this.util.getJSONValidator<Location>('badLocation'))
         })
+        startEndValidators.setForm(this.form)
         return klass
       })
     )
-  }
-
-  private getStartEndValidator(): ValidatorFn {
-    const getCallback = (startControl: AbstractControl, endControl: AbstractControl, isStartControl: boolean): (error?: string) => ReturnType<ValidatorFn> => {
-      return error => {
-        if (error) { // return error if any
-          if (isStartControl) this.startControlWasInvalid = true
-          else this.endControlWasInvalid = true
-          const result = {}
-          if (error) result[error] = isStartControl ? startControl.value : endControl.value
-          return result
-        }
-        // classify the current control as valid
-        if (isStartControl) this.startControlWasInvalid = false
-        else this.endControlWasInvalid = false
-        // schedule the other control for re-validation (it should also be valid but it must be re-checked to update the UI)
-        if (this.startControlWasInvalid) startControl.setValue(startControl.value)
-        if (this.endControlWasInvalid) endControl.setValue(endControl.value)
-        // notify that the current control is valid
-        return {}
-      }
-    }
-    const validator: ValidatorFn = control => {
-      if (!this.form) return { error: 'no form' }
-      const startTimeControl = this.form.get('start')
-      const isStartControl = control === startTimeControl
-      const otherTimeControl = isStartControl ? this.form.get('end') : startTimeControl
-      const callback = getCallback(startTimeControl, otherTimeControl, isStartControl)
-      if (!control.value) return callback('badTime')
-      const thisControlValue: Date = this.util.convertInputTimeStringToDate(control.value)
-      const otherControlValue: Date = this.util.convertInputTimeStringToDate(otherTimeControl.value)
-      if (isStartControl && thisControlValue > otherControlValue) return callback('startTooLate')
-      if (!isStartControl && thisControlValue < otherControlValue) return callback('endTooEarly')
-      return callback()
-    }
-    return validator
   }
 
   private getRepeatValidator(): ValidatorFn {
