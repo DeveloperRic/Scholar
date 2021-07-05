@@ -1,9 +1,8 @@
-import { Group } from './group'
 import { Model, ModelIndices } from './_model'
 
 export interface Calendar extends Model {
   year: number
-  group?: Model['_id'] | Group
+  yearEnd: number
 }
 
 export class CalendarIndices extends ModelIndices {
