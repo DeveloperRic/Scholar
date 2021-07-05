@@ -28,11 +28,6 @@ export enum ViewName {
   DELIVERABLE = 'deliverable'
 }
 
-export const ID_REGEX = /^[a-f\d]{24}$/i
-export const CODE_REGEX = /^\w[\w-]*$/
-export const TITLE_REGEX = /^\w[\w -]*$/
-export const NAME_REGEX = /^[^\s][^\n]*$/
-
 export interface ViewInfo {
   name: ViewName
   parentId?: Model['_id']

@@ -7,7 +7,7 @@ import { Calendar } from 'src/app/model/calendar'
 import { Course as _Course } from 'src/app/model/course'
 import { Subject } from 'src/app/model/subject'
 import { Term as _Term } from 'src/app/model/term'
-import { ID_REGEX } from '../../manage.component'
+import { ID_REGEX } from 'src/app/model/_model'
 
 type Term = _Term & { calendar: Calendar }
 type Course = _Course & { subject: Subject }

@@ -10,12 +10,13 @@ import { Class } from 'src/app/model/class'
 import { Course as _Course } from 'src/app/model/course'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
 import { PopupService } from 'src/app/services/popup.service'
-import { ViewInfo, TITLE_REGEX, ViewName, CODE_REGEX } from '../../manage.component'
+import { ViewInfo, ViewName } from '../../manage.component'
 import { Subject } from 'src/app/model/subject'
 import { Test } from 'src/app/model/test'
 import { Deliverable } from 'src/app/model/deliverable'
 import { Teacher } from 'src/app/model/teacher'
 import { Calendar } from 'src/app/model/calendar'
+import { CODE_REGEX, TITLE_REGEX } from 'src/app/model/_model'
 
 type Course = _Course & { subject: Subject }
 

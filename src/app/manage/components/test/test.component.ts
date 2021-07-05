@@ -8,10 +8,11 @@ import { DatabaseService } from 'src/app/database/database.service'
 import { Course as _Course } from 'src/app/model/course'
 import { Test } from 'src/app/model/test'
 import { PopupService } from 'src/app/services/popup.service'
-import { ViewInfo, ViewName, TITLE_REGEX } from '../../manage.component'
+import { ViewInfo, ViewName } from '../../manage.component'
 import { UtilService } from 'src/app/services/util.service'
 import { Term } from 'src/app/model/term'
 import { Subject } from 'src/app/model/subject'
+import { TITLE_REGEX } from 'src/app/model/_model'
 
 type Course = _Course & { subject: Subject }
 

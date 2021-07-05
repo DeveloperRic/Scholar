@@ -8,9 +8,10 @@ import { DatabaseService } from 'src/app/database/database.service'
 import { Calendar } from 'src/app/model/calendar'
 import { Course } from 'src/app/model/course'
 import { Teacher } from 'src/app/model/teacher'
+import { EMAIL_SCHEMA_REGEX, NAME_REGEX } from 'src/app/model/_model'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
 import { PopupService } from 'src/app/services/popup.service'
-import { ViewInfo, ViewName, NAME_REGEX } from '../../manage.component'
+import { ViewInfo, ViewName } from '../../manage.component'
 
 @Component({
   selector: 'manage-teacher',
@@ -62,7 +63,7 @@ export class TeacherComponent implements OnInit {
     this.form = new FormGroup({
       firstName: new FormControl(initialState.firstName, [Validators.required, Validators.pattern(NAME_REGEX)]),
       lastName: new FormControl(initialState.lastName, [Validators.required, Validators.pattern(NAME_REGEX)]),
-      email: new FormControl(initialState.email, Validators.email)
+      email: new FormControl(initialState.email, [Validators.email, Validators.pattern(EMAIL_SCHEMA_REGEX)])
     })
     return teacher
   }
