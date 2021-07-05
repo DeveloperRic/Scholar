@@ -7,8 +7,6 @@ import { Class, ClassIndices } from '../model/class'
 import { Course, CourseIndices } from '../model/course'
 import { Deliverable, DeliverableIndices } from '../model/deliverable'
 import { Event, EventIndices } from '../model/event'
-import { Group, GroupIndices } from '../model/group'
-import { LinkPersonGroup, LinkPersonGroupIndices } from '../model/linkPersonGroup'
 import { Person, PersonIndices } from '../model/person'
 import { Reminder, ReminderIndices } from '../model/reminder'
 import { Subject, SubjectIndices } from '../model/subject'
@@ -28,8 +26,6 @@ const VERSIONS: Parameters<Dexie['Version']['prototype']['stores']>[0][] = [
     courses: CourseIndices.getIndices().join(','),
     deliverables: DeliverableIndices.getIndices().join(','),
     events: EventIndices.getIndices().join(','),
-    groups: GroupIndices.getIndices().join(','),
-    linksPersonGroup: LinkPersonGroupIndices.getIndices().join(','),
     people: PersonIndices.getIndices().join(','),
     reminders: ReminderIndices.getIndices().join(','),
     subjects: SubjectIndices.getIndices().join(','),
@@ -49,8 +45,6 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   courses: Dexie.Table<Course, Course['_id']>
   deliverables: Dexie.Table<Deliverable, Deliverable['_id']>
   events: Dexie.Table<Event, Event['_id']>
-  groups: Dexie.Table<Group, Group['_id']>
-  linksPersonGroup: Dexie.Table<LinkPersonGroup, LinkPersonGroup['_id']>
   people: Dexie.Table<Person, Person['_id']>
   reminders: Dexie.Table<Reminder, Reminder['_id']>
   subjects: Dexie.Table<Subject, Subject['_id']>
