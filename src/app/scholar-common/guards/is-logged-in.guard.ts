@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core'
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router'
-import { Observable } from 'rxjs'
+import { AuthService } from '@auth0/auth0-angular'
+import { Observable, zip } from 'rxjs'
+import { map, take } from 'rxjs/operators'
 import { RealmService } from 'src/app/database/realm.service'
+import { loginToScholar } from '../components/login-button/login-button.component'
 
 @Injectable({
   providedIn: 'root'
@@ -9,14 +12,28 @@ import { RealmService } from 'src/app/database/realm.service'
 export class IsLoggedInGuard implements CanActivate {
 
   constructor(
-    private realmService: RealmService
+    private realmService: RealmService,
+    private authService: AuthService
   ) { }
 
   canActivate(
     _route: ActivatedRouteSnapshot,
-    _state: RouterStateSnapshot
+    state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.realmService.isLoggedIn()
+    return ensureLoggedIn(this.authService, this.realmService, state.url)
   }
 
+}
+
+export function ensureLoggedIn(authService: AuthService, realmService: RealmService, returnTo: string): Observable<boolean> {
+  return zip(authService.isAuthenticated$, realmService.isLoggedIn$).pipe(
+    take(1),
+    map(([isLoggedIntoAuth0, isLoggedIntoRealm]) => {
+      const isLoggedIn = isLoggedIntoAuth0 && isLoggedIntoRealm
+      if (!isLoggedIn) {
+        loginToScholar(authService, returnTo) // performs a redirect
+      }
+      return isLoggedIn
+    })
+  )
 }
