@@ -10,7 +10,7 @@
       <input type="text" formControlName="name" [class]="{'invalid-input': !form.get('name').valid}">
       <span class="color-red" *ngIf="!form.get('name').valid">
         <br />
-        The term name must start with a letter or number and only contain alphanumeric characters or spaces.
+        The term name can't start with a space.
       </span>
       <div class="label-floor"></div>
     </label>

@@ -12,7 +12,7 @@
       <input type="text" formControlName="title" [class]="{ 'invalid-input': !form.get('title').valid }" />
       <span class="color-red" *ngIf="!form.get('title').valid">
         <br />
-        The deliverable title must start with a letter or number and only contain alphanumeric characters or spaces.
+        The deliverable title can't start with a space.
       </span>
       <div class="label-floor"></div>
     </label>
