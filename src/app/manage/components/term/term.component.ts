@@ -138,8 +138,4 @@ export class TermComponent implements OnInit {
       parentId: <Term['_id']>course?.term
     })
   }
-
-  getTermYear(term: Term) {
-    return new Date(term.start).getFullYear()
-  }
 }
