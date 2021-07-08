@@ -9,7 +9,6 @@ import { Calendar } from 'src/app/model/calendar'
 import { Term } from 'src/app/model/term'
 import { ObjectId } from 'bson'
 import { ErrorCodes } from 'src/app/services/ErrorCodes'
-import { Teacher } from 'src/app/model/teacher'
 import { ViewInfo, ViewName } from '../../manage.component'
 import { StartEndDateValidator } from 'src/app/services/start-end-date.validator'
 
@@ -24,9 +23,7 @@ export class CalendarComponent implements OnInit {
   calendarId$: Observable<Calendar['_id']>
   calendar$: Observable<Calendar>
   terms$: Observable<Term[]>
-  teachers$: Observable<Teacher[]>
   hasTerms: boolean
-  hasTeachers: boolean
   form: FormGroup
 
   constructor(private activatedRoute: ActivatedRoute, private databaseService: DatabaseService, private popupService: PopupService) { }
@@ -51,16 +48,6 @@ export class CalendarComponent implements OnInit {
       map(terms => {
         this.hasTerms = terms.length != 0
         return terms
-      })
-    )
-    this.teachers$ = this.calendarId$.pipe(
-      switchMap(calendarId => {
-        if (!calendarId) return of([])
-        return this.databaseService.database.all.teachers(calendarId)
-      }),
-      map(teachers => {
-        this.hasTeachers = teachers.length != 0
-        return teachers
       })
     )
   }
@@ -120,17 +107,6 @@ export class CalendarComponent implements OnInit {
       map(calendarId => this.pushViewEvent.emit({
         name: ViewName.TERM,
         docId: term?._id,
-        parentId: calendarId
-      }))
-    ).toPromise()
-  }
-
-  async goToTeacher(teacher?: Teacher) {
-    await this.calendarId$.pipe(
-      take(1),
-      map(calendarId => this.pushViewEvent.emit({
-        name: ViewName.TEACHER,
-        docId: teacher?._id,
         parentId: calendarId
       }))
     ).toPromise()

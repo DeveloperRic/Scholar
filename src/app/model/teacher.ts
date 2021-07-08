@@ -1,9 +1,8 @@
-import { Calendar } from './calendar'
 import { Person } from './person'
-import { Model, ModelIndices } from './_model'
+import { ModelIndices } from './_model'
 
 export interface Teacher extends Person {
-  calendar: Model['_id'] | Calendar
+  // In the future, Teacher will have more fields
 }
 
 export class TeacherIndices extends ModelIndices {

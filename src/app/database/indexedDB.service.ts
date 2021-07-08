@@ -100,7 +100,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     calendars: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.calendars.where({ account: accountId }).toArray()),
     subjects: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.subjects.where({ account: accountId }).toArray()),
     terms: (calendarId: Calendar['_id']) => this.util.promiseToObservable(() => this.terms.where({ calendar: calendarId }).toArray()),
-    teachers: (calendarId: Calendar['_id']) => this.util.promiseToObservable(() => this.teachers.where({ calendar: calendarId }).toArray()),
+    teachers: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.teachers.where({ account: accountId }).toArray()),
     courses: (termId: Term['_id']) => this.util.promiseToObservable(() => this.courses.where({ term: termId }).toArray()),
     classes: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.classes.where({ course: courseId }).toArray()),
     deliverables: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.deliverables.where({ course: courseId }).toArray()),
