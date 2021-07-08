@@ -1,6 +1,6 @@
 <div *ngVar="(teacher$ | async) as teacher">
   <h2 *ngIf="!teacher">Add a New Teacher</h2>
-  <h2 *ngIf="teacher && (calendar$ | async) as calendar">Editing Teacher: {{teacher.firstName}} {{teacher.lastName}}</h2>
+  <h2 *ngIf="teacher">Editing Teacher: {{teacher.firstName}} {{teacher.lastName}}</h2>
   <h3 class="remove-object color-red" *ngIf="teacher" (click)="removeTeacher(teacher)">
     Remove this teacher
   </h3>

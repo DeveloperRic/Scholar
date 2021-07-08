@@ -2,10 +2,9 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { ObjectId } from 'bson'
-import { Observable, of, zip } from 'rxjs'
-import { filter, map, switchMap, take } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
+import { map, switchMap, take } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
-import { Calendar } from 'src/app/model/calendar'
 import { Course } from 'src/app/model/course'
 import { Teacher } from 'src/app/model/teacher'
 import { EMAIL_SCHEMA_REGEX, NAME_REGEX } from 'src/app/model/_model'
@@ -22,9 +21,7 @@ export class TeacherComponent implements OnInit {
   @Output() pushViewEvent = new EventEmitter<ViewInfo>()
   @Output() popViewEvent = new EventEmitter<void>()
   teacherId$: Observable<Teacher['_id']>
-  calendarId$: Observable<Calendar['_id']>
   teacher$: Observable<Teacher>
-  calendar$: Observable<Calendar>
   form: FormGroup
 
   constructor(
@@ -37,20 +34,12 @@ export class TeacherComponent implements OnInit {
     this.teacherId$ = this.activatedRoute.queryParamMap.pipe(
       map(queryParams => queryParams.get('docId'))
     )
-    this.calendarId$ = this.activatedRoute.queryParamMap.pipe(
-      map(queryParams => queryParams.get('parentId')),
-      filter(calendarId => !!calendarId)
-      // TODO use shareReplay() / replay subject for things like this
-    )
     this.teacher$ = this.teacherId$.pipe(
       switchMap(teacherId => {
         if (!teacherId) return of(null)
         return this.popupService.runWithPopup('Fetching teacher', this.databaseService.database.fetch.teacher(teacherId))
       }),
       map(teacher => this.setForm(teacher))
-    )
-    this.calendar$ = this.calendarId$.pipe(
-      switchMap(calendarId => this.databaseService.database.fetch.calendar(calendarId))
     )
   }
 
@@ -71,13 +60,12 @@ export class TeacherComponent implements OnInit {
   async submit(): Promise<void> {
     await this.popupService.runWithPopup(
       'Saving teacher',
-      zip(this.teacherId$, this.calendarId$).pipe(
+      this.teacherId$.pipe(
         take(1),
-        switchMap(([teacherId, calendarId]) => {
+        switchMap(teacherId => {
           const teacher: Teacher = {
             _id: teacherId || new ObjectId().toHexString(),
             account: this.databaseService.accountId,
-            calendar: calendarId,
             firstName: this.form.get('firstName').value,
             lastName: this.form.get('lastName').value
           }
@@ -87,7 +75,6 @@ export class TeacherComponent implements OnInit {
             map(() => this.pushViewEvent.emit({
               name: ViewName.TEACHER,
               docId: teacher._id,
-              parentId: <Calendar['_id']>teacher.calendar,
               replacesUrl: true
             }))
           )

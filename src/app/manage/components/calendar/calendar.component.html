@@ -50,18 +50,5 @@
     <button class="btn-primary" (click)="goToTerm()">
       Click here to add a new term.
     </button>
-    <br />
-    <br />
-    <h2>List of Teachers</h2>
-    <div class="list-item bg-secondary" *ngFor="let teacher of (teachers$ | async)" (click)="goToTeacher(teacher)">
-      {{teacher.firstName}} {{teacher.lastName}}
-    </div>
-    <span class="color-red" *ngIf="!hasTeachers">
-      You haven't added any teachers.
-      <br />
-    </span>
-    <button class="btn-primary" (click)="goToTeacher()">
-      Click here to add a new teacher.
-    </button>
   </span>
 </div>

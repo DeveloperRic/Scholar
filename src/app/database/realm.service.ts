@@ -128,7 +128,7 @@ export class RealmService implements DatabaseLink {
     calendars: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchCalendars(new ObjectId(accountId))),
     subjects: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchSubjects(new ObjectId(accountId))),
     terms: (calendarId: Calendar['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchTerms(new ObjectId(calendarId))),
-    teachers: (calendarId: Calendar['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchTeachers(new ObjectId(calendarId))),
+    teachers: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchTeachers(new ObjectId(accountId))),
     courses: (termId: Term['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchCourses(new ObjectId(termId))),
     classes: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchClasses(new ObjectId(courseId))),
     deliverables: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.app.currentUser.functions.fetchDeliverables(new ObjectId(courseId))),

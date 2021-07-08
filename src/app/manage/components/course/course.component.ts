@@ -81,9 +81,7 @@ export class CourseComponent implements OnInit {
       shareReplay(1)
     )
     this.subjects$ = this.databaseService.database.all.subjects(this.databaseService.accountId)
-    this.teachers$ = this.term$.pipe(
-      switchMap(term => this.databaseService.database.all.teachers(<Calendar['_id']>term.calendar))
-    )
+    this.teachers$ = this.databaseService.database.all.teachers(this.databaseService.accountId)
     this.classes$ = this.courseId$.pipe(
       switchMap(courseId => {
         if (!courseId) return of([]) //TODO type these, it is causing static type checking holes (e.g. 'classes' below is of type any)

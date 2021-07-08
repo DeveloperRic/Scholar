@@ -25,7 +25,7 @@ export interface DatabaseLink {
     calendars: (accountId: Account['_id']) => Observable<Calendar[]>
     subjects: (accountId: Account['_id']) => Observable<Subject[]>
     terms: (calendarId: Calendar['_id']) => Observable<Term[]>
-    teachers: (calendarId: Calendar['_id']) => Observable<Teacher[]>
+    teachers: (accountId: Account['_id']) => Observable<Teacher[]>
     courses: (termId: Term['_id']) => Observable<Course[]>
     classes: (courseId: Course['_id']) => Observable<Class[]>
     deliverables: (courseId: Course['_id']) => Observable<Deliverable[]>
