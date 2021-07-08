@@ -9,8 +9,8 @@ import { Subject } from 'src/app/model/subject'
 import { Term as _Term } from 'src/app/model/term'
 import { ID_REGEX } from 'src/app/model/_model'
 
-type Term = _Term & { calendar: Calendar }
-type Course = _Course & { subject: Subject }
+type Term = Omit<_Term, 'calendar'> & { calendar: Calendar }
+type Course = Omit<_Course, 'subject'> & { subject: Subject }
 
 export enum FilterField {
   CALENDAR,
@@ -41,6 +41,8 @@ export class FilterMenu implements OnInit, OnDestroy {
     )
     this.terms$ = this.calendars$.pipe(
       switchMap(calendars => {
+        // this of(...) could be in a separate operator above but it has to be here because toArray() requires
+        // pipe completion which calendars$ will not provide until the very end (indefinite end)
         return of(...calendars).pipe(
           concatMap(calendar => this.databaseService.database.all.terms(calendar._id).pipe(
             switchMap(terms => of(...terms)),
@@ -52,10 +54,12 @@ export class FilterMenu implements OnInit, OnDestroy {
     )
     this.courses$ = this.terms$.pipe(
       switchMap(terms => {
+        // this of(...) could be in a separate operator above but it has to be here because toArray() requires
+        // pipe completion which terms$ will not provide until the very end (indefinite end)
         return of(...terms).pipe(
           concatMap(term => this.databaseService.database.all.courses(term._id).pipe(
             switchMap(courses => of(...courses)),
-            switchMap(course => {
+            concatMap(course => {
               return this.databaseService.database.fetch.subject(<Subject['_id']>course.subject).pipe(
                 map(subject => {
                   return <Course>{ ...course, subject }
@@ -68,30 +72,6 @@ export class FilterMenu implements OnInit, OnDestroy {
       })
     )
     this.setForm()
-    // const form = new FormGroup({
-    //   code: new FormControl(initialState.code, [Validators.required, Validators.pattern(CODE_REGEX)]),
-    //   name: new FormControl(initialState.name, [Validators.required, Validators.pattern(TITLE_REGEX)]),
-    //   subject: ,
-    //   teacher: new FormControl(initialState.teacher, Validators.pattern(/^[a-f\d]{24}$/i))
-    // })
-    // courseView.form = form
-    // courseView.submit = async () => {
-    //   const course: Course = {
-    //     _id: courseId || new ObjectId().toHexString(),
-    //     account: this.databaseService.accountId,
-    //     term: termId,
-    //     subject: form.get('subject').value,
-    //     code: form.get('code').value,
-    //     name: form.get('name').value
-    //   }
-    //   const teacher = form.get('teacher').value
-    //   if (teacher) course.teacher = teacher
-    //   this.popupService.performWithPopup(
-    //     'Saving course',
-    //     () => this.database.put.course(course),
-    //     ErrorCodes.ERR_COURSE_EXISTS)
-    //     .then(() => this.navigateToView(ViewType.TERM, termId))
-    // }
   }
 
   ngOnDestroy() {
