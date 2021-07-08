@@ -13,6 +13,6 @@ export class ModelIndices {
 
 export const ID_REGEX = /^[a-f\d]{24}$/i
 export const CODE_REGEX = /^\w[\w-]*$/
-export const TITLE_REGEX = /^\w[\w -]*$/
+export const TITLE_REGEX = /^\S.*$/
 export const NAME_REGEX = /^[^\s][^\n]*$/
 export const EMAIL_SCHEMA_REGEX = new RegExp("^$|^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$")
