@@ -48,17 +48,17 @@
           {{card.data.location.name}}
         </span>
       </p>
-      <p *ngSwitchCase="'deliverable'" class="home-card home-card-deliverable"
+      <p *ngSwitchCase="'assignment'" class="home-card home-card-assignment"
         [ngStyle]="{'color': util.parseHue(card.data.course.subject.hue).darker}"
-        (click)="navigateToManageView('deliverable', card.data._id, card.data.course._id)">
+        (click)="navigateToManageView('assignment', card.data._id, card.data.course._id)">
         <span class="home-card-label color-orange">
           <i class="material-icons">done&nbsp;</i>
-          Deliverable
+          Assignment
         </span>
         <span class="home-card-time">{{card.data.deadline | date:'h:mm a'}} </span>
         {{card.data.course.subject.code}} {{card.data.course.code}} {{card.data.title}}
         <br />
-        <span class="home-card-deliverable-percent">{{card.data.percentComplete}}% complete</span>
+        <span class="home-card-assignment-percent">{{card.data.percentComplete}}% complete</span>
       </p>
       <p *ngSwitchCase="'reminder'" class="home-card home-card-reminder"
         [ngStyle]="{'color': util.parseHue(card.data.evaluationComponent.course.subject.hue).darker}">

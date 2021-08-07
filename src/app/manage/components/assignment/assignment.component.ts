@@ -6,7 +6,7 @@ import { Observable, of, zip } from 'rxjs'
 import { filter, map, switchMap, take } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
 import { Course as _Course } from 'src/app/model/course'
-import { Deliverable } from 'src/app/model/deliverable'
+import { Deliverable as Assignment } from 'src/app/model/deliverable'
 import { PopupService } from 'src/app/services/popup.service'
 import { ViewInfo, ViewName } from '../../manage.component'
 import { UtilService } from 'src/app/services/util.service'
@@ -17,16 +17,16 @@ import { TITLE_REGEX } from 'src/app/model/_model'
 type Course = _Course & { subject: Subject }
 
 @Component({
-  selector: 'manage-deliverable',
-  templateUrl: './deliverable.component.html',
+  selector: 'manage-assignment',
+  templateUrl: './assignment.component.html',
   styleUrls: ['../../manage.component.css']
 })
-export class DeliverableComponent implements OnInit {
+export class AssignmentComponent implements OnInit {
   @Output() pushViewEvent = new EventEmitter<ViewInfo>()
   @Output() popViewEvent = new EventEmitter<void>()
-  deliverableId$: Observable<Deliverable['_id']>
+  assignmentId$: Observable<Assignment['_id']>
   courseId$: Observable<Course['_id']>
-  deliverable$: Observable<Deliverable>
+  assignment$: Observable<Assignment>
   course$: Observable<Course>
   form: FormGroup
   startControlWasInvalid = false
@@ -40,7 +40,7 @@ export class DeliverableComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.deliverableId$ = this.activatedRoute.queryParamMap.pipe(
+    this.assignmentId$ = this.activatedRoute.queryParamMap.pipe(
       map(queryParams => queryParams.get('docId'))
     )
     this.courseId$ = this.activatedRoute.queryParamMap.pipe(
@@ -48,12 +48,12 @@ export class DeliverableComponent implements OnInit {
       filter(courseId => !!courseId)
       // TODO use shareReplay() / replay subject for things like this
     )
-    this.deliverable$ = this.deliverableId$.pipe(
-      switchMap(deliverableId => {
-        if (!deliverableId) return of(null)
-        return this.popupService.runWithPopup('Fetching deliverable', this.databaseService.database.fetch.deliverable(deliverableId))
+    this.assignment$ = this.assignmentId$.pipe(
+      switchMap(assignmentId => {
+        if (!assignmentId) return of(null)
+        return this.popupService.runWithPopup('Fetching assignment', this.databaseService.database.fetch.deliverable(assignmentId))
       }),
-      switchMap(deliverable => this.setForm(deliverable))
+      switchMap(assignment => this.setForm(assignment))
     )
     this.course$ = this.courseId$.pipe(
       switchMap(courseId => this.databaseService.database.fetch.course(courseId)),
@@ -68,15 +68,15 @@ export class DeliverableComponent implements OnInit {
     )
   }
 
-  setForm(deliverable?: Deliverable): Observable<Deliverable> {
+  setForm(assignment?: Assignment): Observable<Assignment> {
     return this.course$.pipe(
       switchMap(course => this.databaseService.database.fetch.term(<Term['_id']>course.term)),
       map(term => {
         const initialState = {
-          title: deliverable ? deliverable.title : '',
-          deadline: deliverable ? this.util.toHTMLDatetime(deliverable.deadline) : '',
-          description: deliverable ? deliverable.description : '',
-          percentComplete: deliverable ? deliverable.percentComplete : 0
+          title: assignment ? assignment.title : '',
+          deadline: assignment ? this.util.toHTMLDatetime(assignment.deadline) : '',
+          description: assignment ? assignment.description : '',
+          percentComplete: assignment ? assignment.percentComplete : 0
         }
         this.form = new FormGroup({
           title: new FormControl(initialState.title, [Validators.required, Validators.pattern(TITLE_REGEX)]),
@@ -84,19 +84,19 @@ export class DeliverableComponent implements OnInit {
           description: new FormControl(initialState.description),
           percentComplete: new FormControl(initialState.percentComplete, [Validators.required, Validators.min(0), Validators.max(100)])
         })
-        return deliverable
+        return assignment
       })
     )
   }
 
   async submit(): Promise<void> {
     await this.popupService.runWithPopup(
-      'Saving deliverable',
-      zip(this.deliverableId$, this.courseId$).pipe(
+      'Saving assignment',
+      zip(this.assignmentId$, this.courseId$).pipe(
         take(1),
-        switchMap(([deliverableId, courseId]) => {
-          const deliverable: Deliverable = {
-            _id: deliverableId || new ObjectId().toHexString(),
+        switchMap(([assignmentId, courseId]) => {
+          const assignment: Assignment = {
+            _id: assignmentId || new ObjectId().toHexString(),
             account: this.databaseService.accountId,
             course: courseId,
             title: this.form.get('title').value,
@@ -104,11 +104,11 @@ export class DeliverableComponent implements OnInit {
             deadline: new Date(this.form.get('deadline').value).getTime(),
             percentComplete: parseFloat(this.form.get('percentComplete').value)
           }
-          return this.databaseService.database.put.deliverable(deliverable).pipe(
+          return this.databaseService.database.put.deliverable(assignment).pipe(
             map(() => this.pushViewEvent.emit({
-              name: ViewName.DELIVERABLE,
-              docId: deliverable._id,
-              parentId: <Course['_id']>deliverable.course,
+              name: ViewName.ASSIGNMENT,
+              docId: assignment._id,
+              parentId: <Course['_id']>assignment.course,
               replacesUrl: true
             }))
           )
@@ -117,12 +117,12 @@ export class DeliverableComponent implements OnInit {
     ).toPromise()
   }
 
-  async removeDeliverable(deliverable: Deliverable) {
-    if (!confirm('Are you sure you want to remove this deliverable?')) return
+  async removeAssignment(assignment: Assignment) {
+    if (!confirm('Are you sure you want to remove this assignment?')) return
     await this.popupService
       .runWithPopup(
-        'Removing deliverable',
-        this.databaseService.database.remove.deliverable(deliverable._id).pipe(
+        'Removing assignment',
+        this.databaseService.database.remove.deliverable(assignment._id).pipe(
           map(() => this.popViewEvent.emit())
         )
       )

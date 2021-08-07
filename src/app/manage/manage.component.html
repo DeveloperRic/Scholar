@@ -64,12 +64,12 @@
       </manage-tests>
       <manage-test *ngSwitchCase="'test'" (pushViewEvent)="updateViewQueryParams($event)" (popViewEvent)="popView()">
       </manage-test>
-      <manage-deliverables *ngSwitchCase="'deliverables'" (pushViewEvent)="updateViewQueryParams($event)"
+      <manage-assignments *ngSwitchCase="'assignments'" (pushViewEvent)="updateViewQueryParams($event)"
         (popViewEvent)="popView()">
-      </manage-deliverables>
-      <manage-deliverable *ngSwitchCase="'deliverable'" (pushViewEvent)="updateViewQueryParams($event)"
+      </manage-assignments>
+      <manage-assignment *ngSwitchCase="'assignment'" (pushViewEvent)="updateViewQueryParams($event)"
         (popViewEvent)="popView()">
-      </manage-deliverable>
+      </manage-assignment>
     </span>
   </div>
 </span>

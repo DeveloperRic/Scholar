@@ -24,8 +24,8 @@ export enum ViewName {
   CLASS = 'class',
   TESTS = 'tests',
   TEST = 'test',
-  DELIVERABLES = 'deliverables',
-  DELIVERABLE = 'deliverable'
+  ASSIGNMENTS = 'assignments',
+  ASSIGNMENT = 'assignment'
 }
 
 export interface ViewInfo {

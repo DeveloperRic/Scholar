@@ -41,13 +41,13 @@
 }
 
 .home-card-class,
-.home-card-deliverable,
+.home-card-assignment,
 .home-card-reminder,
 .home-card-test {
   cursor: pointer;
 }
 
-.home-card-deliverable .home-card-deliverable-percent {
+.home-card-assignment .home-card-assignment-percent {
   margin-top: 5px;
   margin-left: 0.3125rem;
   font-weight: 400;
