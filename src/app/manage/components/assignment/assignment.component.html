@@ -1,10 +1,10 @@
-<div *ngVar="(deliverable$ | async) as deliverable">
-  <h2 *ngIf="!deliverable">Add a New Deliverable</h2>
-  <h2 *ngIf="deliverable && (course$ | async) as course">
-    Editing Deliverable: {{course.subject.code}} {{course.code}} | {{deliverable.title}}
+<div *ngVar="(assignment$ | async) as assignment">
+  <h2 *ngIf="!assignment">Add a New Assignment</h2>
+  <h2 *ngIf="assignment && (course$ | async) as course">
+    Editing Assignment: {{course.subject.code}} {{course.code}} | {{assignment.title}}
   </h2>
-  <h3 class="remove-object color-red" *ngIf="deliverable" (click)="removeDeliverable(deliverable)">
-    Remove this deliverable
+  <h3 class="remove-object color-red" *ngIf="assignment" (click)="removeAssignment(assignment)">
+    Remove this assignment
   </h3>
   <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()">
     <label class="input">
@@ -12,7 +12,7 @@
       <input type="text" formControlName="title" [class]="{ 'invalid-input': !form.get('title').valid }" />
       <span class="color-red" *ngIf="!form.get('title').valid">
         <br />
-        The deliverable title can't start with a space.
+        The assignment title can't start with a space.
       </span>
       <div class="label-floor"></div>
     </label>
@@ -23,7 +23,7 @@
         [class]="{ 'invalid-input': !form.get('deadline').valid }" />
       <span class="color-red" *ngIf="!form.get('deadline').valid">
         <br />
-        The deliverable deadline cannot occur before its course's term starts or after the term ends.
+        The assignment deadline cannot occur before its course's term starts or after the term ends.
       </span>
       <div class="label-floor"></div>
     </label>
@@ -44,7 +44,7 @@
       <input type="text" formControlName="description" [class]="{ 'invalid-input': !form.get('description').valid }" />
       <span class="color-red" *ngIf="!form.get('description').valid">
         <br />
-        The deliverable description must be a string.
+        The assignment description must be a string.
       </span>
       <div class="label-floor"></div>
     </label>

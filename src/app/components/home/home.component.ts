@@ -15,7 +15,7 @@ import { AuthService } from '@auth0/auth0-angular'
 import { RealmService } from 'src/app/database/realm.service'
 
 type Class = ClassesWithinRangeResult[0]
-type Deliverable = DeliverablesDueWithinRangeResult[0]
+type Assignment = DeliverablesDueWithinRangeResult[0]
 type Test = TestsWithinRangeResult[0]
 
 interface Card {
@@ -33,9 +33,9 @@ interface DateCard extends Card {
   data: Date
 }
 
-interface DeliverableCard extends Card {
-  type: CardType.DELIVERABLE
-  data: Deliverable
+interface AssignmentCard extends Card {
+  type: CardType.ASSIGNMENT
+  data: Assignment
 }
 
 interface NoDataCard extends Card {
@@ -49,7 +49,7 @@ interface TestCard extends Card {
 
 enum CardType {
   DATE = 'date',
-  DELIVERABLE = 'deliverable',
+  ASSIGNMENT = 'assignment',
   CLASS = 'class',
   REMINDER = 'reminder',
   TEST = 'test',
@@ -149,11 +149,11 @@ export class HomeComponent implements OnInit {
         }
       }
     })
-    const deliverables = await this.database.search.deliverablesDueWithinRange(minDate, maxDate)
+    const assignments = await this.database.search.deliverablesDueWithinRange(minDate, maxDate)
     //TODO add reminders
     //TODO add holidays
     const tests = await this.database.search.testsWithinRange(minDate, maxDate)
-    const sortedObjects = this.sortObjects(classOccurrences, deliverables, tests)
+    const sortedObjects = this.sortObjects(classOccurrences, assignments, tests)
     let previousDate: Date = undefined
     sortedObjects.forEach(obj => {
       const objectDate = this.getObjectDate(obj, true)
@@ -170,8 +170,8 @@ export class HomeComponent implements OnInit {
           data: (<ClassOccurrence>obj).class
         })
       } else if (this.util.objectIsDeliverable(obj)) {
-        cards.push(<DeliverableCard>{
-          type: CardType.DELIVERABLE,
+        cards.push(<AssignmentCard>{
+          type: CardType.ASSIGNMENT,
           data: obj
         })
       } else if (this.util.objectIsTest(obj)) {
@@ -195,18 +195,18 @@ export class HomeComponent implements OnInit {
     this.loading = false
   }
 
-  private sortObjects(classes: ClassOccurrence[], deliverables: Deliverable[], tests: Test[]): (ClassOccurrence | Deliverable | Test)[] {
-    return [...classes, ...deliverables, ...tests].sort((a, b): number => {
+  private sortObjects(classes: ClassOccurrence[], assignments: Assignment[], tests: Test[]): (ClassOccurrence | Assignment | Test)[] {
+    return [...classes, ...assignments, ...tests].sort((a, b): number => {
       const aDate = this.getObjectDate(a)
       const bDate = this.getObjectDate(b)
       return aDate < bDate ? -1 : aDate > bDate ? 1 : 0
     })
   }
 
-  private getObjectDate(obj: ClassOccurrence | Deliverable | Test, ignoreTime = false): Date {
+  private getObjectDate(obj: ClassOccurrence | Assignment | Test, ignoreTime = false): Date {
     let date: Date
     if (this.util.objectIsClassOccurrence(obj)) date = new Date((<ClassOccurrence>obj).date)
-    else if (this.util.objectIsDeliverable(obj)) date = new Date((<Deliverable>obj).deadline)
+    else if (this.util.objectIsDeliverable(obj)) date = new Date((<Assignment>obj).deadline)
     else date = new Date((<Test>obj).date)
     if (ignoreTime) date.setHours(0, 0, 0, 0)
     return date

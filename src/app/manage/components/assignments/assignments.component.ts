@@ -3,25 +3,25 @@ import { Observable, of, ReplaySubject } from 'rxjs'
 import { concatMap, map, switchMap, take, toArray } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
 import { Course as _Course } from 'src/app/model/course'
-import { Deliverable as _Deliverable } from 'src/app/model/deliverable'
+import { Deliverable as _Assignment } from 'src/app/model/deliverable'
 import { PopupService } from 'src/app/services/popup.service'
 import { ViewInfo, ViewName } from '../../manage.component'
 import { FilterField } from '../filter-menu/filter-menu.component'
 import { Subject } from 'src/app/model/subject'
 
 type Course = _Course & { subject: Subject }
-type Deliverable = _Deliverable & { course: Course }
+type Assignment = _Assignment & { course: Course }
 
 @Component({
-  selector: 'manage-deliverables',
-  templateUrl: './deliverables.component.html',
+  selector: 'manage-assignments',
+  templateUrl: './assignments.component.html',
   styleUrls: ['../../manage.component.css']
 })
-export class DeliverablesComponent implements OnInit {
+export class AssignmentsComponent implements OnInit {
   @Output() pushViewEvent = new EventEmitter<ViewInfo>()
-  deliverables$: Observable<Deliverable[]>
+  assignments$: Observable<Assignment[]>
   course$: Observable<Course>
-  hasDeliverables: boolean
+  hasAssignments: boolean
   filterMenuVisible: boolean
   enabledFilters = [FilterField.COURSE]
   selectedCourseId$ = new ReplaySubject<Course['_id']>(1)
@@ -29,7 +29,7 @@ export class DeliverablesComponent implements OnInit {
   constructor(private databaseService: DatabaseService, private popupService: PopupService) { }
 
   ngOnInit() {
-    this.setDeliverables$()
+    this.setAssignments$()
     this.selectedCourseId$.next(undefined) // initial value
     this.course$ = this.selectedCourseId$.pipe(
       switchMap(selectedCourseId => this.databaseService.database.fetch.course(selectedCourseId)),
@@ -44,20 +44,20 @@ export class DeliverablesComponent implements OnInit {
     )
   }
 
-  private setDeliverables$() {
-    if (this.deliverables$) return
-    this.deliverables$ = this.selectedCourseId$.pipe(
+  private setAssignments$() {
+    if (this.assignments$) return
+    this.assignments$ = this.selectedCourseId$.pipe(
       switchMap(selectedCourseId => {
         return this.popupService.runWithPopup(
-          'Fetching deliverables',
+          'Fetching assignments',
           of(undefined).pipe(
             switchMap(() => {
-              if (selectedCourseId) return this.getDeliverablesFromSelectedCourse()
-              return this.getDeliverablesFromAllCourses()
+              if (selectedCourseId) return this.getAssignmentsFromSelectedCourse()
+              return this.getAssignmentsFromAllCourses()
             }),
-            map(deliverables => {
-              this.hasDeliverables = deliverables.length != 0
-              return deliverables
+            map(assignments => {
+              this.hasAssignments = assignments.length != 0
+              return assignments
             })
           )
         )
@@ -65,13 +65,13 @@ export class DeliverablesComponent implements OnInit {
     )
   }
 
-  private getDeliverablesFromSelectedCourse(): Observable<Deliverable[]> {
+  private getAssignmentsFromSelectedCourse(): Observable<Assignment[]> {
     return this.course$.pipe(
       switchMap(course => {
         return this.databaseService.database.all.deliverables(course._id).pipe(
-          switchMap(deliverables => of(...deliverables)),
-          map(deliverable => {
-            return <Deliverable>{ ...deliverable, course }
+          switchMap(assignments => of(...assignments)),
+          map(assignment => {
+            return <Assignment>{ ...assignment, course }
           }),
           toArray()
         )
@@ -79,7 +79,7 @@ export class DeliverablesComponent implements OnInit {
     )
   }
 
-  private getDeliverablesFromAllCourses(): Observable<Deliverable[]> {
+  private getAssignmentsFromAllCourses(): Observable<Assignment[]> {
     return this.databaseService.database.all.calendars(this.databaseService.accountId).pipe(
       switchMap(calendars => of(...calendars).pipe(
         concatMap(calendar => this.databaseService.database.all.terms(calendar._id)),
@@ -95,9 +95,9 @@ export class DeliverablesComponent implements OnInit {
         }),
         concatMap(course => {
           return this.databaseService.database.all.deliverables(course._id).pipe(
-            concatMap(deliverables => of(...deliverables)), // create a strem of deliverables (gathered from each course)
-            map(deliverable => {
-              return <Deliverable>{ ...deliverable, course }
+            concatMap(assignments => of(...assignments)), // create a strem of assignments (gathered from each course)
+            map(assignment => {
+              return <Assignment>{ ...assignment, course }
             })
           )
         }),
@@ -106,13 +106,13 @@ export class DeliverablesComponent implements OnInit {
     )
   }
 
-  async goToDeliverable(deliverable?: Deliverable) {
+  async goToAssignment(assignment?: Assignment) {
     await this.selectedCourseId$.pipe(
       take(1),
       map(selectedCourseId => this.pushViewEvent.emit({
-        name: ViewName.DELIVERABLE,
-        docId: deliverable?._id,
-        parentId: (<Course>deliverable?.course)?._id || selectedCourseId
+        name: ViewName.ASSIGNMENT,
+        docId: assignment?._id,
+        parentId: (<Course>assignment?.course)?._id || selectedCourseId
       }))
     ).toPromise()
   }

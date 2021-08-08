@@ -89,16 +89,16 @@
     <button class="btn-primary" (click)="goToTest()">Click here to add a new test</button>
     <br />
     <br />
-    <h2>List of Deliverables in this Course</h2>
-    <div class="list-item bg-secondary" *ngFor="let deliverable of (deliverables$ | async)"
-      (click)="goToDeliverable(deliverable)">
-      {{ deliverable.deadline | date: 'd MMM' }} | {{ deliverable.title }}
+    <h2>List of Assignments in this Course</h2>
+    <div class="list-item bg-secondary" *ngFor="let assignment of (assignments$ | async)"
+      (click)="goToAssignment(assignment)">
+      {{ assignment.deadline | date: 'd MMM' }} | {{ assignment.title }}
     </div>
-    <span class="color-red" *ngIf="!hasDeliverables">
-      You haven't added any deliverables to this course.
+    <span class="color-red" *ngIf="!hasAssignments">
+      You haven't added any assignments to this course.
       <br />
     </span>
     <br />
-    <button class="btn-primary" (click)="goToDeliverable()">Click here to add a new deliverable</button>
+    <button class="btn-primary" (click)="goToAssignment()">Click here to add a new assignment</button>
   </span>
 </div>

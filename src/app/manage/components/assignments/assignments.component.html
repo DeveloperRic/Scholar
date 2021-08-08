@@ -1,0 +1,26 @@
+<h2 class="filter-row">
+  Assignments
+  <button (click)="toggleFilterMenu()" [class]="{'bg-secondary': filterMenuVisible}">
+    <i class="material-icons">filter_list</i>
+    Filter
+  </button>
+</h2>
+<manage-filter-menu *ngIf="filterMenuVisible" [enabledFilters]="enabledFilters"
+  (formChangeEvent)="onFilterChange($event)"></manage-filter-menu>
+<div class="list-item bg-secondary" *ngFor="let assignment of (assignments$ | async)"
+  (click)="goToAssignment(assignment)">
+  <!-- TODO sort doc lists -->
+  {{ assignment.deadline | date: 'd MMM' }} | {{assignment.course.subject.code}} {{assignment.course.code}} |
+  {{ assignment.title }}
+</div>
+<span class="color-red" *ngIf="!hasAssignments">
+  You haven't added any assignments.
+  <br />
+</span>
+<br />
+<button class="btn-primary" *ngIf="(course$ | async) as course" (click)="goToAssignment()">
+  Click here to add a new assignment for {{course.subject.code}} {{course.code}}
+</button>
+<span *ngIf="!(selectedCourseId$ | async)">
+  To add new assignments, select a course in the top filter first
+</span>

@@ -36,10 +36,10 @@ export class CourseComponent implements OnInit {
   teachers$: Observable<Teacher[]>
   classes$: Observable<Class[]>
   tests$: Observable<Test[]>
-  deliverables$: Observable<Deliverable[]>
+  assignments$: Observable<Deliverable[]>
   hasClasses: boolean
   hasTests: boolean
-  hasDeliverables: boolean
+  hasAssignments: boolean
   form: FormGroup
 
   constructor(
@@ -102,14 +102,14 @@ export class CourseComponent implements OnInit {
         return tests
       })
     )
-    this.deliverables$ = this.courseId$.pipe(
+    this.assignments$ = this.courseId$.pipe(
       switchMap(courseId => {
         if (!courseId) return of([])
         return this.databaseService.database.all.deliverables(courseId)
       }),
-      map(deliverables => {
-        this.hasDeliverables = deliverables.length != 0
-        return deliverables
+      map(assignments => {
+        this.hasAssignments = assignments.length != 0
+        return assignments
       })
     )
   }
@@ -198,14 +198,14 @@ export class CourseComponent implements OnInit {
     ).toPromise()
   }
 
-  async goToDeliverable(deliverable?: Deliverable) {
+  async goToAssignment(assignment?: Deliverable) {
     await this.course$.pipe(
       take(1),
       map(course => {
         this.pushViewEvent.emit({
-          name: ViewName.DELIVERABLE,
-          docId: deliverable?._id,
-          parentId: <Course['_id']>deliverable?.course || course._id
+          name: ViewName.ASSIGNMENT,
+          docId: assignment?._id,
+          parentId: <Course['_id']>assignment?.course || course._id
         })
       })
     ).toPromise()
