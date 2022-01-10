@@ -6,7 +6,7 @@
     "start": "ng serve --ssl --no-live-reload",
     "build": "ng build --prod",
     "test": "ng test",
-    "lint": "eslint src/**/*.ts test/**/*.ts",
+    "lint": "eslint src/**/*.ts",
     "format": "npm run lint -- --fix",
     "e2e": "ng e2e",
     "package": "npm run format && npm run build"
