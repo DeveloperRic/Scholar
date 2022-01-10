@@ -3,18 +3,18 @@
 </div>
 <div class="buttons">
   <button class="nav-btn" (click)="navigateTo('home')" [class]="{'color-accent': currentPageIs('home')}">
-    <i class="material-icons" [class]="{'color-accent': currentPageIs('home')}">
-      home
-    </i>
+    <i class="material-icons" [class]="{ 'color-accent': currentPageIs('home') }"> home </i>
     Home
   </button>
-  <button class="nav-btn" *ngIf="isLoggedIn$ | async" (click)="navigateTo('calendar')" [class]="{'color-accent': currentPageIs('calendar')}">
-    <i class="material-icons" [class]="{'color-accent': currentPageIs('calendar')}">
-      date_range
+  <button class="nav-btn" *ngIf="isLoggedIn$ | async" (click)="navigateTo('grades')"
+    [class]="{'color-accent': currentPageIs('grades')}">
+    <i class="material-icons" [class]="{'color-accent': currentPageIs('grades')}">
+      grade
     </i>
-    Calendar
+    Grades
   </button>
-  <button class="nav-btn" *ngIf="isLoggedIn$ | async" (click)="navigateTo('manage')" [class]="{'color-accent': currentPageIs('manage')}">
+  <button class="nav-btn" *ngIf="isLoggedIn$ | async" (click)="navigateTo('manage')"
+    [class]="{'color-accent': currentPageIs('manage')}">
     <i class="material-icons" [class]="{'color-accent': currentPageIs('manage')}">
       settings
     </i>

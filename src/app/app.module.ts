@@ -7,12 +7,11 @@ import { AuthModule } from '@auth0/auth0-angular'
 import { environment } from 'src/environments/environment'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
-import { CalendarComponent } from './components/calendar/calendar.component'
 import { HomeComponent } from './components/home/home.component'
 import { ScholarCommonModule } from './scholar-common/scholar-common.module'
 
 @NgModule({
-  declarations: [AppComponent, CalendarComponent, HomeComponent],
+  declarations: [AppComponent, HomeComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
