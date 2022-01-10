@@ -56,7 +56,7 @@ export class CalendarComponent implements OnInit {
     const currentYear = new Date().getFullYear()
     const initialState = {
       year: calendar?.year ?? currentYear,
-      yearEnd: calendar?.yearEnd ?? (calendar.year == null ? currentYear + 1 : '')
+      yearEnd: calendar?.yearEnd ?? (calendar?.year == null ? currentYear + 1 : '')
     }
     const startEndValidators = new StartEndDateValidator('year', 'yearEnd', yearNum => new Date(yearNum, 0))
     this.form = new FormGroup({

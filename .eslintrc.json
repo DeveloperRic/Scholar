@@ -1,107 +1,77 @@
 {
   "env": {
-    "browser": true,
-    "es2020": true
+    "es2021": true,
+    "node": true
   },
-  "overrides": [{
-      "files": [
-        "*.ts"
-      ],
-      "parserOptions": {
-        "project": [
-          "tsconfig.json",
-          "e2e/tsconfig.json"
-        ],
-        "createDefaultProgram": true
-      },
-      "extends": [
-        "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates",
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "plugin:prettier/recommended"
-      ],
-      "rules": {
-        "indent": [
-          "error",
-          2
-        ],
-        "linebreak-style": [
-          "error",
-          "unix"
-        ],
-        "quotes": [
-          "error",
-          "single"
-        ],
-        "semi": [
-          "error",
-          "never"
-        ],
-        "arrow-parens": [
-          "error",
-          "as-needed"
-        ],
-        "max-len": [
-          "error",
-          {
-            "code": 160
-          }
-        ],
-        "no-trailing-spaces": [
-          "error"
-        ],
-        "comma-dangle": [
-          "error"
-        ],
-        "curly": [
-          "error",
-          "multi"
-        ],
-        "brace-style": [
-          "error",
-          "1tbs"
-        ],
-        "object-curly-spacing": [
-          "error",
-          "always"
-        ],
-        "object-curly-newline": [
-          "error",
-          {
-            "consistent": true
-          }
-        ],
-        "key-spacing": [
-          "error"
-        ],
-        "array-bracket-newline": [
-          "error",
-          "consistent"
-        ],
-        "array-element-newline": [
-          "error",
-          "consistent"
-        ],
-        "function-call-argument-newline": [
-          "error",
-          "consistent"
-        ],
-        "function-paren-newline": [
-          "error",
-          "consistent"
-        ]
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "array-bracket-spacing": [
+      "error",
+      "always",
+      {
+        "objectsInArrays": false
       }
-    },
-    {
-      "files": [
-        "*.html"
-      ],
-      "extends": [
-        "plugin:@angular-eslint/template/recommended",
-        "plugin:prettier/recommended"
-      ]
-    }
-  ]
+    ],
+    "arrow-parens": [
+      "error",
+      "as-needed"
+    ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "indent": [
+      "error",
+      2
+    ],
+    "linebreak-style": [
+      "off",
+      "unix"
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 160
+      }
+    ],
+    "no-trailing-spaces": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "quote-props": [
+      "error",
+      "consistent"
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "semi": [
+      "error",
+      "never"
+    ]
+  }
 }
