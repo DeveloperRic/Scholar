@@ -10,6 +10,7 @@ import { PopupService } from 'src/app/services/popup.service'
 
 export enum ViewName {
   INDEX = 'index',
+  ACCOUNT = 'account',
   CALENDAR = 'calendar',
   CALENDARS = 'calendars',
   TERM = 'term',
@@ -49,7 +50,7 @@ export interface View {
 @Component({
   selector: 'app-manage',
   templateUrl: './manage.component.html',
-  styleUrls: ['./manage.component.css']
+  styleUrls: [ './manage.component.css' ],
 })
 export class ManageComponent implements OnInit {
   private viewHistory: ViewInfo[] = []
@@ -82,7 +83,7 @@ export class ManageComponent implements OnInit {
         this.pushView({
           name: <ViewName>queryParams.get('view') || ViewName.INDEX,
           parentId: queryParams.get('parentId'),
-          docId: queryParams.get('docId')
+          docId: queryParams.get('docId'),
         })
       })
       console.log('Manage: Done initialising')
@@ -90,7 +91,7 @@ export class ManageComponent implements OnInit {
       this.popupService.newPopup({
         type: 'error',
         message: 'Manage: Error: initView() failed',
-        error: err
+        error: err,
       })
     }
   }
@@ -113,7 +114,7 @@ export class ManageComponent implements OnInit {
           if (currentView) this.viewHistory.push(currentView)
           this.canNavigateBack = newView.name != ViewName.INDEX && this.viewHistory.length != 0
           this.viewInfo$.next(newView)
-        })
+        }),
       )
       .toPromise()
   }
@@ -123,9 +124,9 @@ export class ManageComponent implements OnInit {
       queryParams: {
         view: view.name == ViewName.INDEX ? null : view.name,
         parentId: view.parentId || null,
-        docId: view.docId || null
+        docId: view.docId || null,
       },
-      replaceUrl: view.replacesUrl
+      replaceUrl: view.replacesUrl,
     })
   }
 

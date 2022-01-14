@@ -30,6 +30,8 @@
         <mat-spinner></mat-spinner>
       </div>
       <manage-index *ngSwitchCase="'index'" (pushViewEvent)="updateViewQueryParams($event)"></manage-index>
+      <manage-account *ngSwitchCase="'account'" (pushViewEvent)="updateViewQueryParams($event)"
+        (popViewEvent)="popView()"></manage-account>
       <manage-calendars *ngSwitchCase="'calendars'" (pushViewEvent)="updateViewQueryParams($event)"></manage-calendars>
       <manage-calendar *ngSwitchCase="'calendar'" (pushViewEvent)="updateViewQueryParams($event)"
         (popViewEvent)="popView()"></manage-calendar>

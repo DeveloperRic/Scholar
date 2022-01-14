@@ -1,7 +1,7 @@
 import { Account } from './account'
 
 export interface Model {
-  _id: string
+  _id: string //TODO switch to ObjectId
   account: Model['_id'] | Account
 }
 

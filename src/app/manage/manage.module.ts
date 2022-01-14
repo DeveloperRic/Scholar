@@ -20,6 +20,7 @@ import { TestComponent } from './components/test/test.component'
 import { TestsComponent } from './components/tests/tests.component'
 import { ManageRoutingModule } from './manage-routing.module'
 import { ManageComponent } from './manage.component'
+import { AccountComponent } from './components/account/account.component'
 
 @NgModule({
   declarations: [
@@ -41,9 +42,10 @@ import { ManageComponent } from './manage.component'
     TermComponent,
     TestsComponent,
     TestComponent,
-    FilterMenu
+    FilterMenu,
+    AccountComponent,
   ],
-  imports: [ManageRoutingModule, ScholarCommonModule],
-  bootstrap: [ManageComponent]
+  imports: [ ManageRoutingModule, ScholarCommonModule ],
+  bootstrap: [ ManageComponent ],
 })
 export class ManageModule { }

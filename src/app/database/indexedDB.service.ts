@@ -7,6 +7,7 @@ import { Class, ClassIndices } from '../model/class'
 import { Course, CourseIndices } from '../model/course'
 import { Deliverable, DeliverableIndices } from '../model/deliverable'
 import { Event, EventIndices } from '../model/event'
+import { GradingGroup, GradingGroupIndices } from '../model/gradingGroup'
 import { Person, PersonIndices } from '../model/person'
 import { Reminder, ReminderIndices } from '../model/reminder'
 import { Subject, SubjectIndices } from '../model/subject'
@@ -17,7 +18,7 @@ import { UtilService } from '../services/util.service'
 import { ClassesWithinRangeResult, DatabaseLink, DeliverablesDueWithinRangeResult, TestsWithinRangeResult } from './databaseLink'
 
 const DATABASE_NAME = 'ScholarDatabase'
-const DATABASE_VERSION = 1
+const DATABASE_VERSION = 3
 const VERSIONS: Parameters<Dexie['Version']['prototype']['stores']>[0][] = [
   {
     accounts: AccountIndices.getIndices().join(','),
@@ -31,12 +32,18 @@ const VERSIONS: Parameters<Dexie['Version']['prototype']['stores']>[0][] = [
     subjects: SubjectIndices.getIndices().join(','),
     teachers: TeacherIndices.getIndices().join(','),
     terms: TermIndices.getIndices().join(','),
-    tests: TestIndices.getIndices().join(',')
-  }
+    tests: TestIndices.getIndices().join(','),
+  },
 ]
+VERSIONS.push(
+  {
+    ...VERSIONS[0],
+    gradingGroups: GradingGroupIndices.getIndices().join(','),
+  },
+)
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IndexedDBService extends Dexie implements DatabaseLink {
   accounts: Dexie.Table<Account, Account['_id']>
@@ -51,6 +58,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   teachers: Dexie.Table<Teacher, Teacher['_id']>
   terms: Dexie.Table<Term, Term['_id']>
   tests: Dexie.Table<Test, Test['_id']>
+  gradingGroups: Dexie.Table<GradingGroup, GradingGroup['_id']>
 
   public constructor(private util: UtilService) {
     super(DATABASE_NAME)
@@ -76,6 +84,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
   }
 
   fetch = {
+    account: (_id: Account['_id']) => this.util.promiseToObservable(() => this.accounts.get(_id)),
     calendar: (_id: Calendar['_id']) => this.util.promiseToObservable(() => this.calendars.get(_id)),
     subject: (_id: Subject['_id']) => this.util.promiseToObservable(() => this.subjects.get(_id)),
     term: (_id: Term['_id']) => this.util.promiseToObservable(() => this.terms.get(_id)),
@@ -83,9 +92,11 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.get(_id)),
     class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.get(_id)),
     deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(() => this.deliverables.get(_id)),
-    test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.get(_id))
+    test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.get(_id)),
+    gradingGroup: (_id: Test['_id']) => this.util.promiseToObservable(() => this.gradingGroups.get(_id)),
   }
   put = {
+    account: (account: Account) => this.util.promiseToObservable(() => this.accounts.put(account)),
     calendar: (calendar: Calendar) => this.util.promiseToObservable(() => this.calendars.put(calendar)),
     subject: (subject: Subject) => this.util.promiseToObservable(() => this.subjects.put(subject)),
     term: (term: Term) => this.util.promiseToObservable(() => this.terms.put(term)),
@@ -94,7 +105,8 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     course: (course: Course) => this.util.promiseToObservable(() => this.courses.put(course)),
     class: (klass: Class) => this.util.promiseToObservable(() => this.classes.put(klass)),
     deliverable: (deliverable: Deliverable) => this.util.promiseToObservable(() => this.deliverables.put(deliverable)),
-    test: (test: Test) => this.util.promiseToObservable(() => this.tests.put(test))
+    test: (test: Test) => this.util.promiseToObservable(() => this.tests.put(test)),
+    gradingGroup: (gradingGroup: GradingGroup) => this.util.promiseToObservable(() => this.gradingGroups.put(gradingGroup)),
   }
   all = {
     calendars: (accountId: Account['_id']) => this.util.promiseToObservable(() => this.calendars.where({ account: accountId }).toArray()),
@@ -104,7 +116,8 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     courses: (termId: Term['_id']) => this.util.promiseToObservable(() => this.courses.where({ term: termId }).toArray()),
     classes: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.classes.where({ course: courseId }).toArray()),
     deliverables: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.deliverables.where({ course: courseId }).toArray()),
-    tests: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.tests.where({ course: courseId }).toArray())
+    tests: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.tests.where({ course: courseId }).toArray()),
+    gradingGroups: (courseId: Course['_id']) => this.util.promiseToObservable(() => this.gradingGroups.where({ course: courseId }).toArray()),
   }
   remove = {
     //TODO these should remove recursively (i.e. calendar>term>course....)
@@ -115,7 +128,8 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
     course: (_id: Course['_id']) => this.util.promiseToObservable(() => this.courses.delete(_id)),
     class: (_id: Class['_id']) => this.util.promiseToObservable(() => this.classes.delete(_id)),
     deliverable: (_id: Deliverable['_id']) => this.util.promiseToObservable(() => this.deliverables.delete(_id)),
-    test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.delete(_id))
+    test: (_id: Test['_id']) => this.util.promiseToObservable(() => this.tests.delete(_id)),
+    gradingGroup: (_id: GradingGroup['_id']) => this.util.promiseToObservable(() => this.gradingGroups.delete(_id)),
   }
   search = {
     classesWithinRange: async (min: Date, max: Date) => {
@@ -156,7 +170,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
         test.course = courses.find(course => course._id === test.course)
         return <TestsWithinRangeResult[0]>test
       })
-    }
+    },
   }
 
   private async coursesWithinRange(min: Date, max: Date) {
@@ -227,7 +241,7 @@ export class IndexedDBService extends Dexie implements DatabaseLink {
       return 'prompt' // It MAY be successful to prompt. Don't know.
     }
     const permission = await navigator.permissions.query({
-      name: 'persistent-storage'
+      name: 'persistent-storage',
     })
     if (permission.state === 'granted') {
       persisted = await navigator.storage.persist()

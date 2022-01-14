@@ -8,7 +8,7 @@
 <manage-filter-menu *ngIf="filterMenuVisible" [enabledFilters]="enabledFilters"
   (formChangeEvent)="onFilterChange($event)"></manage-filter-menu>
 <div class="list-item bg-secondary" *ngFor="let course of (courses$ | async)" (click)="goToCourse(course)">
-  {{ course.code }} / {{ course.name }}
+  {{course.subject.code}} {{ course.code }} / {{ course.name }}
 </div>
 <span class="color-red" *ngIf="!hasCourses">
   You haven't added any school courses.

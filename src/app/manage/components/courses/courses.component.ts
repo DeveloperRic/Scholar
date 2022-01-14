@@ -1,17 +1,19 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core'
 import { Observable, of, ReplaySubject } from 'rxjs'
-import { concatMap, map, switchMap, take, toArray } from 'rxjs/operators'
+import { concatMap, map, mergeMap, switchMap, take, tap, toArray } from 'rxjs/operators'
 import { DatabaseService } from 'src/app/database/database.service'
 import { Term } from 'src/app/model/term'
 import { Course } from 'src/app/model/course'
 import { PopupService } from 'src/app/services/popup.service'
 import { ViewInfo, ViewName } from '../../manage.component'
 import { FilterField } from '../filter-menu/filter-menu.component'
+import { Subject } from 'src/app/model/subject'
+import { ObjectId } from 'bson'
 
 @Component({
   selector: 'manage-courses',
   templateUrl: './courses.component.html',
-  styleUrls: ['../../manage.component.css']
+  styleUrls: [ '../../manage.component.css' ],
 })
 export class CoursesComponent implements OnInit {
   @Output() pushViewEvent = new EventEmitter<ViewInfo>()
@@ -19,7 +21,7 @@ export class CoursesComponent implements OnInit {
   term$: Observable<Term>
   hasCourses: boolean
   filterMenuVisible: boolean
-  enabledFilters = [FilterField.TERM]
+  enabledFilters = [ FilterField.TERM ]
   selectedTermId$ = new ReplaySubject<Term['_id']>(1)
 
   constructor(private databaseService: DatabaseService, private popupService: PopupService) { }
@@ -28,7 +30,7 @@ export class CoursesComponent implements OnInit {
     this.setCourses$()
     this.selectedTermId$.next(undefined) // initial value
     this.term$ = this.selectedTermId$.pipe(
-      switchMap(selectedTermId => this.databaseService.database.fetch.term(selectedTermId))
+      switchMap(selectedTermId => this.databaseService.database.fetch.term(selectedTermId)),
     )
   }
 
@@ -43,13 +45,28 @@ export class CoursesComponent implements OnInit {
               if (selectedTermId) return this.databaseService.database.all.courses(selectedTermId)
               return this.getCoursesFromAllTerms()
             }),
-            map(courses => {
-              this.hasCourses = courses.length != 0
-              return courses
-            })
-          )
+            tap(courses => this.hasCourses = courses.length != 0),
+            switchMap(courses => {
+              const subjectIds = new Set(courses.map(c => c.subject as Subject['_id']))
+              return of(...subjectIds).pipe(
+                mergeMap(_id => this.databaseService.database.fetch.subject(_id)),
+                toArray(),
+                map(subjects => {
+                  return courses.map(course => ({
+                    ...course,
+                    subject: subjects.find(s => new ObjectId(s._id).equals(course.subject as Subject['_id'])),
+                  }))
+                }),
+              )
+            }),
+            map(courses => courses.sort((a, b) => {
+              const titleA = `${a.subject.code} ${a.code}`
+              const titleB = `${b.subject.code} ${b.code}`
+              return titleA.localeCompare(titleB)
+            })),
+          ),
         )
-      })
+      }),
     )
   }
 
@@ -59,11 +76,11 @@ export class CoursesComponent implements OnInit {
         concatMap(calendar => this.databaseService.database.all.terms(calendar._id).pipe(
           concatMap(terms => of(...terms).pipe(
             concatMap(term => this.databaseService.database.all.courses(term._id)),
-            concatMap(courses => of(...courses)) // create a strem of courses (gathered from each term from each calendar)
-          ))
+            concatMap(courses => of(...courses)), // create a strem of courses (gathered from each term from each calendar)
+          )),
         )),
-        toArray()
-      ))
+        toArray(),
+      )),
     )
   }
 
@@ -73,8 +90,8 @@ export class CoursesComponent implements OnInit {
       map(selectedTermId => this.pushViewEvent.emit({
         name: ViewName.COURSE,
         docId: course?._id,
-        parentId: <Term['_id']>course?.term || selectedTermId
-      }))
+        parentId: <Term['_id']>course?.term || selectedTermId,
+      })),
     ).toPromise()
   }
 

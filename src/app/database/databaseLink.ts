@@ -9,6 +9,7 @@ import { Course } from '../model/course'
 import { Class } from '../model/class'
 import { Deliverable } from '../model/deliverable'
 import { Test } from '../model/test'
+import { GradingGroup } from '../model/gradingGroup'
 
 export type ClassesWithinRangeResult = (
   Omit<Class, 'course'> & { course: Course }
@@ -30,8 +31,10 @@ export interface DatabaseLink {
     classes: (courseId: Course['_id']) => Observable<Class[]>
     deliverables: (courseId: Course['_id']) => Observable<Deliverable[]>
     tests: (courseId: Course['_id']) => Observable<Test[]>
+    gradingGroups: (courseId: Course['_id']) => Observable<GradingGroup[]>
   }
   fetch: {
+    account: (_id: Account['_id']) => Observable<Account>
     calendar: (_id: Calendar['_id']) => Observable<Calendar>
     subject: (_id: Subject['_id']) => Observable<Subject>
     term: (_id: Term['_id']) => Observable<Term>
@@ -40,9 +43,11 @@ export interface DatabaseLink {
     class: (_id: Class['_id']) => Observable<Class>
     deliverable: (_id: Deliverable['_id']) => Observable<Deliverable>
     test: (_id: Test['_id']) => Observable<Test>
+    gradingGroup: (_id: GradingGroup['_id']) => Observable<GradingGroup>
   }
   //TODO realm doesnt return these ids
   put: {
+    account: (account: Account) => Observable<Account['_id']>
     calendar: (calendar: Calendar) => Observable<Calendar['_id']>
     subject: (subject: Subject) => Observable<Subject['_id']>
     term: (term: Term) => Observable<Term['_id']>
@@ -51,6 +56,7 @@ export interface DatabaseLink {
     class: (klass: Class) => Observable<Class['_id']>
     deliverable: (deliverable: Deliverable) => Observable<Deliverable['_id']>
     test: (test: Test) => Observable<Test['_id']>
+    gradingGroup: (gradingGroup: GradingGroup) => Observable<GradingGroup['_id']>
   }
   remove: {
     calendar: (_id: Calendar['_id']) => Observable<void>
@@ -61,6 +67,7 @@ export interface DatabaseLink {
     class: (_id: Class['_id']) => Observable<void>
     deliverable: (_id: Deliverable['_id']) => Observable<void>
     test: (_id: Test['_id']) => Observable<void>
+    gradingGroup: (_id: GradingGroup['_id']) => Observable<void>
   }
   search: {
     classesWithinRange: (min: Date, max: Date) => Promise<ClassesWithinRangeResult>

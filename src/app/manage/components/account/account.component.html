@@ -1,0 +1,52 @@
+<div>
+  <h2>Grading Settings</h2>
+  <form *ngIf="(gradingForm$ | async) as gradingForm" [formGroup]="gradingForm" (ngSubmit)="submit()">
+    <h3>GPA (Grade Point Average) History</h3>
+    <label class="input">
+      Number of courses not listed in Scholar:
+      <input type="number" min="0" formControlName="numCoursesNotInScholar"
+        [class]="{ 'invalid-input': !gradingForm.get('numCoursesNotInScholar').valid }" />
+      <span class="color-red" *ngIf="!gradingForm.get('numCoursesNotInScholar').valid">
+        <br />
+        This value cannot be negative.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <label class="input">
+      Cumulative GPA for courses not listed in Scholar:
+      <input type="number" min="0" max="100" formControlName="cumulativeGpaBeforeScholar"
+        [class]="{ 'invalid-input': !gradingForm.get('cumulativeGpaBeforeScholar').valid }" />
+      <span class="color-red" *ngIf="!gradingForm.get('cumulativeGpaBeforeScholar').valid">
+        <br />
+        This value must be a valid percentage.
+      </span>
+      <div class="label-floor"></div>
+    </label>
+    <br />
+    <h3>GPA Scale</h3>
+    <div
+      *ngFor="let scaleItemForm of gradingForm.get('gpaScale').controls; index as i; first as isFirst; last as isLast"
+      [formGroup]="scaleItemForm">
+      <i class="material-icons" (click)="removeGpaScaleItem(i)">remove</i>
+      <input type="number" formControlName="minPercent" />
+      <input type="text" formControlName="code" />
+      <input type="number" formControlName="maxPercent" />
+    </div>
+    <br />
+    <button class="btn-primary" (click)="addGpaScaleItem()">
+      <i class="material-icons">add</i>
+      Add a scale item
+    </button>
+    <br />
+    <span class="color-red" *ngIf="!gradingForm.get('gpaScale').valid">
+      <br />
+      Min % and Max % in your GPA scale must connect with each other
+      <br />
+      {{ gradingForm.get('gpaScale').errors | json }}
+    </span>
+    <br />
+    <button class="btn-accent" type="submit" [disabled]="!gradingForm.valid">Save</button>
+    <span class="color-red" *ngIf="!gradingForm.valid"> Some values you entered are invalid. Please check above. </span>
+  </form>
+</div>
